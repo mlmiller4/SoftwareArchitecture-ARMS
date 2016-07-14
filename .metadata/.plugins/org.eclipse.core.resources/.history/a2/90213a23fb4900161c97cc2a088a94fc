@@ -14,7 +14,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class StudentFrame extends JFrame {
+public class AdminFrame extends JFrame {
 
 	private JPanel contentPane;
 
@@ -25,7 +25,7 @@ public class StudentFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					StudentFrame frame = new StudentFrame();
+					AdminFrame frame = new AdminFrame();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -37,7 +37,7 @@ public class StudentFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public StudentFrame() {
+	public AdminFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -45,21 +45,21 @@ public class StudentFrame extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblStudentFrame = new JLabel("Student Frame");
-		lblStudentFrame.setHorizontalAlignment(SwingConstants.CENTER);
-		lblStudentFrame.setForeground(Color.RED);
-		lblStudentFrame.setFont(new Font("Times New Roman", Font.BOLD, 14));
-		lblStudentFrame.setBounds(127, 49, 163, 14);
-		contentPane.add(lblStudentFrame);
+		JLabel lblAdminFrame = new JLabel("Admin Frame");
+		lblAdminFrame.setHorizontalAlignment(SwingConstants.CENTER);
+		lblAdminFrame.setForeground(Color.RED);
+		lblAdminFrame.setFont(new Font("Times New Roman", Font.BOLD, 14));
+		lblAdminFrame.setBounds(136, 50, 163, 14);
+		contentPane.add(lblAdminFrame);
 		
 		JButton btnLogOut = new JButton("Log Out");
 		btnLogOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				contentPane.setVisible(false);
-				ARMS_LogIn.main(null);	
+				ARMS_GUI.main(null);				
 			}
 		});
-		btnLogOut.setBounds(156, 199, 89, 23);
+		btnLogOut.setBounds(169, 203, 89, 23);
 		contentPane.add(btnLogOut);
 	}
 

@@ -56,7 +56,7 @@ public class AdminFrame extends JFrame {
 		btnLogOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				contentPane.setVisible(false);
-				ARMS_GUI.main(null);				
+				ARMS_LogIn.main(null);				
 			}
 		});
 		btnLogOut.setBounds(169, 203, 89, 23);
