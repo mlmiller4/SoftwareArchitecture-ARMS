@@ -11,8 +11,8 @@ public class sqliteConnection {
 	public static Connection dbConnector()
 	{
 		try{
-			Class.forName("org.sqlite.JDBC");
-			Connection conn = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\ML Miller\\workspace\\CS6310_Project3\\ARMS\\src\\armsDB.sqlite");
+			Class.forName("org.sqlite.JDBC");			
+			Connection conn = DriverManager.getConnection("jdbc:sqlite:src\\armsDB.sqlite");
 			//JOptionPane.showMessageDialog(null, "Database Connection Successful");
 			return conn;			
 			
