@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 import java.awt.Font;
 
 import java.sql.*;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.*;
@@ -183,10 +184,11 @@ public class DatabaseActions {
 	 * Retrieves all student request and system generated responses based
 	 * on the GATech ID
 	 * @param gtId
-	 * @return Returns true if transaction succeeded, false otherwise.
+	 * @return Returns Schedule object.
 	 */
-	public boolean RetrieveSchedule(Long gtId)
+	public Object RetrieveSchedule(Long gtId)
 	{
+		Object schedule = new Object(gtId);
 		try 
 		{
 			String sqlst = "select * from ScheduleRequests where ID=?";
@@ -206,7 +208,7 @@ public class DatabaseActions {
 				String timeStamp = rs.getString("TimeStamp");
 				/**
 				 * Perform actions with retrieved data here
-				 * ex: display back to UI
+				 *
 				 */
 			}
 			rs.close();
@@ -215,9 +217,8 @@ public class DatabaseActions {
 		catch (Exception e)
 		{
 			JOptionPane.showMessageDialog(null, e);
-			return false;
 		} 
-		return true;		
+		return schedule;		
 	}
 	
 	/**
@@ -290,10 +291,11 @@ public class DatabaseActions {
 	 * RetrieveCourse
 	 * Retrieves course information
 	 * @param CourseId		Course ID
-	 * @return Returns true if operation succeeds, otherwise returns false.
+	 * @return Returns Course object
 	 */
 	public boolean RetrieveCourse(Integer CourseId)
 	{
+		Object course = new Object(courseId);
 		try 
 		{
 			String sqlst = "select * from CourseCatalog where ID=?";
@@ -321,9 +323,8 @@ public class DatabaseActions {
 		catch (Exception e)
 		{
 			JOptionPane.showMessageDialog(null, e);
-			return false;
 		} 
-		return true;		
+		return course;		
 	}
 	
 	/**
@@ -348,6 +349,38 @@ public class DatabaseActions {
 			JOptionPane.showMessageDialog(null, e);
 			return new Integer(0);
 		} 
+	}
+	
+	/**
+	 * retrieveStudentList
+	 * Returns the list of students registered
+	 * @return	Returns a list of all the students in the database
+	 */
+	public List<Student> retrieveStudentList()
+	{
+		List<Student> students;
+		Student student = null;
+		try 
+		{
+			String sqlst = "select * as total from UserInfo where Admin='False'";
+			PreparedStatement pst = connection.prepareStatement(sqlst);
+			ResultSet rs = pst.executeQuery();
+			while(rs.next())
+			{
+				student.setID(rs.getString("ID"));
+				student.setFirstName(rs.getString("FirsName"));
+				student.setLastName(rs.getString("LastName"));
+				students.add(student);
+			}
+			Integer studentTotal = new Integer(rs.getInt("total"));
+			rs.close();
+			pst.close();
+		}  
+		catch (Exception e)
+		{
+			JOptionPane.showMessageDialog(null, e);
+		} 
+		return students;
 	}
 	
 	/**
