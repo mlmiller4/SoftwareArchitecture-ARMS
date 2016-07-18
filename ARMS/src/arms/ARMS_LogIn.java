@@ -64,11 +64,11 @@ public class ARMS_LogIn {
 				
 				// Check user name and password for student log in				
 				try{
-					String query = "select * from UserInfo where Username=? and password=? and admin=? ";
+					String query = "select * from Students where UserName=? and Password=? ";
 					PreparedStatement pst = connection.prepareStatement(query);
 					pst.setString(1, textFieldUserName.getText());
 					pst.setString(2, passwordField.getText());					
-					pst.setString(3, "False");
+					//pst.setString(3, "False");
 					
 					ResultSet rs = pst.executeQuery();						
 					
@@ -79,7 +79,7 @@ public class ARMS_LogIn {
 					}
 					
 					if (count == 1){
-						JOptionPane.showMessageDialog(null, "Log In Successfull.");
+						//JOptionPane.showMessageDialog(null, "Log In Successfull.");
 						
 						// Open Student Frame
 						frame.dispose();
@@ -107,11 +107,11 @@ public class ARMS_LogIn {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				try{
-					String query = "select * from UserInfo where Username=? and password=? and admin=? ";
+					String query = "select * from Administrators where UserName=? and Password=? ";
 					PreparedStatement pst = connection.prepareStatement(query);
 					pst.setString(1, textFieldUserName.getText());
 					pst.setString(2, passwordField.getText());	
-					pst.setString(3, "True");
+					
 					
 					ResultSet rs = pst.executeQuery();						
 					
@@ -122,7 +122,7 @@ public class ARMS_LogIn {
 					}
 					
 					if (count == 1){
-						JOptionPane.showMessageDialog(null, "Log In Successfull.");
+						//JOptionPane.showMessageDialog(null, "Log In Successfull.");
 						
 						// Open Admin Frame
 						frame.dispose();

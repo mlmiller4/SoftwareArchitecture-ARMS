@@ -39,28 +39,37 @@ public class AdminFrame extends JFrame {
 	 */
 	public AdminFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 721, 596);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblAdminFrame = new JLabel("Admin Frame");
+		JLabel lblAdminFrame = new JLabel("Admin Menu");
 		lblAdminFrame.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAdminFrame.setForeground(Color.RED);
 		lblAdminFrame.setFont(new Font("Times New Roman", Font.BOLD, 14));
-		lblAdminFrame.setBounds(136, 50, 163, 14);
+		lblAdminFrame.setBounds(261, 11, 163, 14);
 		contentPane.add(lblAdminFrame);
 		
 		JButton btnLogOut = new JButton("Log Out");
 		btnLogOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				contentPane.setVisible(false);
+				dispose();
 				ARMS_LogIn.main(null);				
 			}
 		});
-		btnLogOut.setBounds(169, 203, 89, 23);
+		btnLogOut.setBounds(588, 509, 89, 23);
 		contentPane.add(btnLogOut);
+		
+		JButton btnViewCourseCatalog = new JButton("View Course Catalog");
+		btnViewCourseCatalog.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				CourseCatalog.NewScreen();
+			}
+		});
+		btnViewCourseCatalog.setBounds(55, 60, 200, 25);
+		contentPane.add(btnViewCourseCatalog);
 	}
-
 }

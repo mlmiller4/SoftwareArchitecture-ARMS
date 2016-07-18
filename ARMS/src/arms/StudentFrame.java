@@ -39,7 +39,8 @@ public class StudentFrame extends JFrame {
 	 */
 	public StudentFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 712, 594);
+		//setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBounds(100, 100, 721, 596);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -56,7 +57,8 @@ public class StudentFrame extends JFrame {
 		btnLogOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				contentPane.setVisible(false);
-				ARMS_LogIn.main(null);	
+				dispose();
+				ARMS_LogIn.main(null);					
 			}
 		});
 		btnLogOut.setBounds(597, 521, 89, 23);
@@ -69,7 +71,7 @@ public class StudentFrame extends JFrame {
 					CourseCatalog.NewScreen();
 			}
 		});
-		btnViewCourseCatalog.setBounds(54, 57, 200, 23);
+		btnViewCourseCatalog.setBounds(55, 60, 200, 25);
 		contentPane.add(btnViewCourseCatalog);
 	}
 }

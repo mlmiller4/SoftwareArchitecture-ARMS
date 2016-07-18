@@ -9,10 +9,15 @@ import java.awt.Font;
 import java.awt.Color;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import net.proteanit.sql.DbUtils;
+
 import javax.swing.JScrollPane;
 
 import java.sql.*;
 import javax.swing.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class CourseCatalog {
 
@@ -38,6 +43,7 @@ public class CourseCatalog {
 
 	
 	Connection connection = null;
+	private JButton btnClose;
 	
 	/**
 	 * Create the application.
@@ -49,53 +55,76 @@ public class CourseCatalog {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
-		
-		connection = sqliteConnection.dbConnector();
-		
-		try{
-			String query = "select * from Courses";
-			PreparedStatement pst = connection.prepareStatement(query);
-			ResultSet rs = pst.executeQuery();
-			
-			
-		}catch (Exception e){
-			e.printStackTrace();
-		}
-		
+	private void initialize() {		
 		
 		frame = new JFrame();
-		frame.setBounds(100, 100, 787, 664);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setBounds(100, 100, 1135, 707);
+		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		JLabel lblCourseCatalog = new JLabel("Course Catalog");
 		lblCourseCatalog.setForeground(Color.BLACK);
 		lblCourseCatalog.setFont(new Font("Times New Roman", Font.BOLD, 20));
 		lblCourseCatalog.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCourseCatalog.setBounds(242, 11, 262, 80);
+		lblCourseCatalog.setBounds(438, 11, 262, 80);
 		frame.getContentPane().add(lblCourseCatalog);
 		
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(82, 104, 615, 429);
+		scrollPane.setBounds(10, 104, 1104, 510);
 		frame.getContentPane().add(scrollPane);
 		
 		table = new JTable();
 		scrollPane.setViewportView(table);
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Course ID", "Course Title", "Semesters Offered", "Year", "Maximum Enrollment", "Seats Remaining"
-			}
-		) {
-			Class[] columnTypes = new Class[] {
-				Object.class, Object.class, String.class, String.class, Object.class, Object.class
-			};
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-		});
-		table.getColumnModel().getColumn(2).setMinWidth(75);
+		
+		connection = sqliteConnection.dbConnector();
+		
+		try{
+			//String query = "select * from CourseOfferings";
+			String query = "select * from Courses";
+			PreparedStatement pst = connection.prepareStatement(query);
+			ResultSet rs = pst.executeQuery();
+			table.setModel(DbUtils.resultSetToTableModel(rs));
+			
+			btnClose = new JButton("Close");
+			btnClose.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					frame.dispose();
+				}
+			});
+			btnClose.setBounds(1025, 625, 89, 23);
+			frame.getContentPane().add(btnClose);
+			
+			
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		
+		table.getColumnModel().getColumn(2).setMinWidth(150);
+		
+		table.getColumnModel().getColumn(0).setHeaderValue("Course ID");
+		table.getColumnModel().getColumn(1).setHeaderValue("Course Number");
+		table.getColumnModel().getColumn(2).setHeaderValue("Course Title");
+		table.getColumnModel().getColumn(3).setHeaderValue("Semesters Available");
+		table.getColumnModel().getColumn(4).setHeaderValue("Class Size");
+		table.getColumnModel().getColumn(5).setHeaderValue("Remaining Seats");
+		
+		
+//		table.setModel(new DefaultTableModel(
+//			new Object[][] {
+//			},
+//			new String[] {
+//				//"Course ID", "Course Title", "Semesters Offered", "Year", "Class Size", "Seats Remaining"
+//				"ID", "CourseID", "FallSem", "SpringSem", "SummerSem", "ClassSize", "RemSeats", "CourseTitle"
+//			}
+//		) {
+//			Class[] columnTypes = new Class[] {
+//				Object.class, Object.class, String.class, String.class, Object.class, Object.class
+//			};
+//			public Class getColumnClass(int columnIndex) {
+//				return columnTypes[columnIndex];
+//			}
+//		});
+		
 	}
 }
