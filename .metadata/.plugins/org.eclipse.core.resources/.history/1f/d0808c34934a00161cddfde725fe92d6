@@ -11,9 +11,6 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
 
-import java.sql.*;
-import javax.swing.*;
-
 public class CourseCatalog {
 
 	private JFrame frame;
@@ -36,9 +33,6 @@ public class CourseCatalog {
 		});
 	}
 
-	
-	Connection connection = null;
-	
 	/**
 	 * Create the application.
 	 */
@@ -50,22 +44,8 @@ public class CourseCatalog {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		
-		connection = sqliteConnection.dbConnector();
-		
-		try{
-			String query = "select * from Courses";
-			PreparedStatement pst = connection.prepareStatement(query);
-			ResultSet rs = pst.executeQuery();
-			
-			
-		}catch (Exception e){
-			e.printStackTrace();
-		}
-		
-		
 		frame = new JFrame();
-		frame.setBounds(100, 100, 787, 664);
+		frame.setBounds(100, 100, 742, 602);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
