@@ -12,7 +12,7 @@ public class sqliteConnection {
 	{
 		try{
 			Class.forName("org.sqlite.JDBC");			
-			Connection conn = DriverManager.getConnection("jdbc:sqlite:src\\armsDB.sqlite");
+			Connection conn = DriverManager.getConnection("jdbc:sqlite:src/armsDB.sqlite");
 			//JOptionPane.showMessageDialog(null, "Database Connection Successful");
 			return conn;			
 			
