@@ -12,7 +12,6 @@ import java.awt.Color;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 
@@ -84,7 +83,7 @@ public class StudentFrame extends JFrame {
 		contentPane.add(btnViewCourseCatalog);
 		
 		JLabel lblEnterCourseIds = new JLabel("Enter Course IDs You Would Like to Take:");
-		lblEnterCourseIds.setBounds(55, 119, 369, 30);
+		lblEnterCourseIds.setBounds(55, 119, 200, 30);
 		contentPane.add(lblEnterCourseIds);
 		
 		textFieldCourse1 = new JTextField();
@@ -136,27 +135,21 @@ public class StudentFrame extends JFrame {
 		btnSubmitCourseRequests.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String courses = null;
-				ArrayList<Integer> courseIDs = new ArrayList<Integer>();				
 				
 				if (!textFieldCourse1.getText().isEmpty()){
 					courses = textFieldCourse1.getText();
-					courseIDs.add(Integer.parseInt(textFieldCourse1.getText()));
 					
 					if (!textFieldCourse2.getText().isEmpty()){
 						courses += ", " + textFieldCourse2.getText();
-						courseIDs.add(Integer.parseInt(textFieldCourse2.getText()));
 						
 						if (!textFieldCourse3.getText().isEmpty()){
 							courses += ", " + textFieldCourse3.getText();
-							courseIDs.add(Integer.parseInt(textFieldCourse3.getText()));
 							
 							if (!textFieldCourse4.getText().isEmpty()){
 								courses += ", " + textFieldCourse4.getText();
-								courseIDs.add(Integer.parseInt(textFieldCourse4.getText()));
 								
 								if (!textFieldCourse5.getText().isEmpty()){
 									courses += ", " + textFieldCourse5.getText();
-									courseIDs.add(Integer.parseInt(textFieldCourse5.getText()));
 								}
 							}
 						}
@@ -166,8 +159,12 @@ public class StudentFrame extends JFrame {
 					
 				} else {
 					JOptionPane.showMessageDialog(null, "You must enter at least one course ID.");
-				}						
-
+				}
+						
+						
+//						textFieldCourse1.getText() +", " + textFieldCourse2.getText() + ", " + textFieldCourse3.getText() + ", " +
+//								textFieldCourse4.getText() + ", " + textFieldCourse5.getText();
+				//JOptionPane.showMessageDialog(null, "You have selected the following courses: " + courses);
 			}
 		});
 		btnSubmitCourseRequests.setBounds(55, 237, 200, 25);
