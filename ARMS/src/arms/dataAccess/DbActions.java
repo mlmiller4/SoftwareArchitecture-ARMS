@@ -1,4 +1,4 @@
-package dataAccess;
+package arms.dataAccess;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
