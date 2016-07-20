@@ -91,7 +91,7 @@ public class UpdateCourse extends JFrame {
 		// TBD: Grab list of course Ids and store into an array of strings
 		// This will be used to populate the courseId combo box
 		ArrayList<String> data = getCourseList();
-		String[] coureList = data.toArray(new String[data.size()]);
+		String[] courseList = data.toArray(new String[data.size()]);
 		JComboBox courseId = new JComboBox(courseList);
 		courseId.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -139,7 +139,7 @@ public class UpdateCourse extends JFrame {
 		// TBD: Grab a list of semester Ids valid for a specific course and
 		// store into an array of strings
 		// This will be used to populate the semesterId combo box
-		ArrayList<Integer> offering = getCourseOffering(Integer
+		ArrayList<String> offering = getCourseOffering(Integer
 				.parseInt(idField.getText()));
 		JComboBox semesterId = new JComboBox((ComboBoxModel) offering);
 		semesterId.addActionListener(new ActionListener() {
@@ -196,7 +196,7 @@ public class UpdateCourse extends JFrame {
 	}
 
 	public ArrayList<String> getCourseOffering(Integer idcourse) {
-		ArrayList<String> offering = new ArrayList<Integer>();
+		ArrayList<String> offering = new ArrayList<String>();
 		// Check user name and password for student log in
 		try {
 			String query = "select SemesterId from CourseOfferings where CourseId=?";
@@ -205,7 +205,7 @@ public class UpdateCourse extends JFrame {
 			ResultSet rs = pst.executeQuery();
 
 			while (rs.next()) {
-				offering.add(rs.getInt("SemesterId"));
+				offering.add(Integer.toString(rs.getInt("SemesterId")));
 			}
 			rs.close();
 			pst.close();

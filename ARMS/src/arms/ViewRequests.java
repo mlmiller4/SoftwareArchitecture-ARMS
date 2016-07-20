@@ -71,7 +71,9 @@ public class ViewRequests extends JFrame {
 					// as
 					// ScheduleRequest objects
 
-					table.setModel(DbUtils.resultSetToTableModel(rs));
+					//table.setModel(DbUtils.resultSetToTableModel(rs));
+				
+				
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -91,9 +93,9 @@ public class ViewRequests extends JFrame {
 	}
 
 	// TODO: complete method
-	public PopulateTable() {
-		// headers for the table
-		String[] columns = new String[] { "Student ID", "SR ID", "Course ID",
-				"Semester", "Class Size", "Remaining Seats", "Submit Time" };
-	}
+//	public PopulateTable() {
+//		// headers for the table
+//		String[] columns = new String[] { "Student ID", "SR ID", "Course ID",
+//				"Semester", "Class Size", "Remaining Seats", "Submit Time" };
+//	}
 }

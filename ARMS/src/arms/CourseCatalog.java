@@ -102,12 +102,12 @@ public class CourseCatalog {
 		
 		table.getColumnModel().getColumn(2).setMinWidth(150);
 		
-		table.getColumnModel().getColumn(0).setHeaderValue("Course ID");
-		table.getColumnModel().getColumn(1).setHeaderValue("Course Number");
-		table.getColumnModel().getColumn(2).setHeaderValue("Course Title");
-		table.getColumnModel().getColumn(3).setHeaderValue("Semesters Available");
-		table.getColumnModel().getColumn(4).setHeaderValue("Class Size");
-		table.getColumnModel().getColumn(5).setHeaderValue("Remaining Seats");
+//		table.getColumnModel().getColumn(0).setHeaderValue("Course ID");
+//		table.getColumnModel().getColumn(1).setHeaderValue("Course Number");
+//		table.getColumnModel().getColumn(2).setHeaderValue("Course Title");
+//		table.getColumnModel().getColumn(3).setHeaderValue("Semesters Available");
+//		table.getColumnModel().getColumn(4).setHeaderValue("Class Size");
+//		table.getColumnModel().getColumn(5).setHeaderValue("Remaining Seats");
 		
 		
 //		table.setModel(new DefaultTableModel(

@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 
 public class StudentFrame extends JFrame {
 
@@ -47,9 +48,12 @@ public class StudentFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public StudentFrame() {
+		
+		DatabaseActions dbActions = new DatabaseActions();
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 721, 596);
+		setBounds(100, 100, 721, 479);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -58,8 +62,8 @@ public class StudentFrame extends JFrame {
 		JLabel lblStudentFrame = new JLabel("Student Menu");
 		lblStudentFrame.setHorizontalAlignment(SwingConstants.CENTER);
 		lblStudentFrame.setForeground(Color.RED);
-		lblStudentFrame.setFont(new Font("Times New Roman", Font.BOLD, 14));
-		lblStudentFrame.setBounds(261, 11, 163, 14);
+		lblStudentFrame.setFont(new Font("Times New Roman", Font.BOLD, 26));
+		lblStudentFrame.setBounds(244, 3, 209, 46);
 		contentPane.add(lblStudentFrame);
 		
 		JButton btnLogOut = new JButton("Log Out");
@@ -70,7 +74,7 @@ public class StudentFrame extends JFrame {
 				ARMS_LogIn.main(null);					
 			}
 		});
-		btnLogOut.setBounds(597, 521, 89, 23);
+		btnLogOut.setBounds(606, 392, 89, 23);
 		contentPane.add(btnLogOut);
 		
 		JButton btnViewCourseCatalog = new JButton("View Course Catalog");
@@ -80,59 +84,67 @@ public class StudentFrame extends JFrame {
 					CourseCatalog.NewScreen();
 			}
 		});
-		btnViewCourseCatalog.setBounds(55, 60, 200, 25);
+		btnViewCourseCatalog.setBounds(66, 79, 200, 25);
 		contentPane.add(btnViewCourseCatalog);
 		
+		JPanel panel = new JPanel();
+		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		panel.setBounds(33, 187, 637, 174);
+		contentPane.add(panel);
+		panel.setLayout(null);
+		
 		JLabel lblEnterCourseIds = new JLabel("Enter Course IDs You Would Like to Take:");
-		lblEnterCourseIds.setBounds(55, 119, 369, 30);
-		contentPane.add(lblEnterCourseIds);
+		lblEnterCourseIds.setBounds(33, 11, 369, 30);
+		panel.add(lblEnterCourseIds);
 		
 		textFieldCourse1 = new JTextField();
-		textFieldCourse1.setBounds(55, 187, 85, 25);
-		contentPane.add(textFieldCourse1);
+		textFieldCourse1.setBounds(33, 79, 85, 25);
+		panel.add(textFieldCourse1);
 		textFieldCourse1.setColumns(10);
 		
 		JLabel lblCourse = new JLabel("Course 1:");
-		lblCourse.setBounds(54, 162, 87, 14);
-		contentPane.add(lblCourse);
+		lblCourse.setBounds(32, 54, 87, 14);
+		panel.add(lblCourse);
 		
 		JLabel lblCourse_1 = new JLabel("Course 2:");
-		lblCourse_1.setBounds(168, 162, 87, 14);
-		contentPane.add(lblCourse_1);
+		lblCourse_1.setBounds(146, 54, 87, 14);
+		panel.add(lblCourse_1);
 		
 		textFieldCourse2 = new JTextField();
+		textFieldCourse2.setBounds(147, 79, 85, 25);
+		panel.add(textFieldCourse2);
 		textFieldCourse2.setColumns(10);
-		textFieldCourse2.setBounds(169, 187, 85, 25);
-		contentPane.add(textFieldCourse2);
 		
 		JLabel lblCourse_2 = new JLabel("Course 3:");
-		lblCourse_2.setBounds(286, 162, 87, 14);
-		contentPane.add(lblCourse_2);
+		lblCourse_2.setBounds(264, 54, 87, 14);
+		panel.add(lblCourse_2);
 		
 		textFieldCourse3 = new JTextField();
+		textFieldCourse3.setBounds(266, 79, 85, 25);
+		panel.add(textFieldCourse3);
 		textFieldCourse3.setColumns(10);
-		textFieldCourse3.setBounds(288, 187, 85, 25);
-		contentPane.add(textFieldCourse3);
 		
 		JLabel lblCourse_3 = new JLabel("Course 4:");
-		lblCourse_3.setBounds(410, 162, 87, 14);
-		contentPane.add(lblCourse_3);
+		lblCourse_3.setBounds(388, 54, 87, 14);
+		panel.add(lblCourse_3);
 		
 		textFieldCourse4 = new JTextField();
+		textFieldCourse4.setBounds(388, 79, 85, 25);
+		panel.add(textFieldCourse4);
 		textFieldCourse4.setColumns(10);
-		textFieldCourse4.setBounds(410, 187, 85, 25);
-		contentPane.add(textFieldCourse4);
 		
 		textFieldCourse5 = new JTextField();
+		textFieldCourse5.setBounds(521, 79, 85, 25);
+		panel.add(textFieldCourse5);
 		textFieldCourse5.setColumns(10);
-		textFieldCourse5.setBounds(543, 187, 85, 25);
-		contentPane.add(textFieldCourse5);
 		
 		JLabel lblCourse_4 = new JLabel("Course 5:");
-		lblCourse_4.setBounds(541, 162, 87, 14);
-		contentPane.add(lblCourse_4);
+		lblCourse_4.setBounds(519, 54, 87, 14);
+		panel.add(lblCourse_4);
 		
 		JButton btnSubmitCourseRequests = new JButton("Submit Course Requests");
+		btnSubmitCourseRequests.setBounds(33, 129, 200, 25);
+		panel.add(btnSubmitCourseRequests);
 		btnSubmitCourseRequests.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String courses = null;
@@ -162,15 +174,28 @@ public class StudentFrame extends JFrame {
 						}
 					}
 					
+					// Insert course selections into the ScheduleRequests table
+					// What parameters are needed here??  The 'ScheduleRequests' table only has fields: StudentID, SRId, SubmitTime
+					
+					//dbActions.InsertSchedule(gtId, CourseId, Semester, schedType)
+					
 					JOptionPane.showMessageDialog(null, "You have selected the following courses: " + courses);
 					
+					
 				} else {
-					JOptionPane.showMessageDialog(null, "You must enter at least one course ID.");
+					JOptionPane.showMessageDialog(null, "You must enter at least one course ID, starting with Course 1.");
 				}						
 
 			}
 		});
-		btnSubmitCourseRequests.setBounds(55, 237, 200, 25);
-		contentPane.add(btnSubmitCourseRequests);
+		
+		JButton btnViewPastCourse = new JButton("View Past Course Requests");
+		btnViewPastCourse.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JOptionPane.showMessageDialog(null, "Accessing Past Course Requests...");
+			}
+		});
+		btnViewPastCourse.setBounds(66, 130, 200, 25);
+		contentPane.add(btnViewPastCourse);
 	}
 }
