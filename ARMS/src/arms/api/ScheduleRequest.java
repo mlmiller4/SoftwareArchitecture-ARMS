@@ -4,22 +4,22 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class ScheduleRequest {
-	private int id;
+	private int studentId;
 	private int SRID;
 	private Date submitTime;
 	private HashMap<Integer,Integer> requestedCourses;
 
 	// Constructor
-	public ScheduleRequest(int id, int SRID, Date submitTime, HashMap<Integer,Integer> requestedCourses) {
-		this.id = id;
+	public ScheduleRequest(int studentId, int SRID, Date submitTime, HashMap<Integer,Integer> requestedCourses) {
+		this.studentId = studentId;
 		this.SRID = SRID;
 		this.submitTime = submitTime;
 		this.requestedCourses = requestedCourses;
 	}
 	
 	//Getter Methods
-	public int getId() {
-		return id;
+	public int getStudentId() {
+		return studentId;
 	}
 
 	public int getSRID() {
@@ -35,8 +35,8 @@ public class ScheduleRequest {
 	}
 
 	//Setter Methods
-	public void setId(int id) {
-		this.id = id;
+	public void setStudentId(int studentId) {
+		this.studentId = studentId;
 	}
 	
 	public void setSRID(int sRID) {
