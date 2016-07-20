@@ -23,13 +23,18 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import arms.dataAccess.*;
+import arms.api.*;
 
 public class UpdateCourse extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField titleField;
 	private JTextField classroomSize;
-	private JTextField idField;
+	private JTextField courseNameField;
 
 	/**
 	 * Launch the application.
@@ -47,14 +52,16 @@ public class UpdateCourse extends JFrame {
 		});
 	}
 
-	Connection connection = null;
+	private DbActions dbactions = new DbActions();
+	private List<CourseInstance> catalog = dbactions.getCatalog(); 
+	private CourseInstance updateCourse = null;
 
 	/**
 	 * Create the frame.
 	 */
 	public UpdateCourse() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 708, 566);
+		setBounds(100, 100, 461, 310);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -63,93 +70,81 @@ public class UpdateCourse extends JFrame {
 		lblCourseCatalog.setForeground(Color.BLACK);
 		lblCourseCatalog.setFont(new Font("Times New Roman", Font.BOLD, 20));
 		lblCourseCatalog.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCourseCatalog.setBounds(12, 0, 682, 49);
+		lblCourseCatalog.setBounds(10, 0, 425, 49);
 		contentPane.add(lblCourseCatalog);
 
-		JLabel lblCourseId = new JLabel("Course Id:");
+		JLabel lblCourseId = new JLabel("Course Name:");
 		lblCourseId.setBounds(50, 83, 90, 15);
 		contentPane.add(lblCourseId);
 
-		JLabel lblTitle = new JLabel("Title:");
-		lblTitle.setBounds(50, 127, 90, 15);
-		contentPane.add(lblTitle);
-
-		titleField = new JTextField();
-		titleField.setBounds(182, 125, 274, 19);
-		contentPane.add(titleField);
-		titleField.setColumns(10);
-
-		idField = new JTextField();
-		idField.setVisible(false);
+		courseNameField = new JTextField();
+		courseNameField.setVisible(false);
 
 		JLabel lblSemester = new JLabel("Semester:");
-		lblSemester.setBounds(50, 161, 90, 15);
+		lblSemester.setBounds(50, 128, 90, 15);
 		contentPane.add(lblSemester);
 
-		connection = sqliteConnection.dbConnector();
-
+		
 		// TBD: Grab list of course Ids and store into an array of strings
 		// This will be used to populate the courseId combo box
-		ArrayList<String> data = getCourseList();
-		String[] coureList = data.toArray(new String[data.size()]);
-		JComboBox courseId = new JComboBox(courseList);
+		//#Uncomment this when DBAccess is ready
+		//String[] courseList = getCourseList();
+		
+		//AV: Temporary string to show combo boxes work
+		String [] courseList = { "SELECT", "CS6300", "CS6310", "CS6340", "CS6350"};
+		JComboBox<String[]> courseId = new JComboBox(courseList);
 		courseId.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JComboBox cb = (JComboBox) e.getSource();
+				JComboBox<String> cb = (JComboBox) e.getSource();
 				String course = (String) cb.getSelectedItem();
-				String courseName = new String();
-				Integer idcourse = 0;
-				// Once course is selected populate the title text field
-				// This is retrieved from the Courses table
-				try {
-					String sqlst = "select * from Courses where Id=?";
-					PreparedStatement pst;
-					pst = connection.prepareStatement(sqlst);
-					pst.setString(1, course);
-					ResultSet rs = pst.executeQuery();
-
-					while (rs.next()) {
-						idcourse = rs.getInt("Id");
-						courseName = rs.getString("Name");
-					}
-					rs.close();
-					pst.close();
-
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-				titleField.setText(courseName);
-				idField.setText(idcourse.toString());
+				courseNameField.setText(course);
 			}
 		});
 		courseId.setBounds(182, 78, 153, 24);
 		contentPane.add(courseId);
 
 		JLabel lblClassroomSize = new JLabel("Classroom Size:");
-		lblClassroomSize.setBounds(50, 197, 114, 15);
+		lblClassroomSize.setBounds(50, 173, 114, 15);
 		contentPane.add(lblClassroomSize);
 
 		classroomSize = new JTextField();
 		classroomSize.setColumns(10);
-		classroomSize.setBounds(182, 195, 105, 19);
+		classroomSize.setBounds(182, 171, 105, 19);
 		contentPane.add(classroomSize);
 
 		// TBD: Grab a list of semester Ids valid for a specific course and
 		// store into an array of strings
 		// This will be used to populate the semesterId combo box
-		ArrayList<Integer> offering = getCourseOffering(Integer
-				.parseInt(idField.getText()));
-		JComboBox semesterId = new JComboBox((ComboBoxModel) offering);
+		//AV: Uncomment this when dB access is ready
+		//String[] offering = getCourseOffering(courseNameField.getText());
+		//
+		//AV: temporary variable for testing
+		String[] offering = {"SELECT", "Fall 2016", "Spring 2017", "Summer 2017"};
+		JComboBox<String[]> semesterId = new JComboBox(offering);
 		semesterId.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg1) {
+			public void actionPerformed(ActionEvent e) {
 				// Once semester is selected, populate the classroom size text
 				// field
 				// with the existing data
+				JComboBox<String> cb = (JComboBox) e.getSource();
+				String semester = (String) cb.getSelectedItem();
+				//AV: Uncomment this 
+				//updateCourse = getCourse(courseNameField.getText(), semester);
+				
+				//AV: Temporary
+				if (semester == "Spring 2017")
+				{
+					classroomSize.setText("100");
+				} else if ( semester == "Summer 2017")
+				{
+					classroomSize.setText("200");
+				} else
+				{
+					classroomSize.setText("50");
+				}
 			}
 		});
-		semesterId.setBounds(182, 156, 153, 24);
+		semesterId.setBounds(182, 123, 153, 24);
 		contentPane.add(semesterId);
 
 		JButton btnUpdate = new JButton("Update");
@@ -159,7 +154,7 @@ public class UpdateCourse extends JFrame {
 				arms.api.CourseInstance courseInstance = null;
 			}
 		});
-		btnUpdate.setBounds(50, 237, 117, 25);
+		btnUpdate.setBounds(50, 212, 117, 25);
 		contentPane.add(btnUpdate);
 
 		JButton btnBack = new JButton("Back");
@@ -171,48 +166,73 @@ public class UpdateCourse extends JFrame {
 				af.setVisible(true);
 			}
 		});
-		btnBack.setBounds(182, 237, 117, 25);
+		btnBack.setBounds(182, 212, 117, 25);
 		contentPane.add(btnBack);
 	}
 
-	public ArrayList<String> getCourseList() {
-		ArrayList<String> courses = new ArrayList<String>();
-		// Check user name and password for student log in
-		try {
-			String query = "select CourseID, Name from Courses";
-			PreparedStatement pst = connection.prepareStatement(query);
-			ResultSet rs = pst.executeQuery();
-
-			while (rs.next()) {
-				courses.add(rs.getString("CourseID") + rs.getString("Name"));
-			}
-			rs.close();
-			pst.close();
-
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, e);
+	/**
+	 * Returns course list as a string.  This will be used as input for the Courses combo box
+	 * @return Returns a String array with the course names
+	 */
+	public String[] getCourseList() {
+		Set<String> courseSet = new HashSet<String>();
+		
+		// First selection should be "Select"
+		courseSet.add("SELECT");
+		
+		// Iterate through catalog and store course ID and course names into hash set
+		// HashSet will contain non-duplicate course Ids
+		// We are trying to just capture the course list.
+		for (CourseInstance course : catalog)
+		{
+			courseSet.add(course.getCourseName());
 		}
-		return courses;
+		
+		return (String[]) courseSet.toArray();
 	}
 
-	public ArrayList<String> getCourseOffering(Integer idcourse) {
-		ArrayList<String> offering = new ArrayList<Integer>();
-		// Check user name and password for student log in
-		try {
-			String query = "select SemesterId from CourseOfferings where CourseId=?";
-			PreparedStatement pst = connection.prepareStatement(query);
-			pst.setInt(1, idcourse);
-			ResultSet rs = pst.executeQuery();
-
-			while (rs.next()) {
-				offering.add(rs.getInt("SemesterId"));
+	/**
+	 * Returns a list of semesters a course is offered.  This will be used as input for the
+	 * Semesters combo box
+	 * @param courseName Name of the course
+	 * @return Returns a String array with the list of semester names the course is offered
+	 */
+	public String[] getCourseOffering(String courseName) {
+		Set<String> semesterSet = new HashSet<String>();
+		
+		// First selection should be "Select"
+		semesterSet.add("SELECT");
+		
+		// Iterate through catalog and store course ID and course names into hash set
+		// HashSet will contain non-duplicate course Ids
+		// We are trying to just capture the course list.
+		for (CourseInstance course : catalog)
+		{
+			if ( course.getCourseName() == courseName)
+			{
+				semesterSet.add(course.getCourseName());
 			}
-			rs.close();
-			pst.close();
-
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, e);
 		}
-		return offering;
+	
+		return (String[]) semesterSet.toArray(new String[semesterSet.size()]);
+	}
+	
+	public CourseInstance getCourse(String cname, String sname)
+	{
+		// Iterate through catalog and store course ID and course names into hash set
+		// HashSet will contain non-duplicate course Ids
+		// We are trying to just capture the course list.
+		for (CourseInstance course : catalog)
+		{
+			if ( course.getCourseName() == cname )
+			{
+				if ( course.getSemester() == sname )
+				{
+					return course;
+				}
+			}
+		}
+	
+		return null;
 	}
 }
