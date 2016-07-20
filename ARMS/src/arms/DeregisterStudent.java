@@ -19,8 +19,6 @@ public class DeregisterStudent extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField userId;
-	private JTextField firstName;
-	private JTextField lastName;
 
 	/**
 	 * Launch the application.
@@ -43,7 +41,7 @@ public class DeregisterStudent extends JFrame {
 	 */
 	public DeregisterStudent() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 450, 214);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -56,32 +54,14 @@ public class DeregisterStudent extends JFrame {
 		lblDeregisterStudent.setFont(new Font("Dialog", Font.BOLD, 20));
 		contentPane.add(lblDeregisterStudent);
 
-		JLabel lblUserId = new JLabel("User Id:");
-		lblUserId.setBounds(44, 64, 70, 15);
+		JLabel lblUserId = new JLabel("Student Id:");
+		lblUserId.setBounds(44, 64, 94, 15);
 		contentPane.add(lblUserId);
-
-		JLabel lblFirstName = new JLabel("First Name:");
-		lblFirstName.setBounds(44, 99, 112, 15);
-		contentPane.add(lblFirstName);
-
-		JLabel lblLastName = new JLabel("Last Name:");
-		lblLastName.setBounds(44, 140, 89, 15);
-		contentPane.add(lblLastName);
 
 		userId = new JTextField();
 		userId.setBounds(156, 62, 114, 19);
 		contentPane.add(userId);
 		userId.setColumns(10);
-
-		firstName = new JTextField();
-		firstName.setColumns(10);
-		firstName.setBounds(156, 97, 114, 19);
-		contentPane.add(firstName);
-
-		lastName = new JTextField();
-		lastName.setColumns(10);
-		lastName.setBounds(156, 138, 114, 19);
-		contentPane.add(lastName);
 
 		JButton btnDeregister = new JButton("Deregister");
 		btnDeregister.addActionListener(new ActionListener() {
@@ -91,7 +71,7 @@ public class DeregisterStudent extends JFrame {
 				// Call Database Action to delete student from Students table
 			}
 		});
-		btnDeregister.setBounds(44, 188, 117, 25);
+		btnDeregister.setBounds(44, 110, 117, 25);
 		contentPane.add(btnDeregister);
 
 		JButton btnBack = new JButton("Back");
@@ -103,7 +83,7 @@ public class DeregisterStudent extends JFrame {
 				af.setVisible(true);
 			}
 		});
-		btnBack.setBounds(198, 188, 117, 25);
+		btnBack.setBounds(198, 110, 117, 25);
 		contentPane.add(btnBack);
 	}
 
