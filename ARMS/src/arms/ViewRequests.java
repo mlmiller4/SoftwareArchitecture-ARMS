@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.Color;
@@ -16,9 +17,12 @@ import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.sql.*;
+import java.util.List;
+
 import javax.swing.*;
 
-import net.proteanit.sql.DbUtils;
+import arms.api.*;
+import arms.dataAccess.*;
 
 public class ViewRequests extends JFrame {
 
@@ -26,6 +30,12 @@ public class ViewRequests extends JFrame {
 	private JTable table;
 	private JScrollPane scrollPane;
 
+	private DbActions dbactions = new DbActions();
+	//private List<ScheduleRequest> scheduleRequests = dbactions.getScheduleRequests(studentId, courseId);
+	//private List<Student> students = dbactions.getStudents(); 
+	//private List<CourseInstance> catalog = dbactions.getCatalog();
+	
+	private CourseInstance updateCourse = null;
 	/**
 	 * Launch the application.
 	 */
@@ -66,16 +76,7 @@ public class ViewRequests extends JFrame {
 		JButton btnLoadTable = new JButton("Load Table");
 		btnLoadTable.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					// TODO: Call database actions to grab all ScheduleRequests
-					// as
-					// ScheduleRequest objects
-
-					table.setModel(DbUtils.resultSetToTableModel(rs));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
+			
 			}
 		});
 		btnLoadTable.setBounds(12, 80, 117, 25);
@@ -91,9 +92,26 @@ public class ViewRequests extends JFrame {
 	}
 
 	// TODO: complete method
-	public PopulateTable() {
+	public void PopulateTable() {
 		// headers for the table
-		String[] columns = new String[] { "Student ID", "SR ID", "Course ID",
+		Object[] columns = { "Student ID", "SR ID", "Course ID",
 				"Semester", "Class Size", "Remaining Seats", "Submit Time" };
+		DefaultTableModel model = new DefaultTableModel(new Object[0][0], columns);
+		for (Integer i = 0; i < 5; i++)
+		{
+			Object[] o = new Object[7];
+			o[0] = i.toString();
+			o[1] = i.toString();
+			o[2] = i.toString();
+			o[3] = "Fall 2016";
+			o[4] = "100";
+			o[5] = "50";
+			o[6] = "2016-07-20 13:55:00:123";
+			model.addRow(o);
+		}
+		table.setModel(model);
+		
 	}
+	
+	//TODO: Create filter based on Student object and CourseInstance
 }
