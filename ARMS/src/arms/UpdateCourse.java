@@ -38,6 +38,8 @@ public class UpdateCourse extends JFrame {
 	private JTextField classroomSize;
 	private JTextField courseIdField;
 	private JTextField courseNameField;
+	private Integer initialClassSize = new Integer(0);
+	private Integer initialRemSeats = new Integer(0);
 		
 	/**
 	 * Launch the application.
@@ -148,15 +150,16 @@ public class UpdateCourse extends JFrame {
 				// with the existing data
 				JComboBox<String> cb = (JComboBox) e.getSource();
 				String semester = (String) cb.getSelectedItem();
-				Integer classSize = 0;
+				
 
 				// Get specific course from CourseInstance list
 				updateCourse = CommonFunctions.getCourseInstanceBySemester(courseIdField.getText(), semester);
 				if ( updateCourse != null)
 				{
-					classSize = updateCourse.getClassSize();
+					initialClassSize = updateCourse.getClassSize();
+					initialRemSeats = updateCourse.getRemSeats();
 				}
-				classroomSize.setText(classSize.toString());
+				classroomSize.setText(initialClassSize.toString());
 			}
 		});
 		semesterId.setBounds(182, 147, 153, 24);
@@ -166,8 +169,16 @@ public class UpdateCourse extends JFrame {
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg1) {
 				// calculate remaining seats based on new class size
-				updateCourse.setClassSize(Integer.parseInt(classroomSize
-						.getText()));
+				Integer newRemSeats = new Integer(0);
+				Integer newClassSize = Integer.parseInt(classroomSize.getText());
+				newRemSeats = newClassSize - initialClassSize + initialRemSeats;
+				if ( newRemSeats < 0)
+				{
+					newRemSeats = 0;
+				}
+				updateCourse.setClassSize(newClassSize);
+				updateCourse.setRemSeats(newRemSeats);
+
 				if (updateCourse.getId() < 0) {
 					DbActions.insertCourseOffering(updateCourse);
 				} else {

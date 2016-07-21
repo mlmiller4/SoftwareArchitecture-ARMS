@@ -67,8 +67,6 @@ public class AdminFrame extends JFrame {
 		JButton btnViewCourseCatalog = new JButton("View Course Catalog");
 		btnViewCourseCatalog.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				contentPane.setVisible(false);
-				dispose();
 				CourseCatalog.NewScreen();
 			}
 		});

@@ -210,11 +210,11 @@ public class DbActions {
 			int count = 0;
 			while (rs.next()) {
 				HashMap<Integer, Integer> requestedCourses = null;
-				int SRId = rs.getInt("SRID");
+				//int SRId = rs.getInt("SRID");
 				String submitTimeStr = rs.getString("SubmitTime");
 				Date submitTime = df.parse(submitTimeStr);
 				int studentIdFromDb = rs.getInt("StudentID");
-				ScheduleRequest newScheduleRequest = new ScheduleRequest(studentIdFromDb, SRId, submitTime, requestedCourses);
+				ScheduleRequest newScheduleRequest = new ScheduleRequest(studentIdFromDb, submitTime, requestedCourses);
 				scheduleRequests.add(count, newScheduleRequest);
 				count++;
 			}
@@ -316,8 +316,72 @@ public class DbActions {
 	}
 	
 	public static List<ScheduleRequest> getAllRecentScheduleRequests(){
-	        return null;
 	        //Group by student, order by submit time, return top 1
+	        
+	        List<ScheduleRequest> scheduleRequests = new ArrayList<ScheduleRequest>(); 
+			DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+			//Get all schedule requests in the system
+			String query = "select * from ScheduleRequests group by StudentID order by datetime(SubmitTime) desc limit 1";
+			try {	
+				Connection connection = arms.dataAccess.DbConnection.dbConnector();
+				PreparedStatement pst = connection.prepareStatement(query);
+				ResultSet rs = pst.executeQuery();
+				int count = 0;
+				while (rs.next()) {
+					HashMap<Integer, Integer> requestedCourses = null;
+					//int SRId = rs.getInt("SRID");
+					String submitTimeStr = rs.getString("SubmitTime");
+					Date submitTime = df.parse(submitTimeStr);
+					int studentIdFromDb = rs.getInt("StudentID");
+					ScheduleRequest newScheduleRequest = new ScheduleRequest(studentIdFromDb, submitTime, requestedCourses);
+					scheduleRequests.add(count, newScheduleRequest);
+					count++;
+				}
+				connection.close();
+			}
+			catch (Exception e) {
+				JOptionPane.showMessageDialog(null, e);
+				return null;
+			}
+			//Get requestedCourses from SRDetails table
+			//Iterate over all requests
+			for(ScheduleRequest currentRequest : scheduleRequests ) {
+				int SRId = currentRequest.getSRID();
+				//Create hashMap that will contain the courses of the currentRequest
+				HashMap<Integer, Integer> coursesOfCurrentRequest = new HashMap<Integer, Integer>();
+				//Get only the rows with SRID of the currentRequest
+				query = "select * from SRDetails where SRID=? ";
+				//HashMap<Integer, Integer> requestedCoursesPerStudent = new HashMap<Integer, Integer>();
+				try 
+				{	
+					Connection connection = arms.dataAccess.DbConnection.dbConnector();
+					PreparedStatement pst = connection.prepareStatement(query);
+					pst.setInt(1, SRId);
+					ResultSet rs = pst.executeQuery();
+					int count = 0;
+
+					//Iterate over rows of SRDetails table that matches SRId
+					while (rs.next()) {
+						coursesOfCurrentRequest.put(rs.getInt("CourseID"), rs.getInt("OfferingID"));
+						count++;
+					}
+					currentRequest.setRequestedCourses(coursesOfCurrentRequest);
+					
+
+					if(count == 0) {
+						return null;
+					}
+					rs.close();
+					pst.close();
+					connection.close();
+				}  
+				catch (Exception e)
+				{
+					JOptionPane.showMessageDialog(null, e);
+					return null;
+				}
+			}
+			return scheduleRequests;
 	}
 
 	public static List<Student> getStudents(){
@@ -356,8 +420,7 @@ public class DbActions {
 	
 	public static boolean insertCourseOffering(CourseInstance courseInstance) {
 		Connection connection = arms.dataAccess.DbConnection.dbConnector();
-		
-		// find corresponding courseId.s
+	
 		try 
 		{
 			String query = "insert into CourseOfferings (Id, CourseId, SemesterId, ClassSize, RemSeats) " +
@@ -439,16 +502,93 @@ public class DbActions {
 		//TODO: Implement.
 		//If SRID exists, update SRDetails accordingly. Otherwise, add a new ScheduleRequest
 		//row for the object with a missing id and add SRDetails accordingly.
+		for (ScheduleRequest request : recentStudentRequests)
+		{
+			Connection connection = arms.dataAccess.DbConnection.dbConnector();
+			Date submitTime = request.getSubmitTime();
+			for (HashMap.Entry<Integer, Integer> entry : request.getRequestedCourses().entrySet())
+			{
+				try 
+				{
+					String query = "insert or replace into SRDetails (SRID, CourseId, OfferingId) values (?,?,?)"; 
+					PreparedStatement pst = connection.prepareStatement(query);
+					pst.setInt(1, request.getSRID());
+					pst.setInt(2, entry.getKey());
+					pst.setInt(3, entry.getValue());
+					pst.executeUpdate();
+					pst.close();
+					connection.commit();
+				}  
+				catch (Exception e)
+				{
+					JOptionPane.showMessageDialog(null, e);
+				} 
+			}
+			try 
+			{
+				String query = "insert or replace into ScheduleRequests (StudentId, SRId, SubmitTime) values (?,?,?)"; 
+				PreparedStatement pst = connection.prepareStatement(query);
+				pst.setInt(1, request.getStudentId());
+				pst.setInt(2, request.getSRID());
+				pst.setString(3, submitTime.toString());
+				pst.executeUpdate();
+				pst.close();
+				connection.commit();
+				connection.close();
+			}  
+			catch (Exception e)
+			{
+				JOptionPane.showMessageDialog(null, e);
+			} 
+
+		}
 	}
 
 	public static void updateCourseOfferings(List<CourseInstance> offerings) {
 		//TODO:Implement.
 		//For each offering, update remaining seats in the row corresponding to the offering id in the db.
 		//Only meant for existing course offerings.
+		for (CourseInstance instance : offerings)
+		{
+			Connection connection = arms.dataAccess.DbConnection.dbConnector();
+			try 
+			{
+				String update = "update CourseOFferings set RemSeats = ? where Id = ?"; 
+				PreparedStatement pst = connection.prepareStatement(update);
+				pst.setInt(1, instance.getId());
+				pst.setInt(2, instance.getRemSeats());
+				pst.executeUpdate();
+				pst.close();
+				connection.commit();
+			}  
+			catch (Exception e)
+			{
+				JOptionPane.showMessageDialog(null, e);
+			} 
+		}
 	}
 
 	public static int getScheduleRequestsCount(){
-		//TODO:Implement
+		try 
+		{
+			String query = "select count(*) as rowcount from ScheduleRequests "; 
+			Connection connection = arms.dataAccess.DbConnection.dbConnector();
+			PreparedStatement pst = connection.prepareStatement(query);
+			ResultSet rs = pst.executeQuery();
+			int count = 0;
+			//Get all rows in Courses table
+			while (rs.next()) {
+				count = rs.getInt("rowcount");
+			}
+			rs.close();
+			pst.close();
+			connection.close();
+			return count;
+		}  
+		catch (Exception e)
+		{
+			JOptionPane.showMessageDialog(null, e);
+		}		
 		return -1;
 	}
 }

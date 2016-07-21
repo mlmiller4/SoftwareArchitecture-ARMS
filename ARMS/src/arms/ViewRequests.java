@@ -161,7 +161,7 @@ public class ViewRequests extends JFrame {
 	private void getScheduleTableEntries(List<ScheduleRequest> requests)
 	{
 		// headers for the table
-		Object[] columns = { "Student ID", "SR ID", "Course ID",
+		Object[] columns = { "Student ID", "Course ID",
 				"Semester", "Class Size", "Remaining Seats", "Submit Time" };
 		DefaultTableModel model = new DefaultTableModel(new Object[0][0], columns);
 		
@@ -173,18 +173,17 @@ public class ViewRequests extends JFrame {
 				{
 					for (HashMap.Entry<Integer, Integer> entry : schedule.getRequestedCourses().entrySet())
 					{
-						Object[] o = new Object[7];
+						Object[] o = new Object[6];
 						o[0] = schedule.getStudentId();
-						o[1] = schedule.getSRID();
-						o[2] = entry.getKey();
+						o[1] = entry.getKey();
 						CourseInstance instance = CommonFunctions.getCourseInstanceById(entry.getValue());
 						if ( instance != null)
 						{
-							o[3] = instance.getSemester();
-							o[4] = instance.getClassSize();
-							o[5] = instance.getRemSeats();
+							o[2] = instance.getSemester();
+							o[3] = instance.getClassSize();
+							o[4] = instance.getRemSeats();
 						}
-						o[6] = schedule.getSubmitTime();
+						o[5] = schedule.getSubmitTime();
 						model.addRow(o);
 					}
 				}
