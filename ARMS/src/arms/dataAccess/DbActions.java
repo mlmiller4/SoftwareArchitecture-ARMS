@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import arms.api.CourseInstance;
 import arms.api.ScheduleRequest;
 import arms.api.Student;
+import arms.api.Semester;
 
 public class DbActions {
 
@@ -35,6 +36,7 @@ public class DbActions {
 			pst.executeUpdate();
 			pst.close();
 			connection.commit();
+			connection.close();
 		}  
 		catch (Exception e)
 		{
@@ -60,6 +62,7 @@ public class DbActions {
 			pst.executeUpdate();
 			pst.close();
 			connection.commit();
+			connection.close();
 		}  
 		catch (Exception e)
 		{
@@ -72,23 +75,30 @@ public class DbActions {
 	public static List<CourseInstance> getCatalog() {
 		List<CourseInstance> catalog = new ArrayList<CourseInstance>();
 		String courseTitle = "";
+		String semester = "";
 		
 		try 
 		{
-			String query = "select * from CourseOfferings "; 
+			//String query = "select * from CourseOfferings "; 
+			String query = "select CourseOfferings.Id AS Id, CourseOfferings.ClassSize AS ClassSize, " +
+					"CourseOfferings.RemSeats AS RemSeats, Courses.Name AS CourseId, Semesters.SemesterName AS SemesterId " +
+					"FROM CourseOfferings " +
+					"LEFT JOIN Courses ON CourseOfferings.CourseId = Courses.CourseID " +
+					"LEFT JOIN Semesters ON CourseOfferings.SemesterId = Semesters.SemesterID";
 			Connection connection = arms.dataAccess.DbConnection.dbConnector();
 			PreparedStatement pst = connection.prepareStatement(query);
 			ResultSet rs = pst.executeQuery();
 			int count = 0;
 			//Get all rows in Courses table
 			while (rs.next()) {
-				int courseId = rs.getInt("CourseId");
-				String semester = rs.getString("SemesterId");
+				int id = rs.getInt("Id");
+				courseTitle = rs.getString("CourseId");
+				semester = rs.getString("SemesterId");
 				int classSize = rs.getInt("ClassSize");
 				int remSeats = rs.getInt("RemSeats");
 				List<String> prerequisits = new ArrayList<String>();
 				//Create new CourseInstance object with courseId and courseTitle, rest of the input variable will be set in second db connection
-				CourseInstance newCourseInstance = new CourseInstance(courseId, courseTitle, semester, classSize, remSeats, prerequisits);
+				CourseInstance newCourseInstance = new CourseInstance(id, courseTitle, semester, classSize, remSeats, prerequisits);
 				catalog.add(count, newCourseInstance);
 				count++;
 			}
@@ -104,63 +114,63 @@ public class DbActions {
 			return null;
 		}
 		
-		//Update courses title
-		try 
-		{
-			String query = "select * from Courses "; 
-			Connection connection = arms.dataAccess.DbConnection.dbConnector();
-			PreparedStatement pst = connection.prepareStatement(query);
-			ResultSet rs = pst.executeQuery();
-			int count = 0;
-			//Get all rows in Courses table
-			while (rs.next()) {
-				courseTitle = rs.getString("Name");
-				int courseId = rs.getInt("CourseID");
-				//Go over all courses in catalog and update their title
-				for (CourseInstance currentCourse : catalog) {
-					if (currentCourse.getId() == courseId) {
-						currentCourse.setCourseName(courseTitle);
-					}
-				}
-				count++;
-			}
-			if(count == 0) {
-				return null;
-			}
-			rs.close();
-			pst.close();
-		}  
-		catch (Exception e)
-		{
-			JOptionPane.showMessageDialog(null, e);
-			return null;
-		}
+//		//Update courses title
+//		try 
+//		{
+//			String query = "select * from Courses where Name = ? "; 
+//			Connection connection = arms.dataAccess.DbConnection.dbConnector();
+//			PreparedStatement pst = connection.prepareStatement(query);
+//			pst.setString(cu)
+//			ResultSet rs = pst.executeQuery();
+//			int count = 0;
+//			//Get all rows in Courses table
+//			while (rs.next()) {
+//				courseTitle = rs.getString("Name");
+//				int courseId = rs.getInt("CourseID");
+//				//Go over all courses in catalog and update their title
+//				for (CourseInstance currentCourse : catalog) {
+//					if (currentCourse.getId() == courseId) {
+//						currentCourse.setCourseName(courseTitle);
+//					}
+//				}
+//				count++;
+//			}
+//			if(count == 0) {
+//				return null;
+//			}
+//			rs.close();
+//			pst.close();
+//		}  
+//		catch (Exception e)
+//		{
+//			JOptionPane.showMessageDialog(null, e);
+//			return null;
+//		}
 		
 		//Update courses prerequisites
 		try 
 		{
-			String query = "select * from CoursePrerequisites "; 
+			String query = "select cp.PrerequisiteID AS PrerequisiteID, " +
+					"c1.Name AS PrerequisiteTitle, " +
+					"cp.CourseID AS CourseID, " +
+					"c2.Name AS CourseTitle " +
+					"FROM CoursePrerequisites cp " +
+					"LEFT JOIN Courses c1 ON c1.CourseID = cp.PrerequisiteID " +
+					"LEFT JOIN Courses c2 ON c2.CourseID = cp.CourseID";
 			Connection connection = arms.dataAccess.DbConnection.dbConnector();
 			PreparedStatement pst = connection.prepareStatement(query);
 			ResultSet rs = pst.executeQuery();
 			int count = 0;
-			String currentPrerequisiteTitle = "";
+			//String currentPrerequisiteTitle = "";
 			//Get all rows in CoursePrerequisites table
 			while (rs.next()) {
-				int currentCourseId = rs.getInt("CourseID");
-				int prerequisiteId = rs.getInt("PrerequisiteID");
-				//Find the title of the course with prerequisiteId
-				for (CourseInstance currentCourse : catalog) {
-					if (currentCourse.getId() == prerequisiteId) {
-						currentPrerequisiteTitle = currentCourse.getCourseName();
-						break;
-					}
-				}
+				String currentCourseId = rs.getString("CourseID");
+				String prerequisiteId = rs.getString("PrerequisiteID");
 				//Go over all courses in catalog and find course with courseId
 				for (CourseInstance currentCourse : catalog) {
-					if (currentCourse.getId() == currentCourseId) {
+					if (currentCourse.getCourseName() == currentCourseId) {
 						//Add corresponding prerequisite to the course in the catalog
-						currentCourse.getPrerequisits().add(currentPrerequisiteTitle);
+						currentCourse.getPrerequisits().add(prerequisiteId);
 					}
 				}
 				count++;
@@ -170,6 +180,7 @@ public class DbActions {
 			}
 			rs.close();
 			pst.close();
+			connection.close();
 		}  
 		catch (Exception e)
 		{
@@ -206,6 +217,7 @@ public class DbActions {
 				scheduleRequests.add(count, newScheduleRequest);
 				count++;
 			}
+			connection.close();
 		}
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e);
@@ -241,6 +253,7 @@ public class DbActions {
 				}
 				rs.close();
 				pst.close();
+				connection.close();
 			}  
 			catch (Exception e)
 			{
@@ -300,15 +313,87 @@ public class DbActions {
 	public static List<ScheduleRequest> getCourseScheduleRequests(int courseId) {
 		return getScheduleRequests(-1, courseId);
 	}
-
-    public static List<ScheduleRequest> getAllRecentScheduleRequests(){
-        return null;
-        //Group by student, order by submit time, return top 1
-    }
-
-    public static List<Student> getStudents(){
-        return null;
-        //TODO: Implement
-    }
+	
+	public boolean insertCourseOffering(CourseInstance courseInstance) {
+		Connection connection = arms.dataAccess.DbConnection.dbConnector();
+		
+		// find corresponding courseId.s
+		try 
+		{
+			String query = "insert into CourseOfferings (Id, CourseId, SemesterId, ClassSize, RemSeats) " +
+					"values ((Select MAX(Id)+1 from CourseOfferings),(Select CourseID from Courses where Name = ?)" +
+					",(Select SemesterID from Semesters where SemesterName = ?),?,?)";
+			PreparedStatement pst = connection.prepareStatement(query);
+			pst.setString(1, courseInstance.getCourseName());
+			pst.setString(2, courseInstance.getSemester());
+			pst.setInt(3, courseInstance.getClassSize());
+			pst.setInt(4, courseInstance.getRemSeats());
+			pst.executeUpdate();
+			pst.close();
+			connection.commit();
+			connection.close();
+		}  
+		catch (Exception e)
+		{
+			JOptionPane.showMessageDialog(null, e);
+			return false;
+		} 
+		return true;				
+	}
+	
+	public boolean updateCourseOffering(CourseInstance courseInstance) {
+		Connection connection = arms.dataAccess.DbConnection.dbConnector();
+		try 
+		{
+			String query = "update CourseOfferings set ClassSize = ? where Id = ? ";
+			PreparedStatement pst = connection.prepareStatement(query);
+			pst.setInt(1, courseInstance.getClassSize());
+			pst.setInt(2, courseInstance.getId());
+			pst.executeUpdate();
+			pst.close();
+			connection.commit();
+			connection.close();
+		}  
+		catch (Exception e)
+		{
+			JOptionPane.showMessageDialog(null, e);
+			return false;
+		} 
+		return true;				
+	}
+	
+	public List<Semester> getSemesters() {
+		List<Semester> semesters = new ArrayList<Semester>();
+		
+		try 
+		{
+			String query = "select * from Semesters "; 
+			Connection connection = arms.dataAccess.DbConnection.dbConnector();
+			PreparedStatement pst = connection.prepareStatement(query);
+			ResultSet rs = pst.executeQuery();
+			int count = 0;
+			//Get all rows in Courses table
+			while (rs.next()) {
+				int semesterId = rs.getInt("SemesterID");
+				String semesterName = rs.getString("SemesterName");
+				//Create new Semester object with semesterId and semesterName
+				Semester newSemester = new Semester(semesterId, semesterName);
+				semesters.add(count, newSemester);
+				count++;
+			}
+			if(count == 0) {
+				return null;
+			}
+			rs.close();
+			pst.close();
+			connection.close();
+		}  
+		catch (Exception e)
+		{
+			JOptionPane.showMessageDialog(null, e);
+			return null;
+		}		
+		return semesters;
+	}
 	
 }
