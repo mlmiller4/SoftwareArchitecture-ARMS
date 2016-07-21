@@ -17,9 +17,9 @@ public class GurobiAdapter {
     public static void updatePriorityConstraints(List<Student> studentsByPriority){
         //TODO: Implement
     }
-    public static List<ScheduleRequest> processConstraints(){
+    public static List<ScheduleRequest> processConstraints(List<ScheduleRequest> requests){
         return null;
         //TODO: Implement
-        //Returns a list of schedule
+        //Returns a list of schedule requests.
     }
 }

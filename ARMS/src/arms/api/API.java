@@ -11,7 +11,16 @@ public class API {
         ProcessingEngine.updateScheduleRequest(request);
         ProcessingEngine.executeRequest();
     }
-    public List<CourseInstance> getCatalog(){
+    public List<CourseInstance> getCatalogFromDb(){
         return DbActions.getCatalog();
+    }
+    public List<ScheduleRequest> getRecentScheduleRequestsFromMem(){
+        return ProcessingEngine.getAllRecentScheduleRequests();
+    }
+    public List<ScheduleRequest> getRecentScheduleRequestsFromDb(){
+        return DbActions.getAllRecentScheduleRequests();
+    }
+    public List<ScheduleRequest> getAllScheduleRequestsFromDb(){
+        return DbActions.getAllScheduleRequests();
     }
 }

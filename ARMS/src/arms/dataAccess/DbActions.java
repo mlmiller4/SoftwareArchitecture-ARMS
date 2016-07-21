@@ -405,5 +405,21 @@ public class DbActions {
 		}		
 		return semesters;
 	}
-	
+
+	public static void updateScheduleRequests(List<ScheduleRequest> recentStudentRequests) {
+		//TODO: Implement.
+		//If SRID exists, update SRDetails accordingly. Otherwise, add a new ScheduleRequest
+		//row for the object with a missing id and add SRDetails accordingly.
+	}
+
+	public static void updateCourseOfferings(List<CourseInstance> offerings) {
+		//TODO:Implement.
+		//For each offering, update remaining seats in the row corresponding to the offering id in the db.
+		//Only meant for existing course offerings.
+	}
+
+	public static int getScheduleRequestsCount(){
+		//TODO:Implement
+		return -1;
+	}
 }

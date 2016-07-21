@@ -37,7 +37,7 @@ public class ProcessingEngine {
     public static List<CourseInstance> getCourseOfferings() {
         return courseOfferings;
     }
-    public static List<ScheduleRequest> getRecentStudentRequests() {
+    public static List<ScheduleRequest> getAllRecentScheduleRequests() {
         return recentStudentRequests;
     }
     public static void setCourseOfferings(List<CourseInstance> offerings) {
@@ -57,9 +57,11 @@ public class ProcessingEngine {
         GurobiAdapter.updateRequestConstraints(recentStudentRequests);
     }
     public static void executeRequest(){
-        List<ScheduleRequest> res = GurobiAdapter.processConstraints();
+        List<ScheduleRequest> res = GurobiAdapter.processConstraints(recentStudentRequests);
         if(res == null) return; //Problem unfeasible.
+        //Update student requests in-memory with recent information.
         recentStudentRequests = res;
+        //Update course instances in-memory with recent information.
         for(CourseInstance instance : courseOfferings){
             instance.setRemSeats(instance.getClassSize()); //Reset remaining seats.
         }
@@ -70,6 +72,15 @@ public class ProcessingEngine {
                 offering.setRemSeats(offering.getRemSeats()-1);
             }
         }
-        //If not in shadow mode, update offerings (rem seats) and schedule request results in the db.
+        if(!shadowMode){
+            DbActions.updateScheduleRequests(recentStudentRequests);
+            DbActions.updateCourseOfferings(courseOfferings);
+            //Update SRID in-memory for the student request which triggered the re-calculation.
+            //We do not do it beforehand, since having the id as -1 tells the updateScheduleRequest
+            //logic it should add a new schedule request for the student.
+            recentStudentRequests.stream().filter(request -> request.getSRID() == -1).forEach(request -> {
+                    request.setSRID(DbActions.getScheduleRequestsCount());
+            });
+        }
     }
 }

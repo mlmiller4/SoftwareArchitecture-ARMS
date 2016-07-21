@@ -10,9 +10,9 @@ public class ScheduleRequest {
 	private HashMap<Integer,Integer> requestedCourses;
 
 	// Constructor
-	public ScheduleRequest(int studentId, int SRID, Date submitTime, HashMap<Integer,Integer> requestedCourses) {
+	public ScheduleRequest(int studentId, Date submitTime, HashMap<Integer,Integer> requestedCourses) {
 		this.studentId = studentId;
-		this.SRID = SRID;
+		this.SRID = -1; //SRID is generated in the db - auto-incremented.
 		this.submitTime = submitTime;
 		this.requestedCourses = requestedCourses;
 	}

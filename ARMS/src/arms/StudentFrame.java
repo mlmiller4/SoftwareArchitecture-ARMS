@@ -49,7 +49,6 @@ public class StudentFrame extends JFrame {
 	 */
 	public StudentFrame() {
 		
-		DatabaseActions dbActions = new DatabaseActions();
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
