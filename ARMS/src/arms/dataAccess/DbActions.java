@@ -314,7 +314,17 @@ public class DbActions {
 		return getScheduleRequests(-1, courseId);
 	}
 	
-	public boolean insertCourseOffering(CourseInstance courseInstance) {
+	public static List<ScheduleRequest> getAllRecentScheduleRequests(){
+	        return null;
+	        //Group by student, order by submit time, return top 1
+	}
+
+	public static List<Student> getStudents(){
+	        return null;
+	        //TODO: Implement
+	}
+	    
+	public static boolean insertCourseOffering(CourseInstance courseInstance) {
 		Connection connection = arms.dataAccess.DbConnection.dbConnector();
 		
 		// find corresponding courseId.s
@@ -341,7 +351,7 @@ public class DbActions {
 		return true;				
 	}
 	
-	public boolean updateCourseOffering(CourseInstance courseInstance) {
+	public static boolean updateCourseOffering(CourseInstance courseInstance) {
 		Connection connection = arms.dataAccess.DbConnection.dbConnector();
 		try 
 		{
