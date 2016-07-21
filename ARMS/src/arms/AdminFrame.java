@@ -67,8 +67,8 @@ public class AdminFrame extends JFrame {
 		JButton btnViewCourseCatalog = new JButton("View Course Catalog");
 		btnViewCourseCatalog.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-//				contentPane.setVisible(false);
-//				dispose();
+				contentPane.setVisible(false);
+				dispose();
 				CourseCatalog.NewScreen();
 			}
 		});
@@ -78,10 +78,10 @@ public class AdminFrame extends JFrame {
 		JButton btnRegisterStudent = new JButton("Register Student");
 		btnRegisterStudent.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-//				contentPane.setVisible(false);
-//				dispose();
-//				RegisterStudent registerStudent = new RegisterStudent();
-//				registerStudent.setVisible(true);
+				contentPane.setVisible(false);
+				dispose();
+				RegisterStudent registerStudent = new RegisterStudent();
+				registerStudent.setVisible(true);
 			}
 		});
 		btnRegisterStudent.setBounds(136, 94, 200, 25);
@@ -90,10 +90,10 @@ public class AdminFrame extends JFrame {
 		JButton btnDeRegisterStudent = new JButton("Deregister Student");
 		btnDeRegisterStudent.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-//				contentPane.setVisible(false);
-//				dispose();
-//				DeregisterStudent deregisterStudent = new DeregisterStudent();
-//				deregisterStudent.setVisible(true);
+				contentPane.setVisible(false);
+				dispose();
+				DeregisterStudent deregisterStudent = new DeregisterStudent();
+				deregisterStudent.setVisible(true);
 			}
 		});
 		btnDeRegisterStudent.setBounds(415, 94, 200, 25);
@@ -112,8 +112,6 @@ public class AdminFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				contentPane.setVisible(false);
 				dispose();
-				// Ask Matthew if a shadow boolean variable can be passed into
-				// the StudentFrame class
 				StudentFrame sf = new StudentFrame();
 				sf.setVisible(true);
 			}
@@ -124,10 +122,10 @@ public class AdminFrame extends JFrame {
 		JButton btnUpdateCourse = new JButton("Update Course");
 		btnUpdateCourse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				contentPane.setVisible(false);
-//				dispose();
-//				UpdateCourse updateCourse = new UpdateCourse();
-//				updateCourse.setVisible(true);
+				contentPane.setVisible(false);
+				dispose();
+				UpdateCourse updateCourse = new UpdateCourse();
+				updateCourse.setVisible(true);
 			}
 		});
 		btnUpdateCourse.setBounds(415, 187, 200, 25);
