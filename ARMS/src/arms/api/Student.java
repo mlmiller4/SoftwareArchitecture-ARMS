@@ -1,6 +1,6 @@
 package arms.api;
 
-public class Student {
+public class Student implements Comparable<Student>{
 
 	private int id;
 	private String firstName;
@@ -61,5 +61,11 @@ public class Student {
 	}
 
 	public void setPassword(String password) { this.password = password;}
+
+	public int compareTo(Student student) {
+		float theirRank = student.getGpa() * student.getEarnedHours();
+		float myRank = this.getGpa() * this.getEarnedHours();
+		return myRank > theirRank ? -1: myRank < theirRank? 1 :0; //Guarantees a descending-order sort.
+	}
 
 }

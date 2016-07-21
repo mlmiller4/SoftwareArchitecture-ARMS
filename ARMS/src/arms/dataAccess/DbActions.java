@@ -19,7 +19,7 @@ import arms.api.Student;
 public class DbActions {
 
 
-	public boolean addStudent(Student student) {
+	public static boolean addStudent(Student student) {
 		Connection connection = arms.dataAccess.DbConnection.dbConnector();
 		try 
 		{
@@ -45,12 +45,12 @@ public class DbActions {
 	}
 
 	/** Remove student using Student object **/
-	public boolean removeStudent(Student student) {
+	public static boolean removeStudent(Student student) {
 		return removeStudent(student.getId());
 	}
 
 	/** Remove student using student id **/
-	public boolean removeStudent(int studentID) {
+	public static boolean removeStudent(int studentID) {
 		Connection connection = arms.dataAccess.DbConnection.dbConnector();
 		try 
 		{
@@ -69,7 +69,7 @@ public class DbActions {
 		return true;
 	}
 	
-	public List<CourseInstance> getCatalog() {
+	public static List<CourseInstance> getCatalog() {
 		List<CourseInstance> catalog = new ArrayList<CourseInstance>();
 		String courseTitle = "";
 		
@@ -186,7 +186,7 @@ public class DbActions {
 	 * If courseId != -1: filter by course
 	 * @return Returns a list of ScheduleRequests with filters if necessary
 	 */
-	private List<ScheduleRequest> getScheduleRequests(int studentId, int courseId) {
+	private static List<ScheduleRequest> getScheduleRequests(int studentId, int courseId) {
 		List<ScheduleRequest> scheduleRequests = new ArrayList<ScheduleRequest>(); 
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		//Get all schedule requests in the system
@@ -281,7 +281,7 @@ public class DbActions {
 	 * @return Returns a list of all schedule requests in the system
 	 * Returns an empty list if there are no requests in the system
 	 */
-	public List<ScheduleRequest> getAllScheduleRequests() {
+	public static List<ScheduleRequest> getAllScheduleRequests() {
 		return getScheduleRequests(-1, -1);
 	}
 	
@@ -289,7 +289,7 @@ public class DbActions {
 	 * @return Returns a list of ScheduleRequests placed by the student with studentId
 	 * Returns an empty list if student did not place any requests
 	 */
-	public List<ScheduleRequest> getStudentScheduleRequests(int studentId) {
+	public static List<ScheduleRequest> getStudentScheduleRequests(int studentId) {
 		return getScheduleRequests(studentId, -1);
 	}
 	
@@ -297,8 +297,18 @@ public class DbActions {
 	 * @return Returns a list of ScheduleRequests that contains courseId
 	 * Returns an empty list if there are no requests with courseId
 	 */
-	public List<ScheduleRequest> getCourseScheduleRequests(int courseId) {
+	public static List<ScheduleRequest> getCourseScheduleRequests(int courseId) {
 		return getScheduleRequests(-1, courseId);
 	}
+
+    public static List<ScheduleRequest> getAllRecentScheduleRequests(){
+        return null;
+        //Group by student, order by submit time, return top 1
+    }
+
+    public static List<Student> getStudents(){
+        return null;
+        //TODO: Implement
+    }
 	
 }
