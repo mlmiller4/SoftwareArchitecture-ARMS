@@ -14,6 +14,7 @@ public class DbConnection {
 		try{
 			Class.forName("org.sqlite.JDBC");			
 			Connection conn = DriverManager.getConnection("jdbc:sqlite:armsDB.sqlite");
+			conn.setAutoCommit(false);
 			//JOptionPane.showMessageDialog(null, "Database Connection Successful");
 			return conn;			
 

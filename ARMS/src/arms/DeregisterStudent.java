@@ -9,9 +9,14 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.Color;
+
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+
+import arms.dataAccess.DbActions;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -69,6 +74,15 @@ public class DeregisterStudent extends JFrame {
 				int userIdInt = Integer.parseInt(userId.getText());
 
 				// Call Database Action to delete student from Students table
+				if (DbActions.removeStudent(userIdInt))
+				{
+					JOptionPane.showMessageDialog(null, "Student successfully removed");
+					userId.setText("");
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(null, "Error removing student. Please try again");
+				}
 			}
 		});
 		btnDeregister.setBounds(44, 110, 117, 25);

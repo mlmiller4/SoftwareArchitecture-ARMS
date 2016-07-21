@@ -8,15 +8,17 @@ public class Student implements Comparable<Student>{
 	private float earnedHours;
 	private float gpa;
 	private String password;
+	private String userName;
 	
 	// Constructor
-	public Student(int id, String firstName, String lastName, float earnedHours, float gpa, String password ){
+	public Student(int id, String firstName, String lastName, float earnedHours, float gpa, String password, String userName ){
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.earnedHours = earnedHours;
 		this.gpa = gpa;
 		this.password = password;
+		this.userName = userName;
 	}
 	
 	// Getter Methods
@@ -40,6 +42,8 @@ public class Student implements Comparable<Student>{
 
 	public String getPassword() { return password; }
 	
+	public String getUserName() { return userName; }
+	
 	// Setter Methods
 
 	public void setId(int id) {this.id = id;}
@@ -61,6 +65,8 @@ public class Student implements Comparable<Student>{
 	}
 
 	public void setPassword(String password) { this.password = password;}
+	
+	public void setUserName(String userName) { this.userName = userName;}
 
 	public int compareTo(Student student) {
 		float theirRank = student.getGpa() * student.getEarnedHours();

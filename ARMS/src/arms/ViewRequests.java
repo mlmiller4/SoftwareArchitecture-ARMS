@@ -10,6 +10,9 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.Color;
+
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import javax.swing.JTable;
@@ -17,7 +20,12 @@ import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.*;
 
@@ -29,13 +37,12 @@ public class ViewRequests extends JFrame {
 	private JPanel contentPane;
 	private JTable table;
 	private JScrollPane scrollPane;
-
-	private DbActions dbactions = new DbActions();
-	//private List<ScheduleRequest> scheduleRequests = dbactions.getScheduleRequests(studentId, courseId);
-	//private List<Student> students = dbactions.getStudents(); 
-	//private List<CourseInstance> catalog = dbactions.getCatalog();
+	private JTextField studentIdField;
+	private JTextField courseIdField;
 	
+	//private List<ScheduleRequest> scheduleRequests = dbactions.getScheduleRequests(studentId, courseId);
 	private CourseInstance updateCourse = null;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -60,7 +67,7 @@ public class ViewRequests extends JFrame {
 	public ViewRequests() {
 		connection = sqliteConnection.dbConnector();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 981, 600);
+		setBounds(100, 100, 883, 600);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -73,48 +80,116 @@ public class ViewRequests extends JFrame {
 		lblViewScheduleRequests.setBounds(115, 0, 682, 49);
 		contentPane.add(lblViewScheduleRequests);
 
-		JButton btnLoadTable = new JButton("Load Table");
-		btnLoadTable.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			
-			}
-		});
-		btnLoadTable.setBounds(12, 80, 117, 25);
-		contentPane.add(btnLoadTable);
-
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(158, 126, 718, 359);
+		scrollPane.setBounds(68, 166, 718, 359);
 		contentPane.add(scrollPane);
 
 		table = new JTable();
 		scrollPane.setViewportView(table);
-		PopulateTable();
+
+		//Hidden Field to store student id
+		studentIdField = new JTextField();
+		studentIdField.setVisible(false);
+		
+		//Hidden Field to store course name
+		courseIdField = new JTextField();
+		courseIdField.setVisible(false);
+		
+		String [] studentList = CommonFunctions.getStudentList();
+		JComboBox<String[]> students = new JComboBox(studentList);
+		students.setSelectedItem("-SELECT-");
+		students.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JComboBox<String> cb = (JComboBox) arg0.getSource();
+				String student = (String) cb.getSelectedItem();
+				studentIdField.setText(student);
+			}
+		});
+		students.setBounds(214, 60, 124, 20);
+		contentPane.add(students);
+		
+		String [] courseList = CommonFunctions.getCourseList();
+		JComboBox courses = new JComboBox(courseList);
+		courses.setSelectedItem("-SELECT-");
+		courses.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JComboBox<String> cb = (JComboBox) arg0.getSource();
+				String course = (String) cb.getSelectedItem();
+				courseIdField.setText(course);
+			}
+		});
+		courses.setBounds(214, 98, 124, 20);
+		contentPane.add(courses);
+		
+		JLabel lblSelectByStudents = new JLabel("Filter by students:");
+		lblSelectByStudents.setBounds(68, 63, 124, 14);
+		contentPane.add(lblSelectByStudents);
+		
+		JLabel lblFilterByCourse = new JLabel("Filter by course:");
+		lblFilterByCourse.setBounds(68, 101, 124, 14);
+		contentPane.add(lblFilterByCourse);
+		
+		JButton btnLoadSchedules = new JButton("Load Schedules");
+		btnLoadSchedules.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				List<ScheduleRequest> requests = null;
+				if ( studentIdField.getText().equals("-SELECT-") && courseIdField.getText().equals("-SELECT-"))
+				{
+					requests = DbActions.getAllScheduleRequests();
+				}
+				else if (studentIdField.getText().equals("-SELECT-") && !courseIdField.getText().equals("-SELECT-"))
+				{
+					Integer cId = new Integer(0);
+					cId.parseInt(courseIdField.getText());
+					requests = DbActions.getCourseScheduleRequests(cId);
+				}
+				else if (!studentIdField.getText().equals("-SELECT-") && courseIdField.getText().equals("-SELECT-"))
+				{
+					Integer sId = new Integer(0);
+					sId.parseInt(studentIdField.getText());
+					requests = DbActions.getStudentScheduleRequests(sId);
+				}
+				getScheduleTableEntries(requests);
+			}
+		});
+		btnLoadSchedules.setBounds(65, 132, 127, 23);
+		contentPane.add(btnLoadSchedules);
+		//PopulateTable();
 
 	}
 
-	// TODO: complete method
-	// Make combo box to select student or course...based on selection call the helper object
-	// Allow to select all students or all courses
-	public void PopulateTable() {
+	private void getScheduleTableEntries(List<ScheduleRequest> requests)
+	{
 		// headers for the table
 		Object[] columns = { "Student ID", "SR ID", "Course ID",
 				"Semester", "Class Size", "Remaining Seats", "Submit Time" };
 		DefaultTableModel model = new DefaultTableModel(new Object[0][0], columns);
-		for (Integer i = 0; i < 5; i++)
+		
+		if ( requests != null)
 		{
-			Object[] o = new Object[7];
-			o[0] = i.toString();
-			o[1] = i.toString();
-			o[2] = i.toString();
-			o[3] = "Fall 2016";
-			o[4] = "100";
-			o[5] = "50";
-			o[6] = "2016-07-20 13:55:00:123";
-			model.addRow(o);
+			for (ScheduleRequest schedule : requests)
+			{
+				if ( schedule != null)
+				{
+					for (HashMap.Entry<Integer, Integer> entry : schedule.getRequestedCourses().entrySet())
+					{
+						Object[] o = new Object[7];
+						o[0] = schedule.getStudentId();
+						o[1] = schedule.getSRID();
+						o[2] = entry.getKey();
+						CourseInstance instance = CommonFunctions.getCourseInstanceById(entry.getValue());
+						if ( instance != null)
+						{
+							o[3] = instance.getSemester();
+							o[4] = instance.getClassSize();
+							o[5] = instance.getRemSeats();
+						}
+						o[6] = schedule.getSubmitTime();
+						model.addRow(o);
+					}
+				}
+			}
 		}
 		table.setModel(model);
-		
-	}
-	
-	//TODO: Create filter based on Student object and CourseInstance
+	}	
 }

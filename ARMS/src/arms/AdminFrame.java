@@ -104,6 +104,14 @@ public class AdminFrame extends JFrame {
 		contentPane.add(btnSummaryReport);
 
 		JButton btnViewRequests = new JButton("View Requests");
+		btnViewRequests.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				contentPane.setVisible(false);
+				dispose();
+				ViewRequests viewRequests = new ViewRequests();
+				viewRequests.setVisible(true);
+			}
+		});
 		btnViewRequests.setBounds(415, 289, 200, 25);
 		contentPane.add(btnViewRequests);
 
