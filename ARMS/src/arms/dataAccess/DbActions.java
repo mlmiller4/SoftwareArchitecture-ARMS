@@ -80,8 +80,8 @@ public class DbActions {
 		try 
 		{
 			//String query = "select * from CourseOfferings "; 
-			String query = "select CourseOfferings.Id AS Id, CourseOfferings.ClassSize AS ClassSize, " +
-					"CourseOfferings.RemSeats AS RemSeats, Courses.Name AS CourseId, Semesters.SemesterName AS SemesterId " +
+			String query = "select CourseOfferings.Id AS Id, CourseOfferings.ClassSize AS ClassSize, CourseOfferings.CourseId AS CourseId," +
+					"CourseOfferings.RemSeats AS RemSeats, Courses.Name AS CourseName, Semesters.SemesterName AS SemesterId " +
 					"FROM CourseOfferings " +
 					"LEFT JOIN Courses ON CourseOfferings.CourseId = Courses.CourseID " +
 					"LEFT JOIN Semesters ON CourseOfferings.SemesterId = Semesters.SemesterID";
@@ -92,13 +92,14 @@ public class DbActions {
 			//Get all rows in Courses table
 			while (rs.next()) {
 				int id = rs.getInt("Id");
-				courseTitle = rs.getString("CourseId");
+				int courseId = rs.getInt("CourseId");
+				courseTitle = rs.getString("CourseName");
 				semester = rs.getString("SemesterId");
 				int classSize = rs.getInt("ClassSize");
 				int remSeats = rs.getInt("RemSeats");
 				List<String> prerequisits = new ArrayList<String>();
 				//Create new CourseInstance object with courseId and courseTitle, rest of the input variable will be set in second db connection
-				CourseInstance newCourseInstance = new CourseInstance(id, courseTitle, semester, classSize, remSeats, prerequisits);
+				CourseInstance newCourseInstance = new CourseInstance(id, courseId, courseTitle, semester, classSize, remSeats, prerequisits);
 				catalog.add(count, newCourseInstance);
 				count++;
 			}
@@ -164,13 +165,13 @@ public class DbActions {
 			//String currentPrerequisiteTitle = "";
 			//Get all rows in CoursePrerequisites table
 			while (rs.next()) {
-				String currentCourseId = rs.getString("CourseID");
-				String prerequisiteId = rs.getString("PrerequisiteID");
+				String currentCourseName = rs.getString("CourseTitle");
+				String prerequisiteName = rs.getString("PrerequisiteTitle");
 				//Go over all courses in catalog and find course with courseId
 				for (CourseInstance currentCourse : catalog) {
-					if (currentCourse.getCourseName() == currentCourseId) {
+					if (currentCourse.getCourseName() == currentCourseName) {
 						//Add corresponding prerequisite to the course in the catalog
-						currentCourse.getPrerequisits().add(prerequisiteId);
+						currentCourse.getPrerequisits().add(prerequisiteName);
 					}
 				}
 				count++;
@@ -209,7 +210,7 @@ public class DbActions {
 			int count = 0;
 			while (rs.next()) {
 				HashMap<Integer, Integer> requestedCourses = null;
-				int SRId = rs.getInt("SRId");
+				int SRId = rs.getInt("SRID");
 				String submitTimeStr = rs.getString("SubmitTime");
 				Date submitTime = df.parse(submitTimeStr);
 				int studentIdFromDb = rs.getInt("StudentID");
@@ -230,7 +231,7 @@ public class DbActions {
 			//Create hashMap that will contain the courses of the currentRequest
 			HashMap<Integer, Integer> coursesOfCurrentRequest = new HashMap<Integer, Integer>();
 			//Get only the rows with SRID of the currentRequest
-			query = "select * from SRDetails where SRId=? ";
+			query = "select * from SRDetails where SRID=? ";
 			//HashMap<Integer, Integer> requestedCoursesPerStudent = new HashMap<Integer, Integer>();
 			try 
 			{	
@@ -320,10 +321,39 @@ public class DbActions {
 	}
 
 	public static List<Student> getStudents(){
-	        return null;
-	        //TODO: Implement
+		List<Student> students = new ArrayList<Student>();
+		Connection connection = arms.dataAccess.DbConnection.dbConnector();
+		try 
+		{
+			String query = "select * from Students";
+			PreparedStatement pst = connection.prepareStatement(query);
+			ResultSet rs = pst.executeQuery();
+			int count = 0;
+
+			//Iterate over rows of SRDetails table that matches SRId
+			while (rs.next()) {
+				int studentId = rs.getInt("ID");
+				String firstName = rs.getString("FirstName");
+				String lastName = rs.getString("LastName");
+				float earnedHours = rs.getFloat("EarnedHours");
+				float gpa = rs.getFloat("GPA");
+				String password = rs.getString("Password");
+				String userName = rs.getString("UserName");
+				Student student = new Student(studentId, firstName, lastName, earnedHours, gpa, password, userName);
+				students.add(student);
+			}
+			rs.close();
+			pst.close();
+			connection.close();
+		}  
+		catch (Exception e)
+		{
+			JOptionPane.showMessageDialog(null, e);
+			return null;
+		} 
+		return students;
 	}
-	    
+	
 	public static boolean insertCourseOffering(CourseInstance courseInstance) {
 		Connection connection = arms.dataAccess.DbConnection.dbConnector();
 		
@@ -372,7 +402,7 @@ public class DbActions {
 		return true;				
 	}
 	
-	public List<Semester> getSemesters() {
+	public static List<Semester> getSemesters() {
 		List<Semester> semesters = new ArrayList<Semester>();
 		
 		try 
@@ -404,6 +434,23 @@ public class DbActions {
 			return null;
 		}		
 		return semesters;
+	}
+	
+	public static void updateScheduleRequests(List<ScheduleRequest> recentStudentRequests) {
+		//TODO: Implement.
+		//If SRID exists, update SRDetails accordingly. Otherwise, add a new ScheduleRequest
+		//row for the object with a missing id and add SRDetails accordingly.
+	}
+
+	public static void updateCourseOfferings(List<CourseInstance> offerings) {
+		//TODO:Implement.
+		//For each offering, update remaining seats in the row corresponding to the offering id in the db.
+		//Only meant for existing course offerings.
+	}
+
+	public static int getScheduleRequestsCount(){
+		//TODO:Implement
+		return -1;
 	}
 	
 }
