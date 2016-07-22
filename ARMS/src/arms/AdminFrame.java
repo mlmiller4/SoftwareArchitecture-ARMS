@@ -118,7 +118,7 @@ public class AdminFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				contentPane.setVisible(false);
 				dispose();
-				StudentFrame sf = new StudentFrame();
+				StudentFrame sf = new StudentFrame(true);
 				sf.setVisible(true);
 			}
 		});

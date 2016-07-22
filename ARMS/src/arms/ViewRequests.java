@@ -154,8 +154,18 @@ public class ViewRequests extends JFrame {
 		});
 		btnLoadSchedules.setBounds(65, 132, 127, 23);
 		contentPane.add(btnLoadSchedules);
-		//PopulateTable();
-
+		
+		JButton btnBack = new JButton("Back");
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				contentPane.setVisible(false);
+				dispose();
+				AdminFrame af = new AdminFrame();
+				af.setVisible(true);
+			}
+		});
+		btnBack.setBounds(211, 132, 127, 23);
+		contentPane.add(btnBack);
 	}
 
 	private void getScheduleTableEntries(List<ScheduleRequest> requests)

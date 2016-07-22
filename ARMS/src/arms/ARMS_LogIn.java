@@ -86,7 +86,7 @@ public class ARMS_LogIn {
 
 						// Open Student Frame
 						frame.dispose();
-						StudentFrame sf = new StudentFrame();
+						StudentFrame sf = new StudentFrame(false);
 						sf.setVisible(true);
 
 					} else {

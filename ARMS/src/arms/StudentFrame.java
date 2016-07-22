@@ -27,6 +27,7 @@ public class StudentFrame extends JFrame {
 	private JTextField textFieldCourse3;
 	private JTextField textFieldCourse4;
 	private JTextField textFieldCourse5;
+	private boolean shadowMode = false;
 
 	/**
 	 * Launch the application.
@@ -35,7 +36,7 @@ public class StudentFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					StudentFrame frame = new StudentFrame();
+					StudentFrame frame = new StudentFrame(false);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -47,8 +48,8 @@ public class StudentFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public StudentFrame() {
-		
+	public StudentFrame(boolean shadow) {
+		shadowMode = shadow;
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -65,12 +66,25 @@ public class StudentFrame extends JFrame {
 		lblStudentFrame.setBounds(244, 3, 209, 46);
 		contentPane.add(lblStudentFrame);
 		
-		JButton btnLogOut = new JButton("Log Out");
+		JButton btnLogOut = new JButton("");
+		if (shadowMode)
+		{
+			btnLogOut.setText("Back");
+		} else {
+			btnLogOut.setText("Log Out");
+		}
 		btnLogOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				contentPane.setVisible(false);
-				dispose();
-				ARMS_LogIn.main(null);					
+				if (shadowMode)
+				{
+					contentPane.setVisible(false);
+					dispose();
+					AdminFrame.main(null);
+				} else {
+					contentPane.setVisible(false);
+					dispose();
+					ARMS_LogIn.main(null);		
+				}			
 			}
 		});
 		btnLogOut.setBounds(606, 392, 89, 23);
@@ -196,5 +210,10 @@ public class StudentFrame extends JFrame {
 		});
 		btnViewPastCourse.setBounds(66, 130, 200, 25);
 		contentPane.add(btnViewPastCourse);
+	}
+	
+	public void setShadowMode(boolean shadowMode)
+	{
+		this.shadowMode = shadowMode;
 	}
 }
