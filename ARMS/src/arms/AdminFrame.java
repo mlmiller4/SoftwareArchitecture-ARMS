@@ -98,6 +98,14 @@ public class AdminFrame extends JFrame {
 		contentPane.add(btnDeRegisterStudent);
 
 		JButton btnSummaryReport = new JButton("Summary Report");
+		btnSummaryReport.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				contentPane.setVisible(false);
+				dispose();
+				SummaryReport summaryReport = new SummaryReport();
+				summaryReport.setVisible(true);
+			}
+		});
 		btnSummaryReport.setBounds(136, 380, 200, 25);
 		contentPane.add(btnSummaryReport);
 
