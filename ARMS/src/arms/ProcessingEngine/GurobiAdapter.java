@@ -51,8 +51,6 @@ public class GurobiAdapter {
     			}		
     		}
     	}
-
-     
-		return null;
+		return requests;
 	}
 }
