@@ -9,7 +9,7 @@ import java.util.List;
 
 public class GurobiAdapter {
 
-    private GRBVar[][][] yij;/*Student with id i taking offering with id j. This design, as opposed to using semester
+    private GRBVar[][] yij;/*Student with id i taking offering with id j. This design, as opposed to using semester
     and course id, supports multiple instances of the same course in the same semester.*/
 
     public static void updateOfferingConstraints(List<CourseInstance> offerings){
@@ -25,5 +25,9 @@ public class GurobiAdapter {
         return null;
         //TODO: Implement
         //Returns a list of schedule requests.
+    }
+
+    private static List<ScheduleRequest> populateRestuls(List<ScheduleRequest> requests){
+        return null;
     }
 }
