@@ -57,7 +57,7 @@ public class ProcessingEngine {
         GurobiAdapter.updateRequestConstraints(recentStudentRequests);
     }
     public static void executeRequest(){
-        List<ScheduleRequest> res = GurobiAdapter.processConstraints(recentStudentRequests);
+        List<ScheduleRequest> res = GurobiAdapter.processConstraints();
         if(res == null) return; //Problem unfeasible.
         //Update student requests in-memory with recent information.
         recentStudentRequests = res;

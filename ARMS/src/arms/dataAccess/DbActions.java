@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import arms.StudentFrame;
 import arms.api.CourseInstance;
 import arms.api.ScheduleRequest;
 import arms.api.Student;
@@ -394,7 +395,6 @@ public class DbActions {
 			String query = "select * from Students";
 			PreparedStatement pst = connection.prepareStatement(query);
 			ResultSet rs = pst.executeQuery();
-			int count = 0;
 
 			//Iterate over rows of SRDetails table that matches SRId
 			while (rs.next()) {
@@ -508,16 +508,71 @@ public class DbActions {
 		{
 			Connection connection = arms.dataAccess.DbConnection.dbConnector();
 			Date submitTime = request.getSubmitTime();
-			for (HashMap.Entry<Integer, Integer> entry : request.getRequestedCourses().entrySet())
+			boolean SRIDexists = false;
+			int newSRID = 0;
+			
+			// Check if SRID exists
+			try {
+				String query = "select * from SRDetails where SRID=? ";
+				PreparedStatement pst = connection.prepareStatement(query);
+				pst.setInt(1, request.getSRID());
+
+				ResultSet rs = pst.executeQuery();
+
+				int count = 0;
+
+				while (rs.next()) {
+					count++;
+				}
+
+				if (count > 0) {
+					SRIDexists = true;
+				} 
+
+				rs.close();
+				pst.close();
+
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, e);
+			}
+			
+			// If SRID exists, perform UPDATE, otherwise perform INSERT
+			if (SRIDexists)
 			{
+				for (HashMap.Entry<Integer, Integer> entry : request.getRequestedCourses().entrySet())
+				{
+					try 
+					{
+						String query = "update SRDetails set CourseID=?, OfferingID=? where SRID=?"; 
+						PreparedStatement pst = connection.prepareStatement(query);
+						pst.setInt(1, entry.getKey());
+						pst.setInt(2, entry.getValue());
+						pst.setInt(3, request.getSRID());
+						pst.executeUpdate();
+						pst.close();
+						connection.commit();
+						connection.close();
+					}  
+					catch (Exception e)
+					{
+						JOptionPane.showMessageDialog(null, e);
+					} 
+				}
+			} else {
+				// Inserts new row into ScheduleRequests table, SRID is autoincremented
 				try 
 				{
-					String query = "insert or replace into SRDetails (SRID, CourseId, OfferingId) values (?,?,?)"; 
+					String query = "insert into ScheduleRequests (StudentID, SubmitTime) values (?,?)"; 
 					PreparedStatement pst = connection.prepareStatement(query);
-					pst.setInt(1, request.getSRID());
-					pst.setInt(2, entry.getKey());
-					pst.setInt(3, entry.getValue());
+					pst.setInt(1, request.getStudentId());
+					pst.setString(2, submitTime.toString());
 					pst.executeUpdate();
+					
+					// Retrieve new SRID
+					ResultSet rs = pst.getGeneratedKeys();
+					newSRID = rs.getInt("SRId");
+					
+					rs.close();
 					pst.close();
 					connection.commit();
 				}  
@@ -525,24 +580,26 @@ public class DbActions {
 				{
 					JOptionPane.showMessageDialog(null, e);
 				} 
+				for (HashMap.Entry<Integer, Integer> entry : request.getRequestedCourses().entrySet())
+				{
+					try 
+					{
+						String query = "insert into SRDetails (SRID, CourseID, OfferingID) values (?,?,?)"; 
+						PreparedStatement pst = connection.prepareStatement(query);
+						pst.setInt(1, newSRID);
+						pst.setInt(2, entry.getKey());
+						pst.setInt(3, entry.getValue());
+						pst.executeUpdate();
+						pst.close();
+						connection.commit();
+						connection.close();
+					}  
+					catch (Exception e)
+					{
+						JOptionPane.showMessageDialog(null, e);
+					} 
+				}
 			}
-			try 
-			{
-				String query = "insert or replace into ScheduleRequests (StudentId, SRId, SubmitTime) values (?,?,?)"; 
-				PreparedStatement pst = connection.prepareStatement(query);
-				pst.setInt(1, request.getStudentId());
-				pst.setInt(2, request.getSRID());
-				pst.setString(3, submitTime.toString());
-				pst.executeUpdate();
-				pst.close();
-				connection.commit();
-				connection.close();
-			}  
-			catch (Exception e)
-			{
-				JOptionPane.showMessageDialog(null, e);
-			} 
-
 		}
 	}
 
@@ -555,7 +612,7 @@ public class DbActions {
 			Connection connection = arms.dataAccess.DbConnection.dbConnector();
 			try 
 			{
-				String update = "update CourseOFferings set RemSeats = ? where Id = ?"; 
+				String update = "update CourseOfferings set RemSeats = ? where Id = ?"; 
 				PreparedStatement pst = connection.prepareStatement(update);
 				pst.setInt(1, instance.getId());
 				pst.setInt(2, instance.getRemSeats());
@@ -570,6 +627,10 @@ public class DbActions {
 		}
 	}
 
+	/**
+	 * Counts the total number of schedule requests in the system
+	 * @return Returns number of total schedule requests in the system
+	 */
 	public static int getScheduleRequestsCount(){
 		try 
 		{
@@ -593,4 +654,36 @@ public class DbActions {
 		}		
 		return -1;
 	}
+	
+	/**
+	 * Counts the total number of students in the system
+	 * @return Returns an int of the total number of students in the system
+	 */
+	public static int getStudentCount(){
+		try 
+		{
+			String query = "select count(*) as rowcount from Students "; 
+			Connection connection = arms.dataAccess.DbConnection.dbConnector();
+			PreparedStatement pst = connection.prepareStatement(query);
+			ResultSet rs = pst.executeQuery();
+			int count = 0;
+			//Get all rows in Courses table
+			while (rs.next()) {
+				count = rs.getInt("rowcount");
+			}
+			rs.close();
+			pst.close();
+			connection.close();
+			return count;
+		}  
+		catch (Exception e)
+		{
+			JOptionPane.showMessageDialog(null, e);
+		}		
+		return -1;
+	}
+	
+	/**
+	 * Counts the number of distinct students who have requested that course
+	 */
 }

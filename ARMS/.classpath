@@ -4,5 +4,6 @@
 	<classpathentry kind="lib" path="Resources/sqlite-jdbc-3.8.11.jar"/>
 	<classpathentry kind="lib" path="Resources/rs2xml.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/opt/gurobi650/linux64/lib/gurobi.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
