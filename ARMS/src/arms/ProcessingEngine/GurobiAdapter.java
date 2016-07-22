@@ -32,10 +32,10 @@ public class GurobiAdapter {
 	private static List<ScheduleRequest> populateRestuls(List<ScheduleRequest> requests) throws GRBException{
 	  	//Go over each student
     	for(int i = 0; i < yij.length; i++) {
+    		HashMap<Integer,Integer> currentRequestedCourses = new HashMap<Integer, Integer>();
     		//Find student request
     		for(ScheduleRequest currentRequest : requests) {
     			if(currentRequest.getStudentId() == i) {
-    				HashMap<Integer,Integer> currentRequestedCourses = new HashMap<Integer, Integer>();
     				//Get student offering ids
     				for(int j = 0; j < yij[i].length; j++) {
     					//If student taking offering with id j
@@ -46,9 +46,10 @@ public class GurobiAdapter {
     						currentRequestedCourses.put(courseId, j);
     					}
     				}
-    				//Update student's requestedCourses
-    				currentRequest.setRequestedCourses(currentRequestedCourses);
-    			}		
+    			}
+				//Update student's requestedCourses
+				currentRequest.setRequestedCourses(currentRequestedCourses);
+    			break;
     		}
     	}
 		return requests;
