@@ -40,7 +40,7 @@ public class UpdateCourse extends JFrame {
 	private JTextField courseNameField;
 	private Integer initialClassSize = new Integer(0);
 	private Integer initialRemSeats = new Integer(0);
-		
+
 	/**
 	 * Launch the application.
 	 */
@@ -83,18 +83,18 @@ public class UpdateCourse extends JFrame {
 		// Hidden Fields to store data
 		courseIdField = new JTextField();
 		courseIdField.setVisible(false);
-		
+
 		courseNameField = new JTextField();
 		courseNameField.setVisible(false);
 
 		JLabel lblSemester = new JLabel("Semester:");
 		lblSemester.setBounds(50, 152, 90, 15);
 		contentPane.add(lblSemester);
-		
+
 		JLabel label = new JLabel("Course Name:");
 		label.setBounds(50, 65, 90, 15);
 		contentPane.add(label);
-		
+
 		JLabel lblCourseTitle = new JLabel("");
 		lblCourseTitle.setBounds(182, 109, 153, 14);
 		contentPane.add(lblCourseTitle);
@@ -112,16 +112,16 @@ public class UpdateCourse extends JFrame {
 				JComboBox<String> cb = (JComboBox) e.getSource();
 				String course = (String) cb.getSelectedItem();
 				courseIdField.setText(course);
-				CourseInstance selectedCourse = CommonFunctions.getCourse(course);
-				if ( selectedCourse != null )
-				{
+				CourseInstance selectedCourse = CommonFunctions
+						.getCourse(course);
+				if (selectedCourse != null) {
 					courseNameField.setText(selectedCourse.getCourseName());
 				}
 			}
 		});
 		courseId.setBounds(182, 60, 153, 24);
 		contentPane.add(courseId);
-		
+
 		lblCourseTitle.setText(courseNameField.getText());
 
 		JLabel lblClassroomSize = new JLabel("Classroom Size:");
@@ -150,12 +150,14 @@ public class UpdateCourse extends JFrame {
 				// with the existing data
 				JComboBox<String> cb = (JComboBox) e.getSource();
 				String semester = (String) cb.getSelectedItem();
-				
+
+				initialClassSize = 0;
+				initialRemSeats = 0;
 
 				// Get specific course from CourseInstance list
-				updateCourse = CommonFunctions.getCourseInstanceBySemester(courseIdField.getText(), semester);
-				if ( updateCourse != null)
-				{
+				updateCourse = CommonFunctions.getCourseInstanceBySemester(
+						courseNameField.getText(), semester);
+				if (updateCourse != null) {
 					initialClassSize = updateCourse.getClassSize();
 					initialRemSeats = updateCourse.getRemSeats();
 				}
@@ -172,8 +174,7 @@ public class UpdateCourse extends JFrame {
 				Integer newRemSeats = new Integer(0);
 				Integer newClassSize = Integer.parseInt(classroomSize.getText());
 				newRemSeats = newClassSize - initialClassSize + initialRemSeats;
-				if ( newRemSeats < 0)
-				{
+				if (newRemSeats < 0) {
 					newRemSeats = 0;
 				}
 				updateCourse.setClassSize(newClassSize);
@@ -202,7 +203,6 @@ public class UpdateCourse extends JFrame {
 		});
 		btnBack.setBounds(182, 236, 117, 25);
 		contentPane.add(btnBack);
-		
 
 	}
 }

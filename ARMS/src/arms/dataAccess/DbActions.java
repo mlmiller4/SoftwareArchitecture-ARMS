@@ -17,6 +17,7 @@ import arms.api.CourseInstance;
 import arms.api.ScheduleRequest;
 import arms.api.Student;
 import arms.api.Semester;
+import arms.api.SystemReport;
 
 public class DbActions {
 
@@ -80,12 +81,12 @@ public class DbActions {
 		
 		try 
 		{
-			//String query = "select * from CourseOfferings "; 
 			String query = "select CourseOfferings.Id AS Id, CourseOfferings.ClassSize AS ClassSize, CourseOfferings.CourseId AS CourseId," +
-					"CourseOfferings.RemSeats AS RemSeats, Courses.Name AS CourseName, Semesters.SemesterName AS SemesterId " +
+					"CourseOfferings.RemSeats AS RemSeats, Courses.Name AS CourseName, Semesters.SemesterID AS SemesterId, " +
+					"Semesters.SemesterName AS SemesterName " +
 					"FROM CourseOfferings " +
 					"LEFT JOIN Courses ON CourseOfferings.CourseId = Courses.CourseID " +
-					"LEFT JOIN Semesters ON CourseOfferings.SemesterId = Semesters.SemesterID";
+					"LEFT JOIN Semesters ON CourseOfferings.SemesterId = Semesters.SemesterId";
 			Connection connection = arms.dataAccess.DbConnection.dbConnector();
 			PreparedStatement pst = connection.prepareStatement(query);
 			ResultSet rs = pst.executeQuery();
@@ -95,12 +96,13 @@ public class DbActions {
 				int id = rs.getInt("Id");
 				int courseId = rs.getInt("CourseId");
 				courseTitle = rs.getString("CourseName");
-				semester = rs.getString("SemesterId");
+				int semesterId = rs.getInt("SemesterId");
+				semester = rs.getString("SemesterName");
 				int classSize = rs.getInt("ClassSize");
 				int remSeats = rs.getInt("RemSeats");
 				List<String> prerequisits = new ArrayList<String>();
 				//Create new CourseInstance object with courseId and courseTitle, rest of the input variable will be set in second db connection
-				CourseInstance newCourseInstance = new CourseInstance(id, courseId, courseTitle, semester, classSize, remSeats, prerequisits);
+				CourseInstance newCourseInstance = new CourseInstance(id, courseId, courseTitle, semesterId, semester, classSize, remSeats, prerequisits );
 				catalog.add(count, newCourseInstance);
 				count++;
 			}
@@ -446,14 +448,20 @@ public class DbActions {
 		return true;				
 	}
 	
+	/**
+	 * Updates CourseOfferings entry with new class size and remaining seats
+	 * @param courseInstance
+	 * @return Returns true if update is successful, false otherwise
+	 */
 	public static boolean updateCourseOffering(CourseInstance courseInstance) {
 		Connection connection = arms.dataAccess.DbConnection.dbConnector();
 		try 
 		{
-			String query = "update CourseOfferings set ClassSize = ? where Id = ? ";
+			String query = "update CourseOfferings set ClassSize = ?, RemSeats = ? where Id = ? ";
 			PreparedStatement pst = connection.prepareStatement(query);
 			pst.setInt(1, courseInstance.getClassSize());
-			pst.setInt(2, courseInstance.getId());
+			pst.setInt(2, courseInstance.getRemSeats());
+			pst.setInt(3, courseInstance.getId());
 			pst.executeUpdate();
 			pst.close();
 			connection.commit();
@@ -631,7 +639,7 @@ public class DbActions {
 	 * Counts the total number of schedule requests in the system
 	 * @return Returns number of total schedule requests in the system
 	 */
-	public static int getScheduleRequestsCount(){
+	private static int getScheduleRequestsCount(){
 		try 
 		{
 			String query = "select count(*) as rowcount from ScheduleRequests "; 
@@ -659,18 +667,19 @@ public class DbActions {
 	 * Counts the total number of students in the system
 	 * @return Returns an int of the total number of students in the system
 	 */
-	public static int getStudentCount(){
+	private static int getStudentCount(){
 		try 
 		{
-			String query = "select count(*) as rowcount from Students "; 
+			String query = "select count(*) from Students"; 
 			Connection connection = arms.dataAccess.DbConnection.dbConnector();
 			PreparedStatement pst = connection.prepareStatement(query);
 			ResultSet rs = pst.executeQuery();
 			int count = 0;
 			//Get all rows in Courses table
 			while (rs.next()) {
-				count = rs.getInt("rowcount");
+				count = rs.getInt(1);
 			}
+			//System.out.println(count);
 			rs.close();
 			pst.close();
 			connection.close();
@@ -684,6 +693,160 @@ public class DbActions {
 	}
 	
 	/**
-	 * Counts the number of distinct students who have requested that course
+	 * For each course, counts the number of distinct students who have requested that course
+	 * @return Returns a list of updated CourseInstances with their request count
 	 */
+	private static List<CourseInstance> getCourseRequestCount(){
+		List<CourseInstance> catalog = getCatalog();
+		List<CourseInstance> updatedCatalog = new ArrayList<CourseInstance>();
+		HashMap<Integer, Integer> courseRequestCount = new HashMap<Integer, Integer>();
+		try 
+		{
+			String query = "select CourseID, count(DISTINCT StudentID) as rowcount from ScheduleRequests t1 LEFT JOIN SRDetails t2 ON t1.SRId = t2.SRID "; 
+			Connection connection = arms.dataAccess.DbConnection.dbConnector();
+			PreparedStatement pst = connection.prepareStatement(query);
+			ResultSet rs = pst.executeQuery();
+			while (rs.next()) {
+				courseRequestCount.put(rs.getInt("CourseID"), rs.getInt("rowcount"));
+			}
+			rs.close();
+			pst.close();
+			connection.close();
+		}  
+		catch (Exception e)
+		{
+			JOptionPane.showMessageDialog(null, e);
+		}		
+		
+		if (catalog != null)
+		{
+			for (CourseInstance course : catalog)
+			{
+				for (HashMap.Entry<Integer, Integer> entry : courseRequestCount.entrySet())
+				{
+					if ( course.getId() == entry.getKey() )
+					{
+						course.setRequestCount(entry.getValue());
+					}
+				}
+				updatedCatalog.add(course);
+			}
+		}
+		return updatedCatalog;
+	}
+	
+	/**
+	 * For each course, counts the number of distinct students who have requested that course
+	 * @return Returns a list of updated CourseInstances with their request count
+	 */
+	private static List<Student> getStudentRequestCount(){
+		List<Student> students = getStudents(); //Current student list
+		List<Student> updatedStudents = new ArrayList<Student>();
+		List<ScheduleRequest> requests = getAllRecentScheduleRequests();
+		HashMap<Student, Integer> studentRequestCount = new HashMap<Student, Integer>();
+		int nextSemester = 0;
+		int futureSemester = 0;
+		int noSemester = 0;
+		
+		for (Student student : students)
+		{
+			for (ScheduleRequest request: requests)
+			{
+				if ( student.getId() == request.getStudentId() )
+				{
+					for (HashMap.Entry<Integer, Integer> entry : request.getRequestedCourses().entrySet())
+					{
+						// If Offering ID is 0 means request is unavailable for that course
+						if (entry.getValue() == 0)
+						{
+							noSemester++;
+						}
+						else
+						{
+							// Retrieve CourseInstance based on offeringID
+							CourseInstance c = getCourseInstanceByID(entry.getValue());
+							if (c.getSemesterId() == 1)
+							{
+								nextSemester++;
+							}
+							else if (c.getSemesterId() > 1)
+							{
+								futureSemester++;
+							}
+						}
+					}
+				}
+			}
+			student.setCoursesNextSemester(nextSemester);
+			student.setCoursesFutureSemester(futureSemester);
+			student.setCoursesNoSemester(noSemester);
+			updatedStudents.add(student);
+		}
+		return updatedStudents;
+	}
+	
+	/**
+	 * Gets a particular courseInstance
+	 * @param cname course name
+	 * @param sname semester name
+	 * @return
+	 */
+	public static CourseInstance getCourseInstanceByID(int offeringId) {
+		List<CourseInstance> catalog = getCatalog();
+		// Iterate through catalog and store course ID and course names into
+		// hash set
+		// HashSet will contain non-duplicate course Ids
+		// We are trying to just capture the course list.
+		if ( catalog != null)
+		{
+			for (CourseInstance course : catalog) {
+				if (course.getId() == offeringId) {
+					return course;
+				}
+			}
+		}
+	
+		return null;
+
+	}
+	
+	/**
+	 * Generates system report
+	 * @return Returns a SystemReport object
+	 */
+	public static SystemReport generateSystemReport() {
+		SystemReport report = new SystemReport();
+		Integer studentCount = 0;
+		studentCount = getStudentCount();
+		report.setStudentsNum(studentCount);
+		report.setScheduleRequestsNum(getScheduleRequestsCount());
+		
+		List<CourseInstance> courses = getCourseRequestCount();
+		HashMap<Integer, Integer> courseDemand = new HashMap<Integer,Integer>();
+		for (CourseInstance course : courses)
+		{
+			courseDemand.put(course.getCourseId(), course.getRequestCount());
+		}
+		report.setCourseDemand(courseDemand);
+		
+		List<Student> students = getStudentRequestCount();
+		HashMap<Integer, ArrayList<Integer>> studentDemand = new HashMap<Integer, ArrayList<Integer>>();
+		for (Student student : students)
+		{
+			ArrayList<Integer> counts = new ArrayList<Integer>();
+			counts.add(student.getCoursesNextSemester());
+			counts.add(student.getCoursesFutureSemester());
+			counts.add(student.getCoursesNoSemester());
+			studentDemand.put(student.getId(), counts);
+		}
+		report.setRequestResultsInfo(studentDemand);
+		
+		HashMap<String, Float> config = new HashMap<String, Float>();
+		config.put("Classroom Size", (float) 0);
+		config.put("Semester", null);
+		report.setConfigParameters(config);
+		
+		return report;
+	}
+	
 }

@@ -113,28 +113,41 @@ public class CommonFunctions {
 		// hash set
 		// HashSet will contain non-duplicate course Ids
 		// We are trying to just capture the course list.
+		int courseId = 0;
+		List<String> prereqs = null;
+		int semesterId = 0;
+		
 		if ( catalog != null)
 		{
 			for (CourseInstance course : catalog) {
 				if (course.getCourseName().equals(cname)) {
+					courseId = course.getCourseId();
+					prereqs = course.getPrerequisits();
 					if (course.getSemester().equals(sname)) {
 						return course;
 					}
+					
 				}
 			}
+			//Get SemesterID
+			for (Semester semester: semesters)
+			{
+				if (semester.getSemesterName().equals(sname))
+				{
+					semesterId = semester.getId();
+				}
+			}
+			// If cannot find semester it's a new entry into the CourseOfferings
+			// table
+			CourseInstance newCourse = new CourseInstance(-1, courseId, cname, semesterId, sname, 0, 0, prereqs);
+
+			return newCourse;
 		}
-		else {
-			return null;
-		}
-		// If cannot find semester it's a new entry into the CourseOfferings
-		// table
-		CourseInstance newCourse = new CourseInstance(-1, -1, cname, sname, 0, 0,
-				null);
-		return newCourse;
+		return null;
 	}
 	
 	/**
-	 * Gets any courseInstance with a name of course (th
+	 * Gets any courseInstance with a name of course
 	 * @param cname course name
 	 * @return
 	 */

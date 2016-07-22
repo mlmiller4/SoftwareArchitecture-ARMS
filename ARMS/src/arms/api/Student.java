@@ -10,6 +10,11 @@ public class Student implements Comparable<Student>{
 	private String password;
 	private String userName;
 	
+	// Add counts for # of next semester, future semester, or none
+	private int coursesNextSemester;
+	private int coursesFutureSemester;
+	private int coursesNoSemester;
+	
 	// Constructor
 	public Student(int id, String firstName, String lastName, float earnedHours, float gpa, String password, String userName ){
 		this.id = id;
@@ -44,6 +49,21 @@ public class Student implements Comparable<Student>{
 	
 	public String getUserName() { return userName; }
 	
+	public int getCoursesNextSemester()
+	{
+		return coursesNextSemester;
+	}
+	
+	public int getCoursesFutureSemester()
+	{
+		return coursesFutureSemester;
+	}
+	
+	public int getCoursesNoSemester()
+	{
+		return coursesNoSemester;
+	}
+	
 	// Setter Methods
 
 	public void setId(int id) {this.id = id;}
@@ -73,5 +93,19 @@ public class Student implements Comparable<Student>{
 		float myRank = this.getGpa() * this.getEarnedHours();
 		return myRank > theirRank ? -1: myRank < theirRank? 1 :0; //Guarantees a descending-order sort.
 	}
+	
+	public void setCoursesNextSemester(int coursesNextSemester)
+	{
+		this.coursesNextSemester = coursesNextSemester;
+	}
 
+	public void setCoursesFutureSemester(int coursesFutureSemester)
+	{
+		this.coursesFutureSemester = coursesFutureSemester;
+	}
+	
+	public void setCoursesNoSemester(int coursesNoSemester)
+	{
+		this.coursesNoSemester = coursesNoSemester;
+	}
 }

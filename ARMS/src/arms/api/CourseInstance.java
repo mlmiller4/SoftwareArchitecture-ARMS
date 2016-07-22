@@ -6,12 +6,16 @@ public class CourseInstance {
     private int id;
     private int courseId;
     private String courseName;
+    private int semesterId;
     private String semester;
     private int classSize;
     private int remSeats;
     private List<String> prerequisits;
+    // Count of distinct students that requested this offering
+    // Since not stored in DB do not make part of constructor
+    private int requestCount;
 
-    public CourseInstance(int id, int courseId, String courseName, String semester, int classSize, int remSeats,
+    public CourseInstance(int id, int courseId, String courseName, int semesterId, String semester, int classSize, int remSeats,
                           List<String> prerequisits){
         this.id = id;
         this.courseId = courseId;
@@ -35,6 +39,10 @@ public class CourseInstance {
         return courseName;
     }
 
+    public int getSemesterId() {
+    	return semesterId;
+    }
+    
     public String getSemester() {
         return semester;
     }
@@ -50,6 +58,10 @@ public class CourseInstance {
     public List<String> getPrerequisits() {
         return prerequisits;
     }
+    
+    public int getRequestCount() {
+    	return requestCount;
+    }
 
     //Setters
     public void setId(int id) {
@@ -64,6 +76,10 @@ public class CourseInstance {
         this.courseName = courseName;
     }
 
+    public void setSemesterId(int semesterId) {
+    	this.semesterId = semesterId;
+    }
+    
     public void setSemester(String semester) {
         this.semester = semester;
     }
@@ -78,5 +94,9 @@ public class CourseInstance {
 
     public void setPrerequisits(List<String> prerequisits) {
         this.prerequisits = prerequisits;
+    }
+    
+    public void setRequestCount(int requestCount) {
+    	this.requestCount = requestCount;
     }
 }
