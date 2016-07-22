@@ -214,7 +214,9 @@ public class DbActions {
 				String submitTimeStr = rs.getString("SubmitTime");
 				Date submitTime = df.parse(submitTimeStr);
 				int studentIdFromDb = rs.getInt("StudentID");
+				int SRID = rs.getInt("SRId");
 				ScheduleRequest newScheduleRequest = new ScheduleRequest(studentIdFromDb, submitTime, requestedCourses);
+				newScheduleRequest.setSRID(SRID);
 				scheduleRequests.add(count, newScheduleRequest);
 				count++;
 			}

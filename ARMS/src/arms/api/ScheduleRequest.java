@@ -16,14 +16,6 @@ public class ScheduleRequest {
 		this.submitTime = submitTime;
 		this.requestedCourses = requestedCourses;
 	}
-	//TODO added back this constructor so that DbActions will not fail, will remove after fix
-	// Constructor
-	public ScheduleRequest(int studentId, Integer SRID, Date submitTime, HashMap<Integer,Integer> requestedCourses) {
-		this.studentId = studentId;
-		this.SRID = -1; //SRID is generated in the db - auto-incremented.
-		this.submitTime = submitTime;
-		this.requestedCourses = requestedCourses;
-	}
 	
 	//Getter Methods
 	public int getStudentId() {
