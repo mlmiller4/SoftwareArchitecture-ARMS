@@ -12,7 +12,6 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import arms.StudentFrame;
 import arms.api.CourseInstance;
 import arms.api.ScheduleRequest;
 import arms.api.Student;
@@ -105,6 +104,7 @@ public class DbActions {
 				CourseInstance newCourseInstance = new CourseInstance(id, courseId, courseTitle, semesterId, semester, classSize, remSeats, prerequisits );
 				catalog.add(count, newCourseInstance);
 				count++;
+				
 			}
 			if(count == 0) {
 				return null;
@@ -117,40 +117,7 @@ public class DbActions {
 			JOptionPane.showMessageDialog(null, e);
 			return null;
 		}
-		
-//		//Update courses title
-//		try 
-//		{
-//			String query = "select * from Courses where Name = ? "; 
-//			Connection connection = arms.dataAccess.DbConnection.dbConnector();
-//			PreparedStatement pst = connection.prepareStatement(query);
-//			pst.setString(cu)
-//			ResultSet rs = pst.executeQuery();
-//			int count = 0;
-//			//Get all rows in Courses table
-//			while (rs.next()) {
-//				courseTitle = rs.getString("Name");
-//				int courseId = rs.getInt("CourseID");
-//				//Go over all courses in catalog and update their title
-//				for (CourseInstance currentCourse : catalog) {
-//					if (currentCourse.getId() == courseId) {
-//						currentCourse.setCourseName(courseTitle);
-//					}
-//				}
-//				count++;
-//			}
-//			if(count == 0) {
-//				return null;
-//			}
-//			rs.close();
-//			pst.close();
-//		}  
-//		catch (Exception e)
-//		{
-//			JOptionPane.showMessageDialog(null, e);
-//			return null;
-//		}
-		
+
 		//Update courses prerequisites
 		try 
 		{
@@ -165,14 +132,13 @@ public class DbActions {
 			PreparedStatement pst = connection.prepareStatement(query);
 			ResultSet rs = pst.executeQuery();
 			int count = 0;
-			//String currentPrerequisiteTitle = "";
 			//Get all rows in CoursePrerequisites table
 			while (rs.next()) {
 				String currentCourseName = rs.getString("CourseTitle");
 				String prerequisiteName = rs.getString("PrerequisiteTitle");
 				//Go over all courses in catalog and find course with courseId
 				for (CourseInstance currentCourse : catalog) {
-					if (currentCourse.getCourseName() == currentCourseName) {
+					if (currentCourse.getCourseName().matches(currentCourseName)) {
 						//Add corresponding prerequisite to the course in the catalog
 						currentCourse.getPrerequisits().add(prerequisiteName);
 					}
@@ -191,7 +157,6 @@ public class DbActions {
 			JOptionPane.showMessageDialog(null, e);
 			return null;
 		}
-
 		return catalog;
 	}
 	
