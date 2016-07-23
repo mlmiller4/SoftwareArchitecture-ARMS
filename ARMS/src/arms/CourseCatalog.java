@@ -15,7 +15,14 @@ import net.proteanit.sql.DbUtils;
 import javax.swing.JScrollPane;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.*;
+
+import arms.api.CourseInstance;
+import arms.dataAccess.DbActions;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -58,8 +65,8 @@ public class CourseCatalog {
 	private void initialize() {		
 		
 		frame = new JFrame();
-		frame.setBounds(100, 100, 1135, 707);
-		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//frame.setBounds(100, 100, 1135, 707);
+		frame.setBounds(100, 100, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -74,34 +81,93 @@ public class CourseCatalog {
 		scrollPane.setBounds(10, 104, 1104, 510);
 		frame.getContentPane().add(scrollPane);
 		
-		table = new JTable();
+		DefaultTableModel model = new DefaultTableModel();
+				
+		table = new JTable(model);
 		scrollPane.setViewportView(table);
 		
 		connection = sqliteConnection.dbConnector();
 		
-		try{
-			//String query = "select * from CourseOfferings";
-			String query = "select * from Courses";
-			PreparedStatement pst = connection.prepareStatement(query);
-			ResultSet rs = pst.executeQuery();
-			table.setModel(DbUtils.resultSetToTableModel(rs));
+		// Add columns to model
+		model.addColumn("Course ID");
+		model.addColumn("Course Title");
+		model.addColumn("Semester");
+		model.addColumn("Class Size");
+		model.addColumn("Remaining Seats");
+		model.addColumn("Prerequisites");		
+
+		// Get Course details and add to model
+		//List<CourseInstance> catalog = new ArrayList<CourseInstance>();
+		
+		List<CourseInstance> catalog = DbActions.getCatalog();
+		
+		String strPrereqs = null;
+		List<String> currentPrereqs = null;
+		
+		for (CourseInstance currentCourse : catalog){
 			
-			btnClose = new JButton("Close");
-			btnClose.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					frame.dispose();
-				}
-			});
-			btnClose.setBounds(1025, 625, 89, 23);
-			frame.getContentPane().add(btnClose);
+			currentPrereqs = currentCourse.getPrerequisits();
+//			
+//			for (String prereq : currentPrereqs){
+//				strPrereqs += prereq;
+//			}
 			
 			
-		}catch (Exception e){
-			e.printStackTrace();
+			model.addRow(new Object[] {currentCourse.getId(), currentCourse.getCourseName(),
+					currentCourse.getSemester(), currentCourse.getClassSize(), currentCourse.getRemSeats(),
+					strPrereqs});			
+			
 		}
 		
-		table.getColumnModel().getColumn(2).setMinWidth(150);
+		// Adjust column widths for formatting
+		table.getColumnModel().getColumn(0).setMaxWidth(75);
+		table.getColumnModel().getColumn(1).setMinWidth(300);
+		table.getColumnModel().getColumn(1).setMaxWidth(300);
+		table.getColumnModel().getColumn(2).setMaxWidth(75);
+		table.getColumnModel().getColumn(2).setMaxWidth(75);
+		table.getColumnModel().getColumn(3).setMaxWidth(75);
+		table.getColumnModel().getColumn(3).setMaxWidth(75);
+		table.getColumnModel().getColumn(4).setMaxWidth(75);
+		table.getColumnModel().getColumn(4).setMaxWidth(75);
+		table.getColumnModel().getColumn(5).setMaxWidth(150);
+		table.getColumnModel().getColumn(5).setMaxWidth(150);
 		
+		btnClose = new JButton("Close");
+		btnClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+			}
+		});
+		btnClose.setBounds(1025, 625, 89, 23);
+		frame.getContentPane().add(btnClose);
+		
+	//	try{
+			//String query = "select * from CourseOfferings";
+//			String query = "select * from Courses";
+//			PreparedStatement pst = connection.prepareStatement(query);
+//			ResultSet rs = pst.executeQuery();
+			
+//			ResultSet rs = (ResultSet) DbActions.getCatalog();
+//			table.setModel(DbUtils.resultSetToTableModel(rs));
+			
+//			btnClose = new JButton("Close");
+//			btnClose.addActionListener(new ActionListener() {
+//				public void actionPerformed(ActionEvent e) {
+//					frame.dispose();
+//				}
+//			});
+//			btnClose.setBounds(1025, 625, 89, 23);
+//			frame.getContentPane().add(btnClose);
+//			
+//			
+//		}catch (Exception e){
+//			e.printStackTrace();
+//		}
+		
+		//table.getColumnModel().getColumn(2).setMinWidth(150);
+		
+//		Default
+//		
 //		table.getColumnModel().getColumn(0).setHeaderValue("Course ID");
 //		table.getColumnModel().getColumn(1).setHeaderValue("Course Number");
 //		table.getColumnModel().getColumn(2).setHeaderValue("Course Title");
