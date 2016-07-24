@@ -91,6 +91,7 @@ public class CourseCatalog {
 		
 		// Add columns to model
 		model.addColumn("Course ID");
+		model.addColumn("Offering ID");
 		model.addColumn("Course Title");
 		model.addColumn("Semester");
 		model.addColumn("Class Size");
@@ -125,7 +126,7 @@ public class CourseCatalog {
 				}				
 			}
 			
-			model.addRow(new Object[] {currentCourse.getId(), currentCourse.getCourseName(),
+			model.addRow(new Object[] {currentCourse.getCourseId(), currentCourse.getId(), currentCourse.getCourseName(),
 					currentCourse.getSemester(), currentCourse.getClassSize(), currentCourse.getRemSeats(),
 					strPrereqs});			
 			
@@ -133,16 +134,17 @@ public class CourseCatalog {
 		
 		// Adjust column widths for formatting
 		table.getColumnModel().getColumn(0).setMaxWidth(75);
-		table.getColumnModel().getColumn(1).setMinWidth(300);
-		table.getColumnModel().getColumn(1).setMaxWidth(300);
-		table.getColumnModel().getColumn(2).setMaxWidth(125);
-		table.getColumnModel().getColumn(2).setMaxWidth(125);
-		table.getColumnModel().getColumn(3).setMaxWidth(75);
-		table.getColumnModel().getColumn(3).setMaxWidth(75);
-		table.getColumnModel().getColumn(4).setMaxWidth(110);
-		table.getColumnModel().getColumn(4).setMaxWidth(110);
-		table.getColumnModel().getColumn(5).setMaxWidth(700);
-		table.getColumnModel().getColumn(5).setMaxWidth(700);
+		table.getColumnModel().getColumn(1).setMaxWidth(75);
+		table.getColumnModel().getColumn(2).setMinWidth(300);
+		table.getColumnModel().getColumn(2).setMaxWidth(300);
+		table.getColumnModel().getColumn(3).setMaxWidth(125);
+		table.getColumnModel().getColumn(3).setMaxWidth(125);
+		table.getColumnModel().getColumn(4).setMaxWidth(75);
+		table.getColumnModel().getColumn(4).setMaxWidth(75);
+		table.getColumnModel().getColumn(5).setMaxWidth(110);
+		table.getColumnModel().getColumn(5).setMaxWidth(110);
+		table.getColumnModel().getColumn(6).setMaxWidth(700);
+		table.getColumnModel().getColumn(6).setMaxWidth(700);
 		
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);

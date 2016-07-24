@@ -1,28 +1,5 @@
 package arms;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.EventQueue;
-import java.awt.Font;
-
-import javax.swing.ComboBoxModel;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JComboBox;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -216,10 +193,10 @@ public class CommonFunctions {
 	
 	/**
 	 * Gets any courseInstance with a name of course (th
-	 * @param cname course name
+	 * @param studentId student id
 	 * @return
 	 */
-	public Student getStudentInstance(int studentId) {
+	public static Student getStudentInstance(int studentId) {
 		// Iterate through catalog and store course ID and course names into
 		// hash set
 		// HashSet will contain non-duplicate course Ids
@@ -228,6 +205,27 @@ public class CommonFunctions {
 		{
 			for (Student student : students) {
 				if (student.getId() == studentId) {
+						return student;
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Gets any courseInstance with a name of course (th
+	 * @param userName Student's username
+	 * @return
+	 */
+	public static Student getStudentInstance(String userName) {
+		// Iterate through catalog and store course ID and course names into
+		// hash set
+		// HashSet will contain non-duplicate course Ids
+		// We are trying to just capture the course list.
+		if ( students != null)
+		{
+			for (Student student : students) {
+				if (student.getUserName().matches(userName)) {
 						return student;
 				}
 			}

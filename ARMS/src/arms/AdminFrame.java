@@ -17,11 +17,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.JComboBox;
 
 public class AdminFrame extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField textFieldStdID;
+	private JTextField studentIdField;
 
 	/**
 	 * Launch the application.
@@ -124,28 +125,36 @@ public class AdminFrame extends JFrame {
 		});
 		btnViewRequests.setBounds(415, 289, 200, 25);
 		contentPane.add(btnViewRequests);
-		
-		textFieldStdID = new JTextField();
-		textFieldStdID.setBounds(203, 258, 86, 20);
-		contentPane.add(textFieldStdID);
-		textFieldStdID.setColumns(10);
-		
+
 		JLabel lblStudentId = new JLabel("Student ID:");
 		lblStudentId.setBounds(137, 262, 86, 14);
 		contentPane.add(lblStudentId);
 
-		JButton btnShadowMode = new JButton("Shadow Mode");
+		// Hidden Field to store student id
+		studentIdField = new JTextField();
+		studentIdField.setVisible(false);
+
+		String[] studentList = CommonFunctions.getStudentList();
+		JComboBox comboBox = new JComboBox(studentList);
+		comboBox.setSelectedItem("-SELECT-");
+		comboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JComboBox<String> cb = (JComboBox) e.getSource();
+				String student = (String) cb.getSelectedItem();
+				studentIdField.setText(student);
+			}
+		});
+		comboBox.setBounds(222, 257, 114, 24);
+		contentPane.add(comboBox);
+
+		JButton btnShadowMode = new JButton("Generate Schedule");
 		btnShadowMode.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				if (textFieldStdID.getText() == null || textFieldStdID.getText().isEmpty()){
-					JOptionPane.showMessageDialog(null, "Please enter a Student ID before entering Shadow Mode.");
-				} else {				
-					contentPane.setVisible(false);
-					dispose();
-					StudentFrame sf = new StudentFrame(true, textFieldStdID.getText());
-					sf.setVisible(true);
-				}
+				contentPane.setVisible(false);
+				dispose();
+				StudentFrame sf = new StudentFrame(true, studentIdField
+						.getText());
+				sf.setVisible(true);
 			}
 		});
 		btnShadowMode.setBounds(136, 289, 200, 25);
@@ -190,8 +199,6 @@ public class AdminFrame extends JFrame {
 		JLabel lblReportActions = new JLabel("Report Actions:");
 		lblReportActions.setBounds(56, 350, 127, 15);
 		contentPane.add(lblReportActions);
-		
-
 
 	}
 }

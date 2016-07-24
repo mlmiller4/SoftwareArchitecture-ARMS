@@ -170,16 +170,27 @@ public class DbActions {
 	public static List<ScheduleRequest> getScheduleRequests(int studentId, int courseId) {
 		List<ScheduleRequest> scheduleRequests = new ArrayList<ScheduleRequest>(); 
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+		String query = new String();
 		//Get all schedule requests in the system
-		String query = "select * from ScheduleRequests ";
+		if ( studentId == -1 ) 
+		{
+			query = "select * from ScheduleRequests ";
+		}
+		else if ( courseId == -1)
+		{
+			query = "select * from ScheduleRequests where StudentID = ? ";
+		} 
 		try {	
 			Connection connection = arms.dataAccess.DbConnection.dbConnector();
 			PreparedStatement pst = connection.prepareStatement(query);
+			if (courseId == -1)
+			{
+				pst.setInt(1,studentId);
+			}
 			ResultSet rs = pst.executeQuery();
 			int count = 0;
 			while (rs.next()) {
 				HashMap<Integer, Integer> requestedCourses = null;
-				//int SRId = rs.getInt("SRID");
 				String submitTimeStr = rs.getString("SubmitTime");
 				Date submitTime = df.parse(submitTimeStr);
 				int studentIdFromDb = rs.getInt("StudentID");
@@ -214,6 +225,7 @@ public class DbActions {
 
 				//Iterate over rows of SRDetails table that matches SRId
 				while (rs.next()) {
+					if ((courseId == rs.getInt("CourseID")) || (courseId == -1))
 					coursesOfCurrentRequest.put(rs.getInt("CourseID"), rs.getInt("OfferingID"));
 					count++;
 				}
@@ -234,31 +246,31 @@ public class DbActions {
 			}
 		}
 
-		//Filter by student
-		if(studentId != -1) {
-			//Create a list of requests to be removed because they don't contain studentId
-			List<ScheduleRequest> requestsToRemove = new ArrayList<ScheduleRequest>();
-			//Go over schduleRequests list and add all entries where the student id != studentID to the rquestsToRemove list
-			for(ScheduleRequest currenRequest : scheduleRequests) {
-				if(currenRequest.getStudentId() != studentId) {
-					requestsToRemove.add(currenRequest);
-				}
-			}
-			scheduleRequests.removeAll(requestsToRemove);
-		}
-		//Filter by course
-		if(courseId != -1) {
-			//Create a list of requests to be removed because they don't contain a course with courseId
-			List<ScheduleRequest> requestsToRemove = new ArrayList<ScheduleRequest>();
-			//Go over schduleRequests list and add all entries that don't contain courseIs to the rquestsToRemove list
-			for(ScheduleRequest currentRequest : scheduleRequests) {
-				//Find out if the requested courses of the currentRequest contain courseId
-				if(!currentRequest.getRequestedCourses().keySet().contains(courseId)) {
-					requestsToRemove.add(currentRequest);	
-				}
-			}
-			scheduleRequests.removeAll(requestsToRemove);
-		}
+//		//Filter by student
+//		if(studentId != -1) {
+//			//Create a list of requests to be removed because they don't contain studentId
+//			List<ScheduleRequest> requestsToRemove = new ArrayList<ScheduleRequest>();
+//			//Go over schduleRequests list and add all entries where the student id != studentID to the rquestsToRemove list
+//			for(ScheduleRequest currentRequest : scheduleRequests) {
+//				if(currentRequest.getStudentId() != studentId) {
+//					requestsToRemove.add(currentRequest);
+//				}
+//			}
+//			scheduleRequests.removeAll(requestsToRemove);
+//		}
+//		//Filter by course
+//		if(courseId != -1) {
+//			//Create a list of requests to be removed because they don't contain a course with courseId
+//			List<ScheduleRequest> requestsToRemove = new ArrayList<ScheduleRequest>();
+//			//Go over schduleRequests list and add all entries that don't contain courseIs to the rquestsToRemove list
+//			for(ScheduleRequest currentRequest : scheduleRequests) {
+//				//Find out if the requested courses of the currentRequest contain courseId
+//				if(!currentRequest.getRequestedCourses().keySet().contains(courseId)) {
+//					requestsToRemove.add(currentRequest);	
+//				}
+//			}
+//			scheduleRequests.removeAll(requestsToRemove);
+//		}
 		return scheduleRequests;
 	}
 	
