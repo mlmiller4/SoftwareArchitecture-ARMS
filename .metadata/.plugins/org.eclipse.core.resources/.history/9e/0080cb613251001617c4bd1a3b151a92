@@ -8,7 +8,6 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.Color;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import net.proteanit.sql.DbUtils;
@@ -66,7 +65,7 @@ public class CourseCatalog {
 	private void initialize() {		
 		
 		frame = new JFrame();
-		frame.setBounds(100, 100, 1400, 707);
+		frame.setBounds(100, 100, 1135, 707);
 		//frame.setBounds(100, 100, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
@@ -75,11 +74,11 @@ public class CourseCatalog {
 		lblCourseCatalog.setForeground(Color.BLACK);
 		lblCourseCatalog.setFont(new Font("Times New Roman", Font.BOLD, 20));
 		lblCourseCatalog.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCourseCatalog.setBounds(600, 11, 262, 80);
+		lblCourseCatalog.setBounds(438, 11, 262, 80);
 		frame.getContentPane().add(lblCourseCatalog);
 		
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 104, 1350, 510);
+		scrollPane.setBounds(10, 104, 1104, 510);
 		frame.getContentPane().add(scrollPane);
 		
 		DefaultTableModel model = new DefaultTableModel();
@@ -111,19 +110,10 @@ public class CourseCatalog {
 			
 			currentPrereqs = currentCourse.getPrerequisits();
 			
-			for (int i=0; i<currentPrereqs.size(); i++){
-				
-				String currPrereq = currentPrereqs.get(i);
-				
-				if (currPrereq != null){
-					
-					if (i > 0){
-						strPrereqs += ", " + currPrereq;
-					} else {
-						strPrereqs = currPrereq;
-					}					
-				}				
+			for (String prereq : currentPrereqs){
+				strPrereqs += prereq;
 			}
+			
 			
 			model.addRow(new Object[] {currentCourse.getId(), currentCourse.getCourseName(),
 					currentCourse.getSemester(), currentCourse.getClassSize(), currentCourse.getRemSeats(),
@@ -141,14 +131,8 @@ public class CourseCatalog {
 		table.getColumnModel().getColumn(3).setMaxWidth(75);
 		table.getColumnModel().getColumn(4).setMaxWidth(110);
 		table.getColumnModel().getColumn(4).setMaxWidth(110);
-		table.getColumnModel().getColumn(5).setMaxWidth(700);
-		table.getColumnModel().getColumn(5).setMaxWidth(700);
-		
-		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-		table.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
-		table.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
-		
+		table.getColumnModel().getColumn(5).setMaxWidth(150);
+		table.getColumnModel().getColumn(5).setMaxWidth(150);
 		
 		btnClose = new JButton("Close");
 		btnClose.addActionListener(new ActionListener() {
@@ -156,7 +140,7 @@ public class CourseCatalog {
 				frame.dispose();
 			}
 		});
-		btnClose.setBounds(1250, 625, 89, 23);
+		btnClose.setBounds(1025, 625, 89, 23);
 		frame.getContentPane().add(btnClose);
 		
 	//	try{

@@ -604,7 +604,7 @@ public class DbActions {
 	 * Counts the total number of schedule requests in the system
 	 * @return Returns number of total schedule requests in the system
 	 */
-	public static int getScheduleRequestsCount(){
+	private static int getScheduleRequestsCount(){
 		try 
 		{
 			String query = "select count(*) as rowcount from ScheduleRequests "; 

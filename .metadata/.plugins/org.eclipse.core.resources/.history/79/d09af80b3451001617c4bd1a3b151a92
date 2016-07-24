@@ -8,7 +8,6 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.Color;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import net.proteanit.sql.DbUtils;
@@ -75,7 +74,7 @@ public class CourseCatalog {
 		lblCourseCatalog.setForeground(Color.BLACK);
 		lblCourseCatalog.setFont(new Font("Times New Roman", Font.BOLD, 20));
 		lblCourseCatalog.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCourseCatalog.setBounds(600, 11, 262, 80);
+		lblCourseCatalog.setBounds(650, 11, 262, 80);
 		frame.getContentPane().add(lblCourseCatalog);
 		
 		scrollPane = new JScrollPane();
@@ -144,19 +143,13 @@ public class CourseCatalog {
 		table.getColumnModel().getColumn(5).setMaxWidth(700);
 		table.getColumnModel().getColumn(5).setMaxWidth(700);
 		
-		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-		table.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
-		table.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
-		
-		
 		btnClose = new JButton("Close");
 		btnClose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frame.dispose();
 			}
 		});
-		btnClose.setBounds(1250, 625, 89, 23);
+		btnClose.setBounds(1300, 625, 89, 23);
 		frame.getContentPane().add(btnClose);
 		
 	//	try{
