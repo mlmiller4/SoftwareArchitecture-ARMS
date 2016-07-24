@@ -146,7 +146,6 @@ public class CourseCatalog {
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 		table.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
 		table.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
-		table.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
 		
 		
 		btnClose = new JButton("Close");
