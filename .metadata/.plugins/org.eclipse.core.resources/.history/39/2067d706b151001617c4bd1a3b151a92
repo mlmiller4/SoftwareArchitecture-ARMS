@@ -925,34 +925,6 @@ public class DbActions {
 		}
 		return coursePrerequisites;
 	}
-	
-	
-	/**
-	 * Returns course name based on course ID
-	 */
-	public static String getCourseName(int courseID){
-		
-		String courseName = "";
-		
-		String query = "select Name from Courses where CourseID=?";
-		Connection connection = arms.dataAccess.DbConnection.dbConnector();
-		PreparedStatement pst;
-		
-		try{
-			pst = connection.prepareStatement(query);
-			pst.setInt(1, courseID);
-			ResultSet rs = pst.executeQuery();
-			while (rs.next()){
-				courseName = rs.getString("Name");
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		return courseName;
-	}
 	 
 	
 }

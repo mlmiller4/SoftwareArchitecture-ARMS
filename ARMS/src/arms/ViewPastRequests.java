@@ -6,13 +6,24 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import java.awt.Font;
+import java.awt.Color;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+
+import net.proteanit.sql.DbUtils;
+
 import javax.swing.JScrollPane;
+
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.*;
+
+import arms.api.CourseInstance;
 import arms.api.ScheduleRequest;
 import arms.dataAccess.DbActions;
 
@@ -54,18 +65,18 @@ public class ViewPastRequests {
 	 */
 	private void initialize(String stdID) {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 726, 588);
+		frame.setBounds(100, 100, 997, 593);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		JLabel lblYourPastSchedule = new JLabel("Your Past Schedule Requests");
 		lblYourPastSchedule.setHorizontalAlignment(SwingConstants.CENTER);
 		lblYourPastSchedule.setFont(new Font("Times New Roman", Font.BOLD, 20));
-		lblYourPastSchedule.setBounds(217, 29, 278, 60);
+		lblYourPastSchedule.setBounds(371, 28, 278, 60);
 		frame.getContentPane().add(lblYourPastSchedule);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(36, 99, 646, 404);
+		scrollPane_1.setBounds(36, 99, 917, 404);
 		frame.getContentPane().add(scrollPane_1);
 		
 		DefaultTableModel model = new DefaultTableModel();
@@ -79,7 +90,7 @@ public class ViewPastRequests {
 		
 		List<ScheduleRequest> pastRequests = DbActions.getScheduleRequests(Integer.parseInt(stdID), (-1));
 		
-		
+		// Create a list of all courses in each Course Request ID
 		String strCourseRequests = null;
 		HashMap<Integer, Integer> requestedCourses = new HashMap<Integer, Integer>();
 		
@@ -89,41 +100,30 @@ public class ViewPastRequests {
 			
 			requestedCourses = schedReq.getRequestedCourses();
 			
-			for (int i=2; i<requestedCourses.size(); i++){
+			int counter = 0;
+			
+			for (Map.Entry<Integer, Integer> entry : requestedCourses.entrySet()){
 				
-				Integer myHash = requestedCourses.get(i);
+				int key = entry.getKey();
 				
-				String course = requestedCourses.get(i).toString();
+				String courseName = DbActions.getCourseName(key);				
 				
-				if (i>0){
-					strCourseRequests += ", " + course;
+				if (counter > 0){
+					strCourseRequests += "; " + courseName;
 				} else {
-					strCourseRequests = course;
-				}				
-			}		
+					strCourseRequests = courseName;
+				}		
+				
+				counter++;
+			}	
 			
 			model.addRow(new Object[] { schedReq.getSRID(), strCourseRequests });                               
 
 		}
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		table_1.getColumnModel().getColumn(0).setMinWidth(125);
+		table_1.getColumnModel().getColumn(0).setMaxWidth(125);
+
 		
 		JButton btnCloseButton = new JButton("Close");
 		btnCloseButton.addActionListener(new ActionListener() {
@@ -131,7 +131,7 @@ public class ViewPastRequests {
 				frame.dispose();
 			}
 		});
-		btnCloseButton.setBounds(595, 515, 89, 23);
+		btnCloseButton.setBounds(864, 514, 89, 23);
 		frame.getContentPane().add(btnCloseButton);
 	}
 }
