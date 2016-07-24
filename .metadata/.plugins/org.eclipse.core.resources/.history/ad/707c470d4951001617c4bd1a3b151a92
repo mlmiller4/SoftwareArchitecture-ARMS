@@ -99,7 +99,7 @@ public class ViewPastRequests {
 			
 			requestedCourses = schedReq.getRequestedCourses();
 			
-			for (int i=2; i<requestedCourses.size(); i++){
+			for (int i=0; i<requestedCourses.size(); i++){
 				
 				Integer myHash = requestedCourses.get(i);
 				
