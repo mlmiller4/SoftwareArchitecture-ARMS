@@ -172,18 +172,18 @@ public class DbActions {
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		String query = new String();
 		//Get all schedule requests in the system
-		if ( studentId == -1 ) 
-		{
-			query = "select * from ScheduleRequests ";
-		}
-		else if ( courseId == -1)
+		if ( studentId != -1 ) 
 		{
 			query = "select * from ScheduleRequests where StudentID = ? ";
+		}
+		else 
+		{
+			query = "select * from ScheduleRequests ";
 		} 
 		try {	
 			Connection connection = arms.dataAccess.DbConnection.dbConnector();
 			PreparedStatement pst = connection.prepareStatement(query);
-			if (courseId == -1)
+			if (studentId != -1)
 			{
 				pst.setInt(1,studentId);
 			}
@@ -197,7 +197,7 @@ public class DbActions {
 				int SRID = rs.getInt("SRId");
 				ScheduleRequest newScheduleRequest = new ScheduleRequest(studentIdFromDb, submitTime, requestedCourses);
 				newScheduleRequest.setSRID(SRID);
-				scheduleRequests.add(count, newScheduleRequest);
+				scheduleRequests.add(count,newScheduleRequest);
 				count++;
 			}
 			connection.close();
@@ -226,7 +226,9 @@ public class DbActions {
 				//Iterate over rows of SRDetails table that matches SRId
 				while (rs.next()) {
 					if ((courseId == rs.getInt("CourseID")) || (courseId == -1))
-					coursesOfCurrentRequest.put(rs.getInt("CourseID"), rs.getInt("OfferingID"));
+					{
+						coursesOfCurrentRequest.put(rs.getInt("CourseID"), rs.getInt("OfferingID"));
+					}
 					count++;
 				}
 				currentRequest.setRequestedCourses(coursesOfCurrentRequest);
@@ -304,7 +306,8 @@ public class DbActions {
 	        List<ScheduleRequest> scheduleRequests = new ArrayList<ScheduleRequest>(); 
 			DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 			//Get all schedule requests in the system
-			String query = "select * from ScheduleRequests group by StudentID order by datetime(SubmitTime) desc limit 1";
+			String query = "select * from ScheduleRequests group by StudentId order by datetime(SubmitTime) desc limit 1";
+			
 			try {	
 				Connection connection = arms.dataAccess.DbConnection.dbConnector();
 				PreparedStatement pst = connection.prepareStatement(query);
@@ -721,7 +724,6 @@ public class DbActions {
 		List<Student> students = getStudents(); //Current student list
 		List<Student> updatedStudents = new ArrayList<Student>();
 		List<ScheduleRequest> requests = getAllRecentScheduleRequests();
-		HashMap<Student, Integer> studentRequestCount = new HashMap<Student, Integer>();
 		int nextSemester = 0;
 		int futureSemester = 0;
 		int noSemester = 0;
@@ -758,9 +760,9 @@ public class DbActions {
 			student.setCoursesNextSemester(nextSemester);
 			student.setCoursesFutureSemester(futureSemester);
 			student.setCoursesNoSemester(noSemester);
-			updatedStudents.add(student);
+			//updatedStudents.add(student);
 		}
-		return updatedStudents;
+		return students;
 	}
 	
 	/**
@@ -809,13 +811,16 @@ public class DbActions {
 		
 		List<Student> students = getStudentRequestCount();
 		HashMap<Integer, ArrayList<Integer>> studentDemand = new HashMap<Integer, ArrayList<Integer>>();
-		for (Student student : students)
+		if (students != null)
 		{
-			ArrayList<Integer> counts = new ArrayList<Integer>();
-			counts.add(student.getCoursesNextSemester());
-			counts.add(student.getCoursesFutureSemester());
-			counts.add(student.getCoursesNoSemester());
-			studentDemand.put(student.getId(), counts);
+			for (Student student : students)
+			{
+				ArrayList<Integer> counts = new ArrayList<Integer>();
+				counts.add(student.getCoursesNextSemester());
+				counts.add(student.getCoursesFutureSemester());
+				counts.add(student.getCoursesNoSemester());
+				studentDemand.put(student.getId(), counts);
+			}
 		}
 		report.setRequestResultsInfo(studentDemand);
 		
