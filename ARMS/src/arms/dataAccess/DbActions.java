@@ -3,6 +3,7 @@ package arms.dataAccess;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -813,5 +814,60 @@ public class DbActions {
 		
 		return report;
 	}
+	
+	
+	/**
+	 * Returns Student ID based on user ID
+	 */
+	public static String getStudentID(String userName){
+		
+		String stdID = "";
+		
+		String query = "select ID from Students where UserName=?";		
+		Connection connection = arms.dataAccess.DbConnection.dbConnector();
+		PreparedStatement pst;
+		
+		try {
+			pst = connection.prepareStatement(query);
+			pst.setString(1, userName);
+			ResultSet rs = pst.executeQuery();
+			while(rs.next()){
+				stdID = rs.getString("ID");
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		
+		return stdID;		
+	}
+	
+	/**
+	 * Returns user ID based on Student ID
+	 */
+	public static String getUserName(String stdID){
+		
+		String userName = "";
+		
+		String query = "select UserName from Students where ID=?";
+		Connection connection = arms.dataAccess.DbConnection.dbConnector();
+		PreparedStatement pst;
+		
+		try{
+			pst = connection.prepareStatement(query);
+			pst.setString(1, stdID);
+			ResultSet rs = pst.executeQuery();
+			while(rs.next()){
+				userName = rs.getString("UserName");
+			}			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return userName;
+	}
+	 
 	
 }

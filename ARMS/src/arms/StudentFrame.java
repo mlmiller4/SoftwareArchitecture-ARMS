@@ -19,6 +19,8 @@ import javax.swing.JTextField;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
+import arms.dataAccess.DbActions;
+
 public class StudentFrame extends JFrame {
 
 	private JPanel contentPane;
@@ -28,6 +30,8 @@ public class StudentFrame extends JFrame {
 	private JTextField textFieldCourse4;
 	private JTextField textFieldCourse5;
 	private boolean shadowMode = false;
+	private JTextField textFieldUserName;
+	private JTextField textFieldStdID;
 
 	/**
 	 * Launch the application.
@@ -36,7 +40,7 @@ public class StudentFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					StudentFrame frame = new StudentFrame(false);
+					StudentFrame frame = new StudentFrame(false, "");
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -48,7 +52,7 @@ public class StudentFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public StudentFrame(boolean shadow) {
+	public StudentFrame(boolean shadow, String userName) {
 		shadowMode = shadow;
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -65,6 +69,48 @@ public class StudentFrame extends JFrame {
 		lblStudentFrame.setFont(new Font("Times New Roman", Font.BOLD, 26));
 		lblStudentFrame.setBounds(244, 3, 209, 46);
 		contentPane.add(lblStudentFrame);
+		
+		// Display Student's User Name and Student ID
+		// --------------------------------------------------------------------------------
+		textFieldUserName = new JTextField();
+		textFieldUserName.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		textFieldUserName.setHorizontalAlignment(SwingConstants.CENTER);
+		textFieldUserName.setBackground(new Color(220, 220, 220));
+		textFieldUserName.setEditable(false);
+		textFieldUserName.setBounds(348, 43, 86, 20);
+		contentPane.add(textFieldUserName);
+		textFieldUserName.setColumns(10);
+		
+		JLabel lblCurrentUser = new JLabel("Current User:");
+		lblCurrentUser.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		lblCurrentUser.setBounds(274, 46, 76, 14);
+		contentPane.add(lblCurrentUser);
+		
+		textFieldStdID = new JTextField();
+		textFieldStdID.setHorizontalAlignment(SwingConstants.CENTER);
+		textFieldStdID.setEditable(false);
+		textFieldStdID.setBounds(348, 74, 86, 20);
+		contentPane.add(textFieldStdID);
+		textFieldStdID.setColumns(10);
+		
+		JLabel lblStudentId = new JLabel("Student ID:");
+		lblStudentId.setBounds(274, 77, 76, 14);
+		contentPane.add(lblStudentId);
+		
+		if (shadowMode){
+			textFieldStdID.setText(userName);			
+			String usr = DbActions.getUserName(userName);
+			textFieldUserName.setText(usr);		
+		} else {
+			textFieldUserName.setText(userName);
+			String stdID = DbActions.getStudentID(userName);
+			textFieldStdID.setText(stdID);
+		}	
+		// ---------------------------------------------------------------------------------------------------
+		
+		
+		
+		
 		
 		JButton btnLogOut = new JButton("");
 		if (shadowMode)
@@ -97,7 +143,7 @@ public class StudentFrame extends JFrame {
 					CourseCatalog.NewScreen();
 			}
 		});
-		btnViewCourseCatalog.setBounds(66, 79, 200, 25);
+		btnViewCourseCatalog.setBounds(65, 115, 200, 25);
 		contentPane.add(btnViewCourseCatalog);
 		
 		JPanel panel = new JPanel();
@@ -205,11 +251,16 @@ public class StudentFrame extends JFrame {
 		JButton btnViewPastCourse = new JButton("View Past Course Requests");
 		btnViewPastCourse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(null, "Accessing Past Course Requests...");
+				//JOptionPane.showMessageDialog(null, "Accessing Past Course Requests...");
+				ViewPastRequests.NewScreen();
 			}
 		});
-		btnViewPastCourse.setBounds(66, 130, 200, 25);
+		btnViewPastCourse.setBounds(65, 151, 200, 25);
 		contentPane.add(btnViewPastCourse);
+		
+
+		
+
 	}
 	
 	public void setShadowMode(boolean shadowMode)

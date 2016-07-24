@@ -7,6 +7,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.Color;
 import javax.swing.SwingConstants;
@@ -14,10 +16,12 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JSeparator;
+import javax.swing.JTextField;
 
 public class AdminFrame extends JFrame {
 
 	private JPanel contentPane;
+	private JTextField textFieldStdID;
 
 	/**
 	 * Launch the application.
@@ -120,14 +124,28 @@ public class AdminFrame extends JFrame {
 		});
 		btnViewRequests.setBounds(415, 289, 200, 25);
 		contentPane.add(btnViewRequests);
+		
+		textFieldStdID = new JTextField();
+		textFieldStdID.setBounds(203, 258, 86, 20);
+		contentPane.add(textFieldStdID);
+		textFieldStdID.setColumns(10);
+		
+		JLabel lblStudentId = new JLabel("Student ID:");
+		lblStudentId.setBounds(137, 262, 86, 14);
+		contentPane.add(lblStudentId);
 
 		JButton btnShadowMode = new JButton("Shadow Mode");
 		btnShadowMode.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				contentPane.setVisible(false);
-				dispose();
-				StudentFrame sf = new StudentFrame(true);
-				sf.setVisible(true);
+				
+				if (textFieldStdID.getText() == null || textFieldStdID.getText().isEmpty()){
+					JOptionPane.showMessageDialog(null, "Please enter a Student ID before entering Shadow Mode.");
+				} else {				
+					contentPane.setVisible(false);
+					dispose();
+					StudentFrame sf = new StudentFrame(true, textFieldStdID.getText());
+					sf.setVisible(true);
+				}
 			}
 		});
 		btnShadowMode.setBounds(136, 289, 200, 25);
@@ -154,7 +172,7 @@ public class AdminFrame extends JFrame {
 		contentPane.add(separator);
 
 		JLabel lblCourseActions = new JLabel("Course Actions:");
-		lblCourseActions.setBounds(56, 164, 127, 15);
+		lblCourseActions.setBounds(56, 148, 127, 15);
 		contentPane.add(lblCourseActions);
 
 		JSeparator separator_1 = new JSeparator();
@@ -162,7 +180,7 @@ public class AdminFrame extends JFrame {
 		contentPane.add(separator_1);
 
 		JLabel lblScheduleActions = new JLabel("Schedule Actions:");
-		lblScheduleActions.setBounds(56, 263, 127, 15);
+		lblScheduleActions.setBounds(56, 236, 127, 15);
 		contentPane.add(lblScheduleActions);
 
 		JSeparator separator_2 = new JSeparator();
@@ -172,6 +190,8 @@ public class AdminFrame extends JFrame {
 		JLabel lblReportActions = new JLabel("Report Actions:");
 		lblReportActions.setBounds(56, 350, 127, 15);
 		contentPane.add(lblReportActions);
+		
+
 
 	}
 }
