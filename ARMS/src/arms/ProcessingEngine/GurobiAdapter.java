@@ -28,7 +28,8 @@ public class GurobiAdapter {
 		//TODO: Implement
 		//Returns a list of schedule requests.
 	}
-
+	
+	//This method is not tested yet, will test once I have valid GRBVar[][] yij variable
 	private static List<ScheduleRequest> populateRestuls(List<ScheduleRequest> requests) throws GRBException{
 	  	//Go over each student
     	for(int i = 0; i < yij.length; i++) {
@@ -42,7 +43,7 @@ public class GurobiAdapter {
     					if(yij[i][j].get(GRB.DoubleAttr.X) == 1) {
     						//Get course id using offeringId
     						CourseInstance newCourseInstance = DbActions.getCourseInstanceByID(j);
-    						int courseId = newCourseInstance.getId();
+    						int courseId = newCourseInstance.getCourseId();
     						currentRequestedCourses.put(courseId, j);
     					}
     				}

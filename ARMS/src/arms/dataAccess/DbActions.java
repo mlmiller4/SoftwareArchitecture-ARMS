@@ -23,9 +23,9 @@ public class DbActions {
 
 
 	public static boolean addStudent(Student student) {
-		Connection connection = arms.dataAccess.DbConnection.dbConnector();
 		try 
 		{
+			Connection connection = arms.dataAccess.DbConnection.dbConnector();
 			String query = "insert into Students (ID,FirstName,LastName,EarnedHours,GPA,Password) " +
 					"values (?,?,?,?,?,?)";
 			PreparedStatement pst = connection.prepareStatement(query);
@@ -867,6 +867,46 @@ public class DbActions {
 		}
 		
 		return userName;
+	}
+	
+	public static HashMap<Integer, List<Integer>> getCoursePrerequisites() {
+		HashMap<Integer, List<Integer>> coursePrerequisites = new HashMap<Integer, List<Integer>>();
+		try 
+		{
+			Connection connection = arms.dataAccess.DbConnection.dbConnector();
+			String query = "select * from CoursePrerequisites";
+			PreparedStatement pst = connection.prepareStatement(query);
+			ResultSet rs = pst.executeQuery();
+			int count = 0;
+			//Get all rows in CoursePrerequisites table
+			while (rs.next()) {
+				int currentCourseID = rs.getInt("CourseID");
+				int currentPrerequisitesID = rs.getInt("PrerequisiteID");
+				//If the courseId is not in the coursePrerequisites list yet
+				if(coursePrerequisites.get(currentCourseID) == null) {
+					List<Integer> currentCoursePrerequisites = new ArrayList<Integer>();
+					currentCoursePrerequisites.add(currentPrerequisitesID);
+					coursePrerequisites.put(currentCourseID, currentCoursePrerequisites);
+					}
+				//If the courseId is in the coursePrerequisites list already
+				else {
+					coursePrerequisites.get(currentCourseID).add(currentPrerequisitesID);
+				}
+				count++;
+			}
+			if(count == 0) {
+				return null;
+			}
+			rs.close();
+			pst.close();
+			connection.close();
+		}  
+		catch (Exception e)
+		{
+			JOptionPane.showMessageDialog(null, e);
+			return null;
+		}
+		return coursePrerequisites;
 	}
 	 
 	
