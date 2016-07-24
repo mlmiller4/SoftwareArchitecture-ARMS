@@ -17,12 +17,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
-import javax.swing.JComboBox;
 
 public class AdminFrame extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField studentIdField;
+	private JTextField studentId;
 
 	/**
 	 * Launch the application.
@@ -102,6 +101,11 @@ public class AdminFrame extends JFrame {
 		btnDeRegisterStudent.setBounds(415, 94, 200, 25);
 		contentPane.add(btnDeRegisterStudent);
 
+		studentId = new JTextField();
+		studentId.setBounds(222, 260, 114, 19);
+		contentPane.add(studentId);
+		studentId.setColumns(10);
+
 		JButton btnSummaryReport = new JButton("Summary Report");
 		btnSummaryReport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -130,30 +134,12 @@ public class AdminFrame extends JFrame {
 		lblStudentId.setBounds(137, 262, 86, 14);
 		contentPane.add(lblStudentId);
 
-		// Hidden Field to store student id
-		studentIdField = new JTextField();
-		studentIdField.setVisible(false);
-
-		String[] studentList = CommonFunctions.getStudentList();
-		JComboBox comboBox = new JComboBox(studentList);
-		comboBox.setSelectedItem("-SELECT-");
-		comboBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JComboBox<String> cb = (JComboBox) e.getSource();
-				String student = (String) cb.getSelectedItem();
-				studentIdField.setText(student);
-			}
-		});
-		comboBox.setBounds(222, 257, 114, 24);
-		contentPane.add(comboBox);
-
 		JButton btnShadowMode = new JButton("Generate Schedule");
 		btnShadowMode.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				contentPane.setVisible(false);
 				dispose();
-				StudentFrame sf = new StudentFrame(true, studentIdField
-						.getText());
+				StudentFrame sf = new StudentFrame(true, studentId.getText());
 				sf.setVisible(true);
 			}
 		});
