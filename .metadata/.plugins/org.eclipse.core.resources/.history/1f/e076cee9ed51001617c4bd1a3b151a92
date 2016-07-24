@@ -245,8 +245,6 @@ public class StudentFrame extends JFrame {
 					JOptionPane.showMessageDialog(null,
 							"You have selected the following courses: "
 									+ courses);
-					
-					CourseOffering.NewScreen();
 
 				} else {
 					JOptionPane
