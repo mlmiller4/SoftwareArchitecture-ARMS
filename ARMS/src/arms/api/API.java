@@ -17,6 +17,12 @@ public class API {
     public List<ScheduleRequest> getRecentScheduleRequestsFromMem(){
         return ProcessingEngine.getAllRecentScheduleRequests();
     }
+    public void activateShadowMode(){
+        ProcessingEngine.activateShadowMode();
+    }
+    public void deactivateDemoMode(){
+        ProcessingEngine.deactivateShadowMode();
+    }
     public List<ScheduleRequest> getRecentScheduleRequestsFromDb(){
         return DbActions.getAllRecentScheduleRequests();
     }

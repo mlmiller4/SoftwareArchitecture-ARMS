@@ -5,9 +5,7 @@ import arms.api.ScheduleRequest;
 import arms.api.Student;
 import arms.dataAccess.DbActions;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class ProcessingEngine {
     private static List<CourseInstance> courseOfferings;
@@ -15,30 +13,84 @@ public class ProcessingEngine {
     private static List<Student> students;
     private static HashMap<Integer,CourseInstance> offeringsMap;
     private static HashMap<Integer,ScheduleRequest> requestsMap;
+    private static HashMap<Integer, List<Integer>> courseToInstances;
+    private static HashMap<Integer,List<Integer>> courseToPrerequisites;
+    private static HashMap<Integer, List<Integer>> offeringToPrerequisiteOfferings;
     private static boolean shadowMode = false;
 
     static {
+       initSystem();
+    }
+    private static void initSystem(){
         courseOfferings = DbActions.getCatalog();
         recentStudentRequests = DbActions.getAllRecentScheduleRequests();
         students = DbActions.getStudents();
         prioritizeStudents();
-        offeringsMap = new HashMap<>();
-        requestsMap = new HashMap<>();
+        offeringsMap = new HashMap<Integer,CourseInstance>();
+        requestsMap = new HashMap<Integer,ScheduleRequest>();
         for(CourseInstance offering : courseOfferings){
             offeringsMap.put(offering.getId(), offering);
         }
         for(ScheduleRequest request : recentStudentRequests){
             requestsMap.put(request.getStudentId(), request);
         }
-        GurobiAdapter.updateOfferingConstraints(courseOfferings);
-        GurobiAdapter.updateRequestConstraints(recentStudentRequests);
-        GurobiAdapter.updatePriorityConstraints(students);
+        courseToPrerequisites = DbActions.getCoursePrerequisites();
+        populateCourseInstances();
+        populateOfferingToPrerequisiteOfferings();
+    }
+    private static void populateCourseInstances(){
+        if (courseOfferings == null) return;
+        courseToInstances = new HashMap<Integer, List<Integer>>();
+        for(CourseInstance offering : courseOfferings){
+            if(courseToInstances.containsKey(offering.getCourseId())){
+                courseToInstances.get(offering.getCourseId()).add(offering.getId());
+            }
+            else{
+                courseToInstances.put(offering.getCourseId(), Arrays.asList(offering.getCourseId()));
+            }
+        }
+    }
+    private static void populateOfferingToPrerequisiteOfferings(){
+        offeringToPrerequisiteOfferings = new HashMap<Integer, List<Integer>>();
+        for(CourseInstance o1 : courseOfferings){
+            offeringToPrerequisiteOfferings.put(o1.getId(),new ArrayList<Integer>());
+            for(Integer prerequisiteId : courseToPrerequisites.get(o1.getCourseId())){
+                for(CourseInstance o2 : courseOfferings){
+                    if(o2.getCourseId() == prerequisiteId && o2.getSemesterId() < o1.getSemesterId()){
+                        offeringToPrerequisiteOfferings.get(o1.getId()).add(o2.getId());
+                    }
+                }
+            }
+        }
+    }
+    public static void activateShadowMode(){
+        shadowMode = true;
+        initSystem();
+    }
+    public static void deactivateShadowMode(){
+        shadowMode = false;
+        initSystem();
+    }
+    public static HashMap<Integer,CourseInstance> getOfferingsMap(){
+        return offeringsMap;
+    }
+    public static HashMap<Integer,List<Integer>> getOfferingToPrerequisiteOfferings(){
+        return offeringToPrerequisiteOfferings;
+    }
+    public static HashMap<Integer,List<Integer>> getCourseToPrerequisites(){
+        return courseToPrerequisites;
+    }
+    public static HashMap<Integer,List<Integer>> getCourseToInstances(){
+        return courseToInstances;
     }
     public static List<CourseInstance> getCourseOfferings() {
         return courseOfferings;
     }
     public static List<ScheduleRequest> getAllRecentScheduleRequests() {
         return recentStudentRequests;
+    }
+    public static List<Student> getPrioritizedStudents() {
+        return students;
     }
     public static void setCourseOfferings(List<CourseInstance> offerings) {
         courseOfferings = offerings;
@@ -50,11 +102,13 @@ public class ProcessingEngine {
         Collections.sort(students); //Sorts descending based on rank - See impl. in Student.compareTo
     }
     public static void updateScheduleRequest(ScheduleRequest newRequest){
-        recentStudentRequests.stream().filter(request -> request.getStudentId() == newRequest.getStudentId()).forEach(request -> {
-            recentStudentRequests.remove(request); //There should be exactly one request that gets removed.
-        });
+        for (Iterator<ScheduleRequest> it = recentStudentRequests.listIterator(); it.hasNext();) {
+            ScheduleRequest request = it.next();
+            if(request.getStudentId() == newRequest.getStudentId()){
+                it.remove();
+            }
+        }
         recentStudentRequests.add(newRequest);
-        GurobiAdapter.updateRequestConstraints(recentStudentRequests);
     }
     public static void executeRequest(){
         List<ScheduleRequest> res = GurobiAdapter.processConstraints();
@@ -78,9 +132,11 @@ public class ProcessingEngine {
             //Update SRID in-memory for the student request which triggered the re-calculation.
             //We do not do it beforehand, since having the id as -1 tells the updateScheduleRequest
             //logic it should add a new schedule request for the student.
-            recentStudentRequests.stream().filter(request -> request.getSRID() == -1).forEach(request -> {
+            for(ScheduleRequest request: recentStudentRequests){
+                if(request.getSRID() == -1){
                     request.setSRID(DbActions.getScheduleRequestsCount());
-            });
+                }
+            }
         }
     }
 }

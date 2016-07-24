@@ -10,13 +10,9 @@ import java.awt.Color;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-
-import net.proteanit.sql.DbUtils;
-
 import javax.swing.JScrollPane;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
