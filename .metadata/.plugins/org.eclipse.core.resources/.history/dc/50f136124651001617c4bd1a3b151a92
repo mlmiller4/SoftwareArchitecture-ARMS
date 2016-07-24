@@ -252,7 +252,7 @@ public class StudentFrame extends JFrame {
 		btnViewPastCourse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				//JOptionPane.showMessageDialog(null, "Accessing Past Course Requests...");
-				ViewPastRequests.NewScreen(textFieldStdID.getText());
+				ViewPastRequests.NewScreen();
 			}
 		});
 		btnViewPastCourse.setBounds(65, 151, 200, 25);

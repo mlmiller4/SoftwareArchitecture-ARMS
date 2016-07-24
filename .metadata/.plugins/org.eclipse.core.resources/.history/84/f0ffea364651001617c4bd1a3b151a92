@@ -17,7 +17,6 @@ import javax.swing.JScrollPane;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.*;
@@ -87,34 +86,7 @@ public class ViewPastRequests {
 		model.addColumn("Student Request ID");
 		model.addColumn("Courses Requested");
 		
-		List<ScheduleRequest> pastRequests = DbActions.getScheduleRequests(Integer.parseInt(stdID), (-1));
-		
-		
-		String strCourseRequests = null;
-		HashMap<Integer, Integer> requestedCourses = new HashMap<Integer, Integer>();
-		
-		for (ScheduleRequest schedReq : pastRequests){
-			
-			strCourseRequests = null;
-			
-			requestedCourses = schedReq.getRequestedCourses();
-			
-			for (int i=2; i<requestedCourses.size(); i++){
-				
-				Integer myHash = requestedCourses.get(i);
-				
-				String course = requestedCourses.get(i).toString();
-				
-				if (i>0){
-					strCourseRequests += ", " + course;
-				} else {
-					strCourseRequests = course;
-				}				
-			}		
-			
-			model.addRow(new Object[] { schedReq.getSRID(), strCourseRequests });                               
-
-		}
+		//List<ScheduleRequest> pastRequests = DbActions.getScheduleRequests()
 		
 		
 		
@@ -136,11 +108,6 @@ public class ViewPastRequests {
 		
 		
 		JButton btnCloseButton = new JButton("Close");
-		btnCloseButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				frame.dispose();
-			}
-		});
 		btnCloseButton.setBounds(595, 515, 89, 23);
 		frame.getContentPane().add(btnCloseButton);
 	}

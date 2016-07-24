@@ -17,13 +17,11 @@ import javax.swing.JScrollPane;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.*;
 
 import arms.api.CourseInstance;
-import arms.api.ScheduleRequest;
 import arms.dataAccess.DbActions;
 
 import java.awt.event.ActionListener;
@@ -39,11 +37,11 @@ public class ViewPastRequests {
 	/**
 	 * Launch the application.
 	 */
-	public static void NewScreen(final String stdID) {
+	public static void NewScreen() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ViewPastRequests window = new ViewPastRequests(stdID);
+					ViewPastRequests window = new ViewPastRequests();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -55,14 +53,14 @@ public class ViewPastRequests {
 	/**
 	 * Create the application.
 	 */
-	public ViewPastRequests(String stdID) {
-		initialize(stdID);
+	public ViewPastRequests() {
+		initialize();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize(String stdID) {
+	private void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 726, 588);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -78,43 +76,11 @@ public class ViewPastRequests {
 		scrollPane_1.setBounds(36, 99, 646, 404);
 		frame.getContentPane().add(scrollPane_1);
 		
-		DefaultTableModel model = new DefaultTableModel();
-		
-		table_1 = new JTable(model);
-		scrollPane_1.setViewportView(table_1);		
-		
-		// Add columns to model
-		model.addColumn("Student Request ID");
-		model.addColumn("Courses Requested");
-		
-		List<ScheduleRequest> pastRequests = DbActions.getScheduleRequests(Integer.parseInt(stdID), (-1));
+		table_1 = new JTable();
+		scrollPane_1.setViewportView(table_1);
 		
 		
-		String strCourseRequests = null;
-		HashMap<Integer, Integer> requestedCourses = new HashMap<Integer, Integer>();
 		
-		for (ScheduleRequest schedReq : pastRequests){
-			
-			strCourseRequests = null;
-			
-			requestedCourses = schedReq.getRequestedCourses();
-			
-			for (int i=2; i<requestedCourses.size(); i++){
-				
-				Integer myHash = requestedCourses.get(i);
-				
-				String course = requestedCourses.get(i).toString();
-				
-				if (i>0){
-					strCourseRequests += ", " + course;
-				} else {
-					strCourseRequests = course;
-				}				
-			}		
-			
-			model.addRow(new Object[] { schedReq.getSRID(), strCourseRequests });                               
-
-		}
 		
 		
 		
@@ -136,11 +102,6 @@ public class ViewPastRequests {
 		
 		
 		JButton btnCloseButton = new JButton("Close");
-		btnCloseButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				frame.dispose();
-			}
-		});
 		btnCloseButton.setBounds(595, 515, 89, 23);
 		frame.getContentPane().add(btnCloseButton);
 	}
