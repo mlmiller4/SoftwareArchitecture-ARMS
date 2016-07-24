@@ -40,13 +40,17 @@ public class ProcessingEngine {
     }
     private static void populateCourseInstances(){
         if (courseOfferings == null) return;
+        //key is courseId and value is a list of course offerings id
         courseToInstances = new HashMap<Integer, List<Integer>>();
         for(CourseInstance offering : courseOfferings){
             if(courseToInstances.containsKey(offering.getCourseId())){
+            	int offeringId = offering.getId();            	
                 courseToInstances.get(offering.getCourseId()).add(offering.getId());
             }
             else{
-                courseToInstances.put(offering.getCourseId(), Arrays.asList(offering.getCourseId()));
+            	List<Integer> offeringsList = new ArrayList<Integer>();
+            	offeringsList.add(offering.getId());
+            	courseToInstances.put(offering.getCourseId(), offeringsList);
             }
         }
     }

@@ -306,7 +306,7 @@ public class DbActions {
 	        List<ScheduleRequest> scheduleRequests = new ArrayList<ScheduleRequest>(); 
 			DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 			//Get all schedule requests in the system
-			String query = "select * from ScheduleRequests group by StudentId order by datetime(SubmitTime) desc limit 1";
+			String query = "select * from ScheduleRequests group by StudentId order by datetime(SubmitTime) desc";
 			
 			try {	
 				Connection connection = arms.dataAccess.DbConnection.dbConnector();
@@ -315,11 +315,12 @@ public class DbActions {
 				int count = 0;
 				while (rs.next()) {
 					HashMap<Integer, Integer> requestedCourses = null;
-					//int SRId = rs.getInt("SRID");
+					int SRId = rs.getInt("SRID");
 					String submitTimeStr = rs.getString("SubmitTime");
 					Date submitTime = df.parse(submitTimeStr);
 					int studentIdFromDb = rs.getInt("StudentID");
 					ScheduleRequest newScheduleRequest = new ScheduleRequest(studentIdFromDb, submitTime, requestedCourses);
+					newScheduleRequest.setSRID(SRId);
 					scheduleRequests.add(count, newScheduleRequest);
 					count++;
 				}
@@ -335,28 +336,23 @@ public class DbActions {
 				int SRId = currentRequest.getSRID();
 				//Create hashMap that will contain the courses of the currentRequest
 				HashMap<Integer, Integer> coursesOfCurrentRequest = new HashMap<Integer, Integer>();
-				//Get only the rows with SRID of the currentRequest
-				query = "select * from SRDetails where SRID=? ";
+
 				//HashMap<Integer, Integer> requestedCoursesPerStudent = new HashMap<Integer, Integer>();
 				try 
 				{	
+					//Get only the rows with SRID of the currentRequest
+					query = "select * from SRDetails where SRID=? ";
 					Connection connection = arms.dataAccess.DbConnection.dbConnector();
 					PreparedStatement pst = connection.prepareStatement(query);
 					pst.setInt(1, SRId);
 					ResultSet rs = pst.executeQuery();
-					int count = 0;
 
 					//Iterate over rows of SRDetails table that matches SRId
 					while (rs.next()) {
 						coursesOfCurrentRequest.put(rs.getInt("CourseID"), rs.getInt("OfferingID"));
-						count++;
 					}
 					currentRequest.setRequestedCourses(coursesOfCurrentRequest);
-					
-
-					if(count == 0) {
-						return null;
-					}
+				
 					rs.close();
 					pst.close();
 					connection.close();
@@ -660,7 +656,6 @@ public class DbActions {
 			while (rs.next()) {
 				count = rs.getInt(1);
 			}
-			//System.out.println(count);
 			rs.close();
 			pst.close();
 			connection.close();

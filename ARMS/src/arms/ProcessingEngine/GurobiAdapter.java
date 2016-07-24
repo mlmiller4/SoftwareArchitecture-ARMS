@@ -78,7 +78,7 @@ public class GurobiAdapter {
             for (Integer course : requestCourses){
                 GRBLinExpr expr = new GRBLinExpr();
                 for(Integer courseInstance : ProcessingEngine.getCourseToInstances().get(course)){
-                    expr.addTerm(1.0, yij[requests.get(i).getStudentId()][courseInstance]);
+                    expr.addTerm(1.0, yij[requests.get(i).getStudentId()][courseInstance-1]);
                 }
                 model.addConstr(expr, GRB.LESS_EQUAL,1,""); //A student does not necessarily have to get a course they asked for.
             }
@@ -87,7 +87,7 @@ public class GurobiAdapter {
             for(Integer course : ProcessingEngine.getCourseToInstances().keySet()){
                 if(!requests.get(i).getRequestedCourses().keySet().contains(course)){
                     for(Integer courseInstance : ProcessingEngine.getCourseToInstances().get(course)){
-                        expr.addTerm(1.0, yij[requests.get(i).getStudentId()][courseInstance]);
+                        expr.addTerm(1.0, yij[requests.get(i).getStudentId()-1][courseInstance-1]);
                     }
                 }
             }
@@ -114,7 +114,7 @@ public class GurobiAdapter {
                  for(Integer offeringId: ProcessingEngine.getCourseToInstances().get(courseId)){
                      for(Integer prereqCourseId: ProcessingEngine.getCourseToPrerequisites().get(courseId)){
                          GRBLinExpr expr = new GRBLinExpr();
-                         expr.addTerm(1.0, yij[i][offeringId]);
+                         expr.addTerm(1.0, yij[i][offeringId-1]);
                          for(Integer prereqOfferingId: ProcessingEngine.getOfferingToPrerequisiteOfferings().get(offeringId)){
                              if(ProcessingEngine.getOfferingsMap().get(prereqOfferingId).getCourseId() == prereqCourseId){
                                  expr.addTerm(-1.0, yij[i][prereqOfferingId]);
@@ -132,13 +132,14 @@ public class GurobiAdapter {
         List<Student> pStudents = ProcessingEngine.getPrioritizedStudents();
         List<CourseInstance> offerings = ProcessingEngine.getCourseOfferings();
         for (int i = 0; i < pStudents.size(); i++) {
-            for (int k = i + 1; k < pStudents.size(); i++) {
+            for (int k = i + 1; k < pStudents.size(); k++) {
                 for (int j = 0; j < offerings.size(); j++) {
                     //y_i1o - y_i2o >= 0
                     GRBLinExpr expr = new GRBLinExpr();
-                    expr.addTerm(1.0, yij[pStudents.get(i).getId()][offerings.get(j).getId()]);
-                    expr.addTerm(-1.0, yij[pStudents.get(k).getId()][offerings.get(j).getId()]);
+                    expr.addTerm(1.0, yij[pStudents.get(i).getId()-1][offerings.get(j).getId()-1]);
+                    expr.addTerm(-1.0, yij[pStudents.get(k).getId()-1][offerings.get(j).getId()-1]);
                     model.addConstr(expr, GRB.GREATER_EQUAL, 0.0, "");
+
                 }
             }
         }

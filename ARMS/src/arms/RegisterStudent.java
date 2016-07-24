@@ -66,7 +66,7 @@ public class RegisterStudent extends JFrame {
 		contentPane.add(label);
 
 		JLabel lblEarnedHours = new JLabel("Earned Hours:");
-		lblEarnedHours.setBounds(114, 166, 93, 24);
+		lblEarnedHours.setBounds(114, 166, 105, 24);
 		contentPane.add(lblEarnedHours);
 
 		JLabel lblGpa = new JLabel("GPA:");
