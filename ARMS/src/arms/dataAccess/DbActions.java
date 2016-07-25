@@ -201,7 +201,7 @@ public class DbActions {
 	 */
 	public static List<ScheduleRequest> getScheduleRequests(int studentId, int courseId) {
 		List<ScheduleRequest> scheduleRequests = new ArrayList<ScheduleRequest>(); 
-		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+		DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
 		String query = new String();
 		Connection connection = null;
 		PreparedStatement pst = null;
@@ -353,7 +353,7 @@ public class DbActions {
 	        //Group by student, order by submit time, return top 1
 	        
 	        List<ScheduleRequest> scheduleRequests = new ArrayList<ScheduleRequest>(); 
-			DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+			DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
 			//Get all schedule requests in the system
 			String query = "select * from ScheduleRequests group by StudentId order by datetime(SubmitTime) desc";
 			Connection connection = null;
@@ -983,7 +983,6 @@ public class DbActions {
 		List<CourseInstance> catalog = getCatalog();
 		for (CourseInstance courseConfig : catalog)
 		{
-			System.out.println(courseConfig.getSemesterId());
 			config.put("course_"+courseConfig.getCourseId()+"_offering_"+courseConfig.getId()+"_classSize", (float) courseConfig.getClassSize());
 			config.put("course_"+courseConfig.getCourseId()+"_offering_"+courseConfig.getId()+"_semester", (float) courseConfig.getSemesterId());
 		}	
