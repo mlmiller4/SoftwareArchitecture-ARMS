@@ -669,7 +669,7 @@ public class DbActions {
 					// Retrieve new SRID
 					rs = pst.getGeneratedKeys();
 					rs.next();
-					newSRID = rs.getInt("SRId");
+					newSRID = rs.getInt(1);
 				}  
 				catch (Exception e)
 				{
