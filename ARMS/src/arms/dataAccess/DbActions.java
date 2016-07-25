@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -597,7 +598,7 @@ public class DbActions {
 			try {
 				connection = arms.dataAccess.DbConnection.dbConnector();
 				String query = "select * from SRDetails where SRID=? ";
-				 pst = connection.prepareStatement(query);
+				pst = connection.prepareStatement(query);
 				pst.setInt(1, request.getSRID());
 
 				 rs = pst.executeQuery();
@@ -634,7 +635,7 @@ public class DbActions {
 					{
 						connection = arms.dataAccess.DbConnection.dbConnector();
 						String query = "update SRDetails set CourseID=?, OfferingID=? where SRID=?"; 
-						 pst = connection.prepareStatement(query);
+						pst = connection.prepareStatement(query);
 						pst.setInt(1, entry.getKey());
 						pst.setInt(2, entry.getValue());
 						pst.setInt(3, request.getSRID());
@@ -660,13 +661,14 @@ public class DbActions {
 				{
 					connection = arms.dataAccess.DbConnection.dbConnector();
 					String query = "insert into ScheduleRequests (StudentID, SubmitTime) values (?,?)"; 
-					 pst = connection.prepareStatement(query);
+					pst = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 					pst.setInt(1, request.getStudentId());
 					pst.setString(2, submitTime.toString());
 					pst.executeUpdate();
 					
 					// Retrieve new SRID
-					 rs = pst.getGeneratedKeys();
+					rs = pst.getGeneratedKeys();
+					rs.next();
 					newSRID = rs.getInt("SRId");
 				}  
 				catch (Exception e)
