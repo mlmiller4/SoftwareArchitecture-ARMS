@@ -132,11 +132,13 @@ public class GurobiAdapter {
         List<Student> pStudents = ProcessingEngine.getPrioritizedStudents();
         List<CourseInstance> offerings = ProcessingEngine.getCourseOfferings();
         for (int i = 0; i < pStudents.size(); i++) {
-            for (int k = i + 1; k < pStudents.size(); k++) {
+            for (int k = i + 1; k < pStudents.size()-1; k++) {
                 for (int j = 0; j < offerings.size(); j++) {
                     //y_i1o - y_i2o >= 0
                     GRBLinExpr expr = new GRBLinExpr();
                     expr.addTerm(1.0, yij[pStudents.get(i).getId()-1][offerings.get(j).getId()-1]);
+                    System.out.println(pStudents.get(k).getId()-1);
+                    System.out.println(k);
                     expr.addTerm(-1.0, yij[pStudents.get(k).getId()-1][offerings.get(j).getId()-1]);
                     model.addConstr(expr, GRB.GREATER_EQUAL, 0.0, "");
 
