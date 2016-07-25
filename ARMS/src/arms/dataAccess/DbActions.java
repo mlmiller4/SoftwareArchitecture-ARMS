@@ -667,10 +667,6 @@ public class DbActions {
 					// Retrieve new SRID
 					 rs = pst.getGeneratedKeys();
 					newSRID = rs.getInt("SRId");
-					
-					rs.close();
-					pst.close();
-					connection.commit();
 				}  
 				catch (Exception e)
 				{
@@ -696,9 +692,6 @@ public class DbActions {
 						pst.setInt(2, entry.getKey());
 						pst.setInt(3, entry.getValue());
 						pst.executeUpdate();
-						pst.close();
-						connection.commit();
-						connection.close();
 					}  
 					catch (Exception e)
 					{
