@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.JOptionPane;
 
@@ -201,7 +202,7 @@ public class DbActions {
 	 */
 	public static List<ScheduleRequest> getScheduleRequests(int studentId, int courseId) {
 		List<ScheduleRequest> scheduleRequests = new ArrayList<ScheduleRequest>(); 
-		DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String query = new String();
 		Connection connection = null;
 		PreparedStatement pst = null;
