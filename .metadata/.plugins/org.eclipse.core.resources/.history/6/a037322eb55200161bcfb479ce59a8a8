@@ -88,18 +88,18 @@ public class CourseOffering {
 		btnCloseButton.setBounds(476, 294, 157, 23);
 		frame.getContentPane().add(btnCloseButton);
 		
-//		JButton btnAcceptProposedSchedule = new JButton("Accept Proposed Schedule");
-//		btnAcceptProposedSchedule.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				frame.dispose();
-//				table = null;
-//				for (int i=0; i<model.getRowCount(); i++){
-//					model.removeRow(i);
-//				}
-//			}
-//		});
-//		btnAcceptProposedSchedule.setBounds(269, 294, 197, 23);
-//		frame.getContentPane().add(btnAcceptProposedSchedule);
+		JButton btnAcceptProposedSchedule = new JButton("Accept Proposed Schedule");
+		btnAcceptProposedSchedule.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+				table = null;
+				for (int i=0; i<model.getRowCount(); i++){
+					model.removeRow(i);
+				}
+			}
+		});
+		btnAcceptProposedSchedule.setBounds(269, 294, 197, 23);
+		frame.getContentPane().add(btnAcceptProposedSchedule);
 		
 		// Add columns to model
 		//model.addColumn("Course Offering ID");
