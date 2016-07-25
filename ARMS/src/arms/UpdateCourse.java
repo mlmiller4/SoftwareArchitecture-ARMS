@@ -37,7 +37,7 @@ public class UpdateCourse extends JFrame {
 	private JPanel contentPane;
 	private JTextField classroomSize;
 	private JTextField courseIdField;
-	private JTextField courseNameField;
+	private JTextField courseTitleField;
 	private Integer initialClassSize = new Integer(0);
 	private Integer initialRemSeats = new Integer(0);
 
@@ -84,9 +84,6 @@ public class UpdateCourse extends JFrame {
 		courseIdField = new JTextField();
 		courseIdField.setVisible(false);
 
-		courseNameField = new JTextField();
-		courseNameField.setVisible(false);
-
 		JLabel lblSemester = new JLabel("Semester:");
 		lblSemester.setBounds(50, 152, 90, 15);
 		contentPane.add(lblSemester);
@@ -94,10 +91,6 @@ public class UpdateCourse extends JFrame {
 		JLabel label = new JLabel("Course Name:");
 		label.setBounds(50, 65, 90, 15);
 		contentPane.add(label);
-
-		JLabel lblCourseTitle = new JLabel("");
-		lblCourseTitle.setBounds(182, 109, 153, 14);
-		contentPane.add(lblCourseTitle);
 
 		// TBD: Grab list of course Ids and store into an array of strings
 		// This will be used to populate the courseId combo box
@@ -115,14 +108,12 @@ public class UpdateCourse extends JFrame {
 				CourseInstance selectedCourse = CommonFunctions
 						.getCourse(course);
 				if (selectedCourse != null) {
-					courseNameField.setText(selectedCourse.getCourseName());
+					courseTitleField.setText(selectedCourse.getCourseName());
 				}
 			}
 		});
 		courseId.setBounds(182, 60, 153, 24);
 		contentPane.add(courseId);
-
-		lblCourseTitle.setText(courseNameField.getText());
 
 		JLabel lblClassroomSize = new JLabel("Classroom Size:");
 		lblClassroomSize.setBounds(50, 197, 114, 15);
@@ -156,7 +147,7 @@ public class UpdateCourse extends JFrame {
 
 				// Get specific course from CourseInstance list
 				updateCourse = CommonFunctions.getCourseInstanceBySemester(
-						courseNameField.getText(), semester);
+						courseTitleField.getText(), semester);
 				if (updateCourse != null) {
 					initialClassSize = updateCourse.getClassSize();
 					initialRemSeats = updateCourse.getRemSeats();
@@ -181,9 +172,21 @@ public class UpdateCourse extends JFrame {
 				updateCourse.setRemSeats(newRemSeats);
 
 				if (updateCourse.getId() < 0) {
-					DbActions.insertCourseOffering(updateCourse);
+					if (DbActions.insertCourseOffering(updateCourse)) {
+						JOptionPane.showMessageDialog(null,
+								"Course successfully added.");
+					} else {
+						JOptionPane.showMessageDialog(null,
+								"Course not updated, please try again.");
+					}
 				} else {
-					DbActions.updateCourseOffering(updateCourse);
+					if (DbActions.updateCourseOffering(updateCourse)) {
+						JOptionPane.showMessageDialog(null,
+								"Course successfully updated.");
+					} else {
+						JOptionPane.showMessageDialog(null,
+								"Course not added, please try again.");
+					}
 				}
 				// Show dialog that message was successfully updated
 
@@ -203,6 +206,12 @@ public class UpdateCourse extends JFrame {
 		});
 		btnBack.setBounds(182, 236, 117, 25);
 		contentPane.add(btnBack);
+
+		courseTitleField = new JTextField();
+		courseTitleField.setEditable(false);
+		courseTitleField.setBounds(182, 107, 236, 19);
+		contentPane.add(courseTitleField);
+		courseTitleField.setColumns(10);
 
 	}
 }

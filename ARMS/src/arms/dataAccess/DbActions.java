@@ -30,8 +30,8 @@ public class DbActions {
 		try 
 		{
 			 connection = arms.dataAccess.DbConnection.dbConnector();
-			String query = "insert into Students (ID,FirstName,LastName,EarnedHours,GPA,Password) " +
-					"values (?,?,?,?,?,?)";
+			String query = "insert into Students (ID,FirstName,LastName,EarnedHours,GPA,Password,UserName) " +
+					"values (?,?,?,?,?,?,?)";
 			 pst = connection.prepareStatement(query);
 			pst.setInt(1, student.getId());
 			pst.setString(2, student.getFirstName());
@@ -39,6 +39,7 @@ public class DbActions {
 			pst.setFloat(4, student.getEarnedHours());
 			pst.setFloat(5,  student.getGpa());
 			pst.setString(6,  student.getPassword());
+			pst.setString(7, student.getUserName());
 			pst.executeUpdate();
 		}  
 		catch (Exception e)
@@ -584,7 +585,7 @@ public class DbActions {
 		//row for the object with a missing id and add SRDetails accordingly.
 		for (ScheduleRequest request : recentStudentRequests)
 		{
-			Connection connection = arms.dataAccess.DbConnection.dbConnector();
+			Connection connection = null;
 			PreparedStatement pst = null;
 			ResultSet rs = null;
 			Date submitTime = request.getSubmitTime();
@@ -593,6 +594,7 @@ public class DbActions {
 			
 			// Check if SRID exists
 			try {
+				connection = arms.dataAccess.DbConnection.dbConnector();
 				String query = "select * from SRDetails where SRID=? ";
 				 pst = connection.prepareStatement(query);
 				pst.setInt(1, request.getSRID());
@@ -629,6 +631,7 @@ public class DbActions {
 				{
 					try 
 					{
+						connection = arms.dataAccess.DbConnection.dbConnector();
 						String query = "update SRDetails set CourseID=?, OfferingID=? where SRID=?"; 
 						 pst = connection.prepareStatement(query);
 						pst.setInt(1, entry.getKey());
@@ -654,6 +657,7 @@ public class DbActions {
 				// Inserts new row into ScheduleRequests table, SRID is autoincremented
 				try 
 				{
+					connection = arms.dataAccess.DbConnection.dbConnector();
 					String query = "insert into ScheduleRequests (StudentID, SubmitTime) values (?,?)"; 
 					 pst = connection.prepareStatement(query);
 					pst.setInt(1, request.getStudentId());
@@ -685,6 +689,7 @@ public class DbActions {
 				{
 					try 
 					{
+						connection = arms.dataAccess.DbConnection.dbConnector();
 						String query = "insert into SRDetails (SRID, CourseID, OfferingID) values (?,?,?)"; 
 						 pst = connection.prepareStatement(query);
 						pst.setInt(1, newSRID);
@@ -964,11 +969,6 @@ public class DbActions {
 		report.setScheduleRequestsNum(getScheduleRequestsCount());
 		
 		HashMap<Integer, Integer>  courses = getCourseRequestCount();
-//		HashMap<Integer, Integer> courseDemand = new HashMap<Integer,Integer>();
-//		for (CourseInstance course : courses)
-//		{
-//			courseDemand.put(course.getCourseId(), course.getRequestCount());
-//		}
 		report.setCourseDemand(courses);
 		
 		List<Student> students = getStudentRequestCount();

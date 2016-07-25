@@ -97,10 +97,10 @@ public class CommonFunctions {
 		if ( catalog != null)
 		{
 			for (CourseInstance course : catalog) {
-				if (course.getCourseName().equals(cname)) {
+				if (course.getCourseName().matches(cname)) {
 					courseId = course.getCourseId();
 					prereqs = course.getPrerequisits();
-					if (course.getSemester().equals(sname)) {
+					if (course.getSemester().matches(sname)) {
 						return course;
 					}
 					
@@ -109,7 +109,7 @@ public class CommonFunctions {
 			//Get SemesterID
 			for (Semester semester: semesters)
 			{
-				if (semester.getSemesterName().equals(sname))
+				if (semester.getSemesterName().matches(sname))
 				{
 					semesterId = semester.getId();
 				}
