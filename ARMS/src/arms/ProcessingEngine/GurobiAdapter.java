@@ -78,7 +78,7 @@ public class GurobiAdapter {
             for (Integer course : requestCourses){
                 GRBLinExpr expr = new GRBLinExpr();
                 for(Integer courseInstance : ProcessingEngine.getCourseToInstances().get(course)){
-                    expr.addTerm(1.0, yij[requests.get(i).getStudentId()][courseInstance-1]);
+                    expr.addTerm(1.0, yij[requests.get(i).getStudentId()-1][courseInstance-1]);
                 }
                 model.addConstr(expr, GRB.LESS_EQUAL,1,""); //A student does not necessarily have to get a course they asked for.
             }
@@ -137,8 +137,6 @@ public class GurobiAdapter {
                     //y_i1o - y_i2o >= 0
                     GRBLinExpr expr = new GRBLinExpr();
                     expr.addTerm(1.0, yij[pStudents.get(i).getId()-1][offerings.get(j).getId()-1]);
-                    System.out.println(pStudents.get(k).getId()-1);
-                    System.out.println(k);
                     expr.addTerm(-1.0, yij[pStudents.get(k).getId()-1][offerings.get(j).getId()-1]);
                     model.addConstr(expr, GRB.GREATER_EQUAL, 0.0, "");
 
