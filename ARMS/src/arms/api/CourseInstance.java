@@ -20,6 +20,7 @@ public class CourseInstance {
         this.id = id;
         this.courseId = courseId;
         this.courseName = courseName;
+        this.semesterId = semesterId;
         this.semester = semester;
         this.classSize = classSize;
         this.remSeats = remSeats;

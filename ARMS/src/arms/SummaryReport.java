@@ -7,9 +7,14 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.Color;
+
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
@@ -25,6 +30,9 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 import javax.swing.JTextField;
 
 public class SummaryReport extends JFrame {
@@ -96,7 +104,7 @@ public class SummaryReport extends JFrame {
 		lblConfiguration.setHorizontalAlignment(SwingConstants.CENTER);
 		lblConfiguration.setForeground(Color.BLACK);
 		lblConfiguration.setFont(new Font("Dialog", Font.PLAIN, 16));
-		lblConfiguration.setBounds(32, 398, 263, 49);
+		lblConfiguration.setBounds(32, 394, 263, 49);
 		contentPane.add(lblConfiguration);
 
 		JScrollPane scrollPane = new JScrollPane();
@@ -105,6 +113,15 @@ public class SummaryReport extends JFrame {
 
 		table = new JTable();
 		scrollPane.setViewportView(table);
+		table.setAutoCreateRowSorter(true);
+		// TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(
+		// table.getModel());
+		// table.setRowSorter(sorter);
+		//
+		// List<RowSorter.SortKey> sortKeys = new
+		// ArrayList<RowSorter.SortKey>();
+		// sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+		// sorter.setSortKeys(sortKeys);
 
 		JButton btnNewButton = new JButton("Back");
 		btnNewButton.addActionListener(new ActionListener() {
@@ -124,6 +141,15 @@ public class SummaryReport extends JFrame {
 
 		table_1 = new JTable();
 		scrollPane_1.setViewportView(table_1);
+		table_1.setAutoCreateRowSorter(true);
+		// TableRowSorter<TableModel> sorter1 = new TableRowSorter<TableModel>(
+		// table_1.getModel());
+		// table_1.setRowSorter(sorter1);
+		//
+		// List<RowSorter.SortKey> sortKeys1 = new
+		// ArrayList<RowSorter.SortKey>();
+		// sortKeys1.add(new RowSorter.SortKey(1, SortOrder.ASCENDING));
+		// sorter1.setSortKeys(sortKeys1);
 
 		JButton btnNewButton_1 = new JButton("Generate Report");
 		btnNewButton_1.addActionListener(new ActionListener() {
@@ -145,11 +171,20 @@ public class SummaryReport extends JFrame {
 		contentPane.add(btnNewButton_1);
 
 		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(37, 442, 258, 149);
+		scrollPane_2.setBounds(32, 443, 532, 148);
 		contentPane.add(scrollPane_2);
 
 		table_2 = new JTable();
 		scrollPane_2.setViewportView(table_2);
+		table_2.setAutoCreateRowSorter(true);
+		// TableRowSorter<TableModel> sorter2 = new TableRowSorter<TableModel>(
+		// table_2.getModel());
+		// table_2.setRowSorter(sorter2);
+		//
+		// List<RowSorter.SortKey> sortKeys2 = new
+		// ArrayList<RowSorter.SortKey>();
+		// sortKeys2.add(new RowSorter.SortKey(1, SortOrder.ASCENDING));
+		// sorter2.setSortKeys(sortKeys2);
 
 		studentCount = new JTextField();
 		studentCount.setEditable(false);
@@ -171,8 +206,9 @@ public class SummaryReport extends JFrame {
 		DefaultTableModel model = new DefaultTableModel(new Object[0][0],
 				columns);
 
-		for (HashMap.Entry<Integer, Integer> entry : report.getCourseDemand()
-				.entrySet()) {
+		Map<Integer, Integer> sortedMap = new TreeMap<Integer, Integer>(
+				report.getCourseDemand());
+		for (Map.Entry<Integer, Integer> entry : sortedMap.entrySet()) {
 			Object[] o = new Object[2];
 			o[0] = entry.getKey();
 			o[1] = entry.getValue();
@@ -205,9 +241,12 @@ public class SummaryReport extends JFrame {
 		Object[] columns = { "Parameter", "Value" };
 		DefaultTableModel model = new DefaultTableModel(new Object[0][0],
 				columns);
-
-		for (HashMap.Entry<String, Float> entry : report.getConfigParameters()
-				.entrySet()) {
+		Map<String, Float> sortedMap = new TreeMap<String, Float>(
+				report.getConfigParameters());
+		// for (HashMap.Entry<String, Float> entry :
+		// report.getConfigParameters()
+		// .entrySet()) {
+		for (Map.Entry<String, Float> entry : sortedMap.entrySet()) {
 			Object[] o = new Object[2];
 			o[0] = entry.getKey();
 			o[1] = entry.getValue();

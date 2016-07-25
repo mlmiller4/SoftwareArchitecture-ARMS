@@ -822,16 +822,14 @@ public class DbActions {
 	 * For each course, counts the number of distinct students who have requested that course
 	 * @return Returns a list of updated CourseInstances with their request count
 	 */
-	private static List<CourseInstance> getCourseRequestCount(){
-		List<CourseInstance> catalog = getCatalog();
-		List<CourseInstance> updatedCatalog = new ArrayList<CourseInstance>();
+	private static HashMap<Integer, Integer> getCourseRequestCount(){
 		HashMap<Integer, Integer> courseRequestCount = new HashMap<Integer, Integer>();
 		Connection connection = null;
 		PreparedStatement pst = null;
 		ResultSet rs = null;
 		try 
 		{
-			String query = "select CourseID, count(DISTINCT StudentID) as rowcount from ScheduleRequests t1 LEFT JOIN SRDetails t2 ON t1.SRId = t2.SRID "; 
+			String query = "select CourseID, count(distinct StudentId) as rowcount from ScheduleRequests t1 LEFT JOIN SRDetails t2 ON t1.SRId = t2.SRID group by CourseId"; 
 			connection = arms.dataAccess.DbConnection.dbConnector();
 			pst = connection.prepareStatement(query);
 			rs = pst.executeQuery();
@@ -852,60 +850,70 @@ public class DbActions {
 				JOptionPane.showMessageDialog(null, e);
 			}
 		}
-		
-		if (catalog != null)
-		{
-			for (CourseInstance course : catalog)
-			{
-				for (HashMap.Entry<Integer, Integer> entry : courseRequestCount.entrySet())
-				{
-					if ( course.getId() == entry.getKey() )
-					{
-						course.setRequestCount(entry.getValue());
-					}
-				}
-				updatedCatalog.add(course);
-			}
-		}
-		return updatedCatalog;
+		return courseRequestCount;
 	}
 	
 	/**
-	 * For each course, counts the number of distinct students who have requested that course
+	 * For each student, a set of three values representing how many of their requested course
+	 * (per their most recent request, if it exists) could be taken during the next semester,
+	 * could be taken during some future semester, or could not be taken at all
 	 * @return Returns a list of updated CourseInstances with their request count
 	 */
 	private static List<Student> getStudentRequestCount(){
 		List<Student> students = getStudents(); //Current student list
-		List<Student> updatedStudents = new ArrayList<Student>();
 		List<ScheduleRequest> requests = getAllRecentScheduleRequests();
-		int nextSemester = 0;
-		int futureSemester = 0;
-		int noSemester = 0;
+
 		
+		Connection connection = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
 		for (Student student : students)
 		{
+			int nextSemester = 0;
+			int futureSemester = 0;
+			int noSemester = 0;
+			
 			for (ScheduleRequest request: requests)
 			{
 				if ( student.getId() == request.getStudentId() )
 				{
 					for (HashMap.Entry<Integer, Integer> entry : request.getRequestedCourses().entrySet())
 					{
-						// If Offering ID is 0 means request is unavailable for that course
-						if (entry.getValue() == 0)
+						if (entry.getValue() == 0 || entry.getValue() == null)
 						{
 							noSemester++;
-						}
-						else
-						{
-							// Retrieve CourseInstance based on offeringID
-							CourseInstance c = getCourseInstanceByID(entry.getValue());
-							if (c.getSemesterId() == 1)
+						} else {
+							try 
 							{
-								nextSemester++;
-							}
-							else if (c.getSemesterId() > 1)
+								String query = "select SemesterId from CourseOfferings where Id=?"; 
+								connection = arms.dataAccess.DbConnection.dbConnector();
+								pst = connection.prepareStatement(query);
+								pst.setInt(1, entry.getValue());
+								rs = pst.executeQuery();
+								while (rs.next()) {
+									int semId = rs.getInt("SemesterId");
+									if (semId == 0)
+									{
+										nextSemester++;
+									}
+									else 
+									{
+										futureSemester++;
+									}
+								}
+							}  
+							catch (Exception e)
 							{
-								futureSemester++;
+								JOptionPane.showMessageDialog(null, e);
+							} finally {
+								try {
+									rs.close();
+									pst.close();
+									connection.commit();
+									connection.close();
+								} catch (SQLException e) {
+									JOptionPane.showMessageDialog(null, e);
+								}
 							}
 						}
 					}
@@ -914,7 +922,6 @@ public class DbActions {
 			student.setCoursesNextSemester(nextSemester);
 			student.setCoursesFutureSemester(futureSemester);
 			student.setCoursesNoSemester(noSemester);
-			//updatedStudents.add(student);
 		}
 		return students;
 	}
@@ -955,13 +962,13 @@ public class DbActions {
 		report.setStudentsNum(studentCount);
 		report.setScheduleRequestsNum(getScheduleRequestsCount());
 		
-		List<CourseInstance> courses = getCourseRequestCount();
-		HashMap<Integer, Integer> courseDemand = new HashMap<Integer,Integer>();
-		for (CourseInstance course : courses)
-		{
-			courseDemand.put(course.getCourseId(), course.getRequestCount());
-		}
-		report.setCourseDemand(courseDemand);
+		HashMap<Integer, Integer>  courses = getCourseRequestCount();
+//		HashMap<Integer, Integer> courseDemand = new HashMap<Integer,Integer>();
+//		for (CourseInstance course : courses)
+//		{
+//			courseDemand.put(course.getCourseId(), course.getRequestCount());
+//		}
+		report.setCourseDemand(courses);
 		
 		List<Student> students = getStudentRequestCount();
 		HashMap<Integer, ArrayList<Integer>> studentDemand = new HashMap<Integer, ArrayList<Integer>>();
@@ -979,8 +986,13 @@ public class DbActions {
 		report.setRequestResultsInfo(studentDemand);
 		
 		HashMap<String, Float> config = new HashMap<String, Float>();
-		config.put("Classroom Size", (float) 0);
-		config.put("Semester", null);
+		List<CourseInstance> catalog = getCatalog();
+		for (CourseInstance courseConfig : catalog)
+		{
+			System.out.println(courseConfig.getSemesterId());
+			config.put("course_"+courseConfig.getCourseId()+"_offering_"+courseConfig.getId()+"_classSize", (float) courseConfig.getClassSize());
+			config.put("course_"+courseConfig.getCourseId()+"_offering_"+courseConfig.getId()+"_semester", (float) courseConfig.getSemesterId());
+		}	
 		report.setConfigParameters(config);
 		
 		return report;
