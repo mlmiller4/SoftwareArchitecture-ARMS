@@ -630,10 +630,10 @@ public class DbActions {
 					try 
 					{
 						connection = arms.dataAccess.DbConnection.dbConnector();
-						String query = "update SRDetails set CourseID=?, OfferingID=? where SRID=?"; 
+						String query = "update SRDetails set OfferingID=? where CourseID=? AND SRID=?"; 
 						pst = connection.prepareStatement(query);
-						pst.setInt(1, entry.getKey());
-						pst.setInt(2, entry.getValue());
+						pst.setInt(1, entry.getValue());
+						pst.setInt(2, entry.getKey());
 						pst.setInt(3, request.getSRID());
 						pst.executeUpdate();
 
