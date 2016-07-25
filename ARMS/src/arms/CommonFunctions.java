@@ -192,9 +192,9 @@ public class CommonFunctions {
 	}
 	
 	/**
-	 * Gets any courseInstance with a name of course (th
+	 * Gets the student info from the list of students based on studentid
 	 * @param studentId student id
-	 * @return
+	 * @return Student object if it exists, null otherwise
 	 */
 	public static Student getStudentInstance(int studentId) {
 		// Iterate through catalog and store course ID and course names into
@@ -213,9 +213,9 @@ public class CommonFunctions {
 	}
 	
 	/**
-	 * Gets any courseInstance with a name of course (th
-	 * @param userName Student's username
-	 * @return
+	 * Gets the student info from the list of students based on username
+	 * @param studentId student id
+	 * @return Student object if it exists, null otherwise
 	 */
 	public static Student getStudentInstance(String userName) {
 		// Iterate through catalog and store course ID and course names into

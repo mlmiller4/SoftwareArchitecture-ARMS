@@ -137,10 +137,16 @@ public class AdminFrame extends JFrame {
 		JButton btnShadowMode = new JButton("Generate Schedule");
 		btnShadowMode.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				contentPane.setVisible(false);
-				dispose();
-				StudentFrame sf = new StudentFrame(true, studentId.getText());
-				sf.setVisible(true);
+				if (CommonFunctions.getStudentInstance(Integer
+						.parseInt(studentId.getText())) == null) {
+					JOptionPane.showMessageDialog(null, "Invalid Student Id");
+				} else {
+					contentPane.setVisible(false);
+					dispose();
+					StudentFrame sf = new StudentFrame(true, studentId
+							.getText());
+					sf.setVisible(true);
+				}
 			}
 		});
 		btnShadowMode.setBounds(136, 289, 200, 25);

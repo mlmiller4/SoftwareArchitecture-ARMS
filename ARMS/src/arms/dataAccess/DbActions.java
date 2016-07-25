@@ -297,31 +297,31 @@ public class DbActions {
 			}
 		}
 
-//		//Filter by student
-//		if(studentId != -1) {
-//			//Create a list of requests to be removed because they don't contain studentId
-//			List<ScheduleRequest> requestsToRemove = new ArrayList<ScheduleRequest>();
-//			//Go over schduleRequests list and add all entries where the student id != studentID to the rquestsToRemove list
-//			for(ScheduleRequest currentRequest : scheduleRequests) {
-//				if(currentRequest.getStudentId() != studentId) {
-//					requestsToRemove.add(currentRequest);
-//				}
-//			}
-//			scheduleRequests.removeAll(requestsToRemove);
-//		}
-//		//Filter by course
-//		if(courseId != -1) {
-//			//Create a list of requests to be removed because they don't contain a course with courseId
-//			List<ScheduleRequest> requestsToRemove = new ArrayList<ScheduleRequest>();
-//			//Go over schduleRequests list and add all entries that don't contain courseIs to the rquestsToRemove list
-//			for(ScheduleRequest currentRequest : scheduleRequests) {
-//				//Find out if the requested courses of the currentRequest contain courseId
-//				if(!currentRequest.getRequestedCourses().keySet().contains(courseId)) {
-//					requestsToRemove.add(currentRequest);	
-//				}
-//			}
-//			scheduleRequests.removeAll(requestsToRemove);
-//		}
+		//Filter by student
+		if(studentId != -1) {
+			//Create a list of requests to be removed because they don't contain studentId
+			List<ScheduleRequest> requestsToRemove = new ArrayList<ScheduleRequest>();
+			//Go over schduleRequests list and add all entries where the student id != studentID to the rquestsToRemove list
+			for(ScheduleRequest currentRequest : scheduleRequests) {
+				if(currentRequest.getStudentId() != studentId) {
+					requestsToRemove.add(currentRequest);
+				}
+			}
+			scheduleRequests.removeAll(requestsToRemove);
+		}
+		//Filter by course
+		if(courseId != -1) {
+			//Create a list of requests to be removed because they don't contain a course with courseId
+			List<ScheduleRequest> requestsToRemove = new ArrayList<ScheduleRequest>();
+			//Go over schduleRequests list and add all entries that don't contain courseIs to the rquestsToRemove list
+			for(ScheduleRequest currentRequest : scheduleRequests) {
+				//Find out if the requested courses of the currentRequest contain courseId
+				if(!currentRequest.getRequestedCourses().keySet().contains(courseId)) {
+					requestsToRemove.add(currentRequest);	
+				}
+			}
+			scheduleRequests.removeAll(requestsToRemove);
+		}
 		return scheduleRequests;
 	}
 	

@@ -37,6 +37,8 @@ public class ViewRequests extends JFrame {
 	private JPanel contentPane;
 	private JTable table;
 	private JScrollPane scrollPane;
+	private JComboBox courses;
+	private JComboBox<String[]> students;
 
 	// private List<ScheduleRequest> scheduleRequests =
 	// dbactions.getScheduleRequests(studentId, courseId);
@@ -92,35 +94,51 @@ public class ViewRequests extends JFrame {
 		studentIdField.setBounds(350, 61, 114, 19);
 		contentPane.add(studentIdField);
 		studentIdField.setColumns(10);
+		studentIdField.setVisible(false);
 
 		courseIdField = new JTextField();
 		courseIdField.setEditable(false);
 		courseIdField.setBounds(350, 99, 114, 19);
 		contentPane.add(courseIdField);
 		courseIdField.setColumns(10);
-		// courseIdField.setVisible(false);
+		courseIdField.setVisible(false);
 
 		String[] studentList = CommonFunctions.getStudentList();
-		JComboBox<String[]> students = new JComboBox(studentList);
+		students = new JComboBox(studentList);
 		students.setSelectedItem("-SELECT-");
 		students.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JComboBox<String> cb = (JComboBox) arg0.getSource();
 				String student = (String) cb.getSelectedItem();
 				studentIdField.setText(student);
+
+				// If student is selected set course combobox to -SELECT- by
+				// default
+				if (!student.matches("-SELECT-")) {
+					courses.setSelectedItem("-SELECT-");
+					courseIdField.setText("-SELECT-");
+				}
+
 			}
 		});
 		students.setBounds(214, 60, 124, 20);
 		contentPane.add(students);
 
 		String[] courseList = CommonFunctions.getCourseList();
-		JComboBox courses = new JComboBox(courseList);
+		courses = new JComboBox(courseList);
 		courses.setSelectedItem("-SELECT-");
 		courses.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg1) {
 				JComboBox<String> cb = (JComboBox) arg1.getSource();
 				String course = (String) cb.getSelectedItem();
 				courseIdField.setText(course);
+
+				// If student is selected set course combobox to -SELECT- by
+				// default
+				if (!course.matches("-SELECT-")) {
+					students.setSelectedItem("-SELECT-");
+					studentIdField.setText("-SELECT-");
+				}
 			}
 		});
 		courses.setBounds(214, 98, 124, 20);
@@ -140,18 +158,13 @@ public class ViewRequests extends JFrame {
 				List<ScheduleRequest> requests = null;
 				if (studentIdField.getText().matches("-SELECT-")
 						&& !courseIdField.getText().matches("-SELECT-")) {
-					System.out.println("getCourseScheduleRequests "
-							+ Integer.parseInt(courseIdField.getText()));
 					requests = DbActions.getCourseScheduleRequests(Integer
 							.parseInt(courseIdField.getText()));
 				} else if (!studentIdField.getText().matches("-SELECT-")
 						&& courseIdField.getText().matches("-SELECT-")) {
-					System.out.println(Integer.parseInt(studentIdField
-							.getText()));
 					requests = DbActions.getStudentScheduleRequests(Integer
 							.parseInt(studentIdField.getText()));
 				} else {
-					System.out.println("getAllscheduleRequests");
 					requests = DbActions.getAllScheduleRequests();
 				}
 				getScheduleTableEntries(requests);
