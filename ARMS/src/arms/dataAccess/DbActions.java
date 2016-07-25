@@ -277,11 +277,7 @@ public class DbActions {
 					count++;
 				}
 				currentRequest.setRequestedCourses(coursesOfCurrentRequest);
-				
 
-				if(count == 0) {
-					return null;
-				}
 			}  
 			catch (Exception e)
 			{
