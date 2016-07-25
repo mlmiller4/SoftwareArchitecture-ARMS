@@ -271,7 +271,7 @@ public class StudentFrame extends JFrame {
 //							"You have selected the following courses: "
 //									+ courses);
 					
-					CourseOffering.NewScreen();
+					CourseOffering.NewScreen(studentID);
 
 				} else {
 					JOptionPane

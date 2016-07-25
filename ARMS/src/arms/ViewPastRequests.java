@@ -123,6 +123,7 @@ public class ViewPastRequests {
 		
 		table_1.getColumnModel().getColumn(0).setMinWidth(125);
 		table_1.getColumnModel().getColumn(0).setMaxWidth(125);
+		
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 		table_1.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);

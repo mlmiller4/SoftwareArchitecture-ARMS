@@ -14,7 +14,7 @@ public class API {
     public List<CourseInstance> getCatalogFromDb(){
         return DbActions.getCatalog();
     }
-    public List<ScheduleRequest> getRecentScheduleRequestsFromMem(){
+    public static List<ScheduleRequest> getRecentScheduleRequestsFromMem(){
         return ProcessingEngine.getAllRecentScheduleRequests();
     }
     public void activateShadowMode(){
