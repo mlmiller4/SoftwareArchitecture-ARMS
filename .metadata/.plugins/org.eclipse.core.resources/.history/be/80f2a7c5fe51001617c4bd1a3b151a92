@@ -1147,44 +1147,6 @@ public class DbActions {
 		
 		return courseName;
 	}
-	
-	
-	/**
-	 * Returns all Course Offering IDs based on Course ID
-	 */
-	public static ArrayList<Integer> getCourseOfferings(int courseID){
-		
-		ArrayList<Integer> offerings = new ArrayList<Integer>();
-		
-		String query = "select Id from CourseOfferings where CourseId=?";
-		Connection connection = arms.dataAccess.DbConnection.dbConnector();
-		PreparedStatement pst = null;
-		ResultSet rs = null;
-		
-		try{
-			pst = connection.prepareStatement(query);
-			pst.setInt(1, courseID);
-			rs = pst.executeQuery();
-			while (rs.next()){
-				offerings.add(rs.getInt("Id"));
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				rs.close();
-				pst.close();
-				connection.commit();
-				connection.close();
-			} catch (SQLException e) {
-				JOptionPane.showMessageDialog(null, e);
-			}
-		}
-		
-		return offerings;		
-	}
-	 
 	 
 	
 }

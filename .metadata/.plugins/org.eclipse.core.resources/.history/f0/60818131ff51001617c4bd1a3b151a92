@@ -21,7 +21,6 @@ import javax.swing.JTextField;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
-import arms.api.API;
 import arms.api.ScheduleRequest;
 import arms.api.Student;
 import arms.dataAccess.DbActions;
@@ -263,9 +262,6 @@ public class StudentFrame extends JFrame {
 					int studentID = Integer.parseInt(textFieldStdID.getText());
 					Date date = new Date();					
 					ScheduleRequest request = new ScheduleRequest(studentID, date, hashCourses);
-					
-					API myAPI = new API();
-					myAPI.submitRequest(request);
 
 //					JOptionPane.showMessageDialog(null,
 //							"You have selected the following courses: "

@@ -1171,18 +1171,11 @@ public class DbActions {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally {
-			try {
-				rs.close();
-				pst.close();
-				connection.commit();
-				connection.close();
-			} catch (SQLException e) {
-				JOptionPane.showMessageDialog(null, e);
-			}
 		}
 		
-		return offerings;		
+		return offerings;
+		
+		
 	}
 	 
 	 

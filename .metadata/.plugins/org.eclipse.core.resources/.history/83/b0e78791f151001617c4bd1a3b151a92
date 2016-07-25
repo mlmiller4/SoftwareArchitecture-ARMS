@@ -63,23 +63,14 @@ public class CourseOffering {
 		table = new JTable(model);
 		scrollPane.setViewportView(table);
 		
-		JButton btnCloseButton = new JButton("Return to Menu");
+		JButton btnCloseButton = new JButton("Close");
 		btnCloseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				frame.dispose();
 			}
 		});
-		btnCloseButton.setBounds(421, 309, 157, 23);
+		btnCloseButton.setBounds(489, 309, 89, 23);
 		frame.getContentPane().add(btnCloseButton);
-		
-		JButton btnAcceptProposedSchedule = new JButton("Accept Proposed Schedule");
-		btnAcceptProposedSchedule.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
-		btnAcceptProposedSchedule.setBounds(214, 309, 197, 23);
-		frame.getContentPane().add(btnAcceptProposedSchedule);
 		
 		// Add columns to model
 		model.addColumn("Course Offering ID");

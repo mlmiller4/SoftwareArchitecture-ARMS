@@ -13,15 +13,12 @@ import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
-import arms.api.API;
 import arms.api.ScheduleRequest;
 import arms.api.Student;
 import arms.dataAccess.DbActions;
@@ -203,73 +200,51 @@ public class StudentFrame extends JFrame {
 
 		JButton btnSubmitCourseRequests = new JButton("Submit Course Requests");
 		btnSubmitCourseRequests.setBounds(33, 129, 289, 25);
-		panel.add(btnSubmitCourseRequests);		
-		
-		final HashMap<Integer, Integer> hashCourses = new HashMap<Integer, Integer>();
-		
+		panel.add(btnSubmitCourseRequests);
 		btnSubmitCourseRequests.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
 				String courses = null;
-				int course = 0;
-				ArrayList<Integer> offeringIDs = new ArrayList<Integer>();
+				ArrayList<Integer> courseIDs = new ArrayList<Integer>();
 
 				if (!textFieldCourse1.getText().isEmpty()) {
-					course = Integer.parseInt(textFieldCourse1.getText());
-					offeringIDs = DbActions.getCourseOfferings(course);
-					
-					for (int i=0; i<offeringIDs.size(); i++){
-						hashCourses.put(course, offeringIDs.get(i));
-					}					
+					courses = textFieldCourse1.getText();
+					courseIDs.add(Integer.parseInt(textFieldCourse1.getText()));
 
 					if (!textFieldCourse2.getText().isEmpty()) {
-						course = Integer.parseInt(textFieldCourse2.getText());
-						offeringIDs = DbActions.getCourseOfferings(course);
-						
-						for (int i=0; i<offeringIDs.size(); i++){
-							hashCourses.put(course, offeringIDs.get(i));
-						}
+						courses += ", " + textFieldCourse2.getText();
+						courseIDs.add(Integer.parseInt(textFieldCourse2
+								.getText()));
 
 						if (!textFieldCourse3.getText().isEmpty()) {
-							course = Integer.parseInt(textFieldCourse3.getText());
-							offeringIDs = DbActions.getCourseOfferings(course);
-							
-							for (int i=0; i<offeringIDs.size(); i++){
-								hashCourses.put(course, offeringIDs.get(i));
-							}
+							courses += ", " + textFieldCourse3.getText();
+							courseIDs.add(Integer.parseInt(textFieldCourse3
+									.getText()));
 
 							if (!textFieldCourse4.getText().isEmpty()) {
-								course = Integer.parseInt(textFieldCourse4.getText());
-								offeringIDs = DbActions.getCourseOfferings(course);
-								
-								for (int i=0; i<offeringIDs.size(); i++){
-									hashCourses.put(course, offeringIDs.get(i));
-								}
+								courses += ", " + textFieldCourse4.getText();
+								courseIDs.add(Integer.parseInt(textFieldCourse4
+										.getText()));
 
 								if (!textFieldCourse5.getText().isEmpty()) {
-									course = Integer.parseInt(textFieldCourse5.getText());
-									offeringIDs = DbActions.getCourseOfferings(course);
-									
-									for (int i=0; i<offeringIDs.size(); i++){
-										hashCourses.put(course, offeringIDs.get(i));
-									}
+									courses += ", "
+											+ textFieldCourse5.getText();
+									courseIDs.add(Integer
+											.parseInt(textFieldCourse5
+													.getText()));
 								}
 							}
 						}
 					}
 
-					
-					// Create ScheduleRequest object and send to API.submitRequest()	
-					int studentID = Integer.parseInt(textFieldStdID.getText());
-					Date date = new Date();					
-					ScheduleRequest request = new ScheduleRequest(studentID, date, hashCourses);
-					
-					API myAPI = new API();
-					myAPI.submitRequest(request);
+					// Insert course selections into the ScheduleRequests table
+					// What parameters are needed here?? The 'ScheduleRequests'
+					// table only has fields: StudentID, SRId, SubmitTime
 
-//					JOptionPane.showMessageDialog(null,
-//							"You have selected the following courses: "
-//									+ courses);
+					//ScheduleRequest request = new ScheduleRequest(           );
+
+					JOptionPane.showMessageDialog(null,
+							"You have selected the following courses: "
+									+ courses);
 					
 					CourseOffering.NewScreen();
 

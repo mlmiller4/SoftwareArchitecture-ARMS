@@ -69,7 +69,7 @@ public class CourseOffering {
 				frame.dispose();
 			}
 		});
-		btnCloseButton.setBounds(421, 309, 157, 23);
+		btnCloseButton.setBounds(463, 309, 115, 23);
 		frame.getContentPane().add(btnCloseButton);
 		
 		JButton btnAcceptProposedSchedule = new JButton("Accept Proposed Schedule");
@@ -78,7 +78,7 @@ public class CourseOffering {
 				
 			}
 		});
-		btnAcceptProposedSchedule.setBounds(214, 309, 197, 23);
+		btnAcceptProposedSchedule.setBounds(287, 309, 166, 23);
 		frame.getContentPane().add(btnAcceptProposedSchedule);
 		
 		// Add columns to model
