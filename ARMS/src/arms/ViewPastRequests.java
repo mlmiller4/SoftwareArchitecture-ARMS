@@ -4,12 +4,16 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.Color;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import net.proteanit.sql.DbUtils;
 
@@ -79,10 +83,23 @@ public class ViewPastRequests {
 		scrollPane_1.setBounds(36, 99, 917, 404);
 		frame.getContentPane().add(scrollPane_1);
 		
-		DefaultTableModel model = new DefaultTableModel();
+		DefaultTableModel model = new DefaultTableModel(){
+			@Override
+			public Class getColumnClass(int column) {
+				switch (column) {
+				case 0:
+					return Integer.class;
+				case 1:
+					return String.class;
+				default:
+					return String.class;
+				}
+			}
+		};
 		
 		table_1 = new JTable(model);
-		scrollPane_1.setViewportView(table_1);		
+		scrollPane_1.setViewportView(table_1);	
+		table_1.setAutoCreateRowSorter(true);
 		
 		// Add columns to model
 		model.addColumn("Student Request ID");
@@ -120,6 +137,11 @@ public class ViewPastRequests {
 			model.addRow(new Object[] { schedReq.getSRID(), strCourseRequests });                               
 
 		}
+		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table_1.getModel());
+		table_1.setRowSorter(sorter);
+		List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+		sorter.setSortKeys(sortKeys);
 		
 		table_1.getColumnModel().getColumn(0).setMinWidth(125);
 		table_1.getColumnModel().getColumn(0).setMaxWidth(125);

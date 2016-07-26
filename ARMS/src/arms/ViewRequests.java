@@ -7,12 +7,16 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.Color;
 
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import javax.swing.JTable;
@@ -20,6 +24,7 @@ import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -89,6 +94,8 @@ public class ViewRequests extends JFrame {
 
 		table = new JTable();
 		scrollPane.setViewportView(table);
+		table.setAutoCreateRowSorter(true);
+
 		studentIdField = new JTextField();
 		studentIdField.setEditable(false);
 		studentIdField.setBounds(350, 61, 114, 19);
@@ -192,7 +199,27 @@ public class ViewRequests extends JFrame {
 		Object[] columns = { "Student ID", "Course ID", "Semester",
 				"Class Size", "Remaining Seats", "Submit Time" };
 		DefaultTableModel model = new DefaultTableModel(new Object[0][0],
-				columns);
+				columns) {
+			@Override
+			public Class getColumnClass(int column) {
+				switch (column) {
+				case 0:
+					return Integer.class;
+				case 1:
+					return Integer.class;
+				case 2:
+					return String.class;
+				case 3:
+					return Integer.class;
+				case 4:
+					return Integer.class;
+				case 5:
+					return Date.class;
+				default:
+					return String.class;
+				}
+			}
+		};
 
 		if (requests != null) {
 			for (ScheduleRequest schedule : requests) {
@@ -222,5 +249,11 @@ public class ViewRequests extends JFrame {
 			}
 		}
 		table.setModel(model);
+		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(
+				table.getModel());
+		table.setRowSorter(sorter);
+		List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+		sorter.setSortKeys(sortKeys);
 	}
 }

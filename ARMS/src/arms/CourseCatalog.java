@@ -150,15 +150,13 @@ public class CourseCatalog {
 			
 			model.addRow(new Object[] {currentCourse.getCourseId(), currentCourse.getId(), currentCourse.getCourseName(),
 					currentCourse.getSemester(), currentCourse.getClassSize(), currentCourse.getRemSeats(),
-					strPrereqs});	
-			TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
-			table.setRowSorter(sorter);
-			List<RowSorter.SortKey> sortKeys = new ArrayList<>();
-			sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
-			sorter.setSortKeys(sortKeys);
-			
+					strPrereqs});				
 		}
-		
+		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
+		table.setRowSorter(sorter);
+		List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+		sorter.setSortKeys(sortKeys);
 		// Adjust column widths for formatting
 		table.getColumnModel().getColumn(0).setMaxWidth(75);
 		table.getColumnModel().getColumn(1).setMaxWidth(75);
