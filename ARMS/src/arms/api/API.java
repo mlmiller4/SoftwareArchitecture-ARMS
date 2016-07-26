@@ -29,4 +29,7 @@ public class API {
     public List<ScheduleRequest> getAllScheduleRequestsFromDb(){
         return DbActions.getAllScheduleRequests();
     }
+    public void updateStudentList(){
+    	ProcessingEngine.setUpdatedStudentList();
+    }
 }

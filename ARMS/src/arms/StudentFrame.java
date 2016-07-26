@@ -100,11 +100,11 @@ public class StudentFrame extends JFrame {
 		if (shadowMode) {
 			textFieldStdID.setText(userName);
 			Integer stdid = Integer.parseInt(userName);
-			Student usr = CommonFunctions.getStudentInstance(stdid);
+			Student usr = DbActions.getStudentInstance(stdid);
 			textFieldUserName.setText(usr.getUserName());
 		} else {
 			textFieldUserName.setText(userName);
-			Student usr = CommonFunctions.getStudentInstance(userName);
+			Student usr = DbActions.getStudentInstance(userName);
 			if (usr != null) {
 				Integer stdid = new Integer(0);
 				stdid = usr.getId();
@@ -142,7 +142,7 @@ public class StudentFrame extends JFrame {
 				CourseCatalog.NewScreen();
 			}
 		});
-		btnViewCourseCatalog.setBounds(65, 115, 200, 25);
+		btnViewCourseCatalog.setBounds(65, 115, 247, 25);
 		contentPane.add(btnViewCourseCatalog);
 
 		JPanel panel = new JPanel();
@@ -203,13 +203,13 @@ public class StudentFrame extends JFrame {
 
 		JButton btnSubmitCourseRequests = new JButton("Submit Course Requests");
 		btnSubmitCourseRequests.setBounds(33, 129, 289, 25);
-		panel.add(btnSubmitCourseRequests);		
-		
+		panel.add(btnSubmitCourseRequests);
+
 		final HashMap<Integer, Integer> hashCourses = new HashMap<Integer, Integer>();
-		
+
 		btnSubmitCourseRequests.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+
 				String courses = null;
 				int course = 0;
 				ArrayList<Integer> offeringIDs = new ArrayList<Integer>();
@@ -217,60 +217,72 @@ public class StudentFrame extends JFrame {
 				if (!textFieldCourse1.getText().isEmpty()) {
 					course = Integer.parseInt(textFieldCourse1.getText());
 					offeringIDs = DbActions.getCourseOfferings(course);
-					
-					for (int i=0; i<offeringIDs.size(); i++){
+
+					for (int i = 0; i < offeringIDs.size(); i++) {
 						hashCourses.put(course, offeringIDs.get(i));
-					}					
+					}
 
 					if (!textFieldCourse2.getText().isEmpty()) {
 						course = Integer.parseInt(textFieldCourse2.getText());
 						offeringIDs = DbActions.getCourseOfferings(course);
-						
-						for (int i=0; i<offeringIDs.size(); i++){
+
+						for (int i = 0; i < offeringIDs.size(); i++) {
 							hashCourses.put(course, offeringIDs.get(i));
 						}
 
 						if (!textFieldCourse3.getText().isEmpty()) {
-							course = Integer.parseInt(textFieldCourse3.getText());
+							course = Integer.parseInt(textFieldCourse3
+									.getText());
 							offeringIDs = DbActions.getCourseOfferings(course);
-							
-							for (int i=0; i<offeringIDs.size(); i++){
+
+							for (int i = 0; i < offeringIDs.size(); i++) {
 								hashCourses.put(course, offeringIDs.get(i));
 							}
 
 							if (!textFieldCourse4.getText().isEmpty()) {
-								course = Integer.parseInt(textFieldCourse4.getText());
-								offeringIDs = DbActions.getCourseOfferings(course);
-								
-								for (int i=0; i<offeringIDs.size(); i++){
+								course = Integer.parseInt(textFieldCourse4
+										.getText());
+								offeringIDs = DbActions
+										.getCourseOfferings(course);
+
+								for (int i = 0; i < offeringIDs.size(); i++) {
 									hashCourses.put(course, offeringIDs.get(i));
 								}
 
 								if (!textFieldCourse5.getText().isEmpty()) {
-									course = Integer.parseInt(textFieldCourse5.getText());
-									offeringIDs = DbActions.getCourseOfferings(course);
-									
-									for (int i=0; i<offeringIDs.size(); i++){
-										hashCourses.put(course, offeringIDs.get(i));
+									course = Integer.parseInt(textFieldCourse5
+											.getText());
+									offeringIDs = DbActions
+											.getCourseOfferings(course);
+
+									for (int i = 0; i < offeringIDs.size(); i++) {
+										hashCourses.put(course,
+												offeringIDs.get(i));
 									}
 								}
 							}
 						}
 					}
 
-					
-					// Create ScheduleRequest object and send to API.submitRequest()	
+					// Create ScheduleRequest object and send to
+					// API.submitRequest()
 					int studentID = Integer.parseInt(textFieldStdID.getText());
-					Date date = new Date();					
-					ScheduleRequest request = new ScheduleRequest(studentID, date, hashCourses);
-					
+					Date date = new Date();
+					ScheduleRequest request = new ScheduleRequest(studentID,
+							date, hashCourses);
+
 					API myAPI = new API();
+					// ---------------------------------------------------------------
+					// Added so that student list is updated before running
+					// engine
+					// ---------------------------------------------------------------
+					myAPI.updateStudentList();
 					myAPI.submitRequest(request);
 
-//					JOptionPane.showMessageDialog(null,
-//							"You have selected the following courses: "
-//									+ courses);
-					
+					// JOptionPane.showMessageDialog(null,
+					// "You have selected the following courses: "
+					// + courses);
+
 					CourseOffering.NewScreen(studentID);
 
 				} else {
@@ -290,7 +302,7 @@ public class StudentFrame extends JFrame {
 				ViewPastRequests.NewScreen(textFieldStdID.getText());
 			}
 		});
-		btnViewPastCourse.setBounds(65, 151, 200, 25);
+		btnViewPastCourse.setBounds(65, 151, 247, 25);
 		contentPane.add(btnViewPastCourse);
 
 		JLabel lblCurrentUser = new JLabel("Current User:");

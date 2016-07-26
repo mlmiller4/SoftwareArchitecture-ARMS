@@ -18,6 +18,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
+import arms.dataAccess.CommonFunctions;
+
 public class AdminFrame extends JFrame {
 
 	private JPanel contentPane;

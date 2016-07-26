@@ -72,18 +72,18 @@ public class ViewPastRequests {
 		frame.setBounds(100, 100, 997, 593);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		
+
 		JLabel lblYourPastSchedule = new JLabel("Your Past Schedule Requests");
 		lblYourPastSchedule.setHorizontalAlignment(SwingConstants.CENTER);
 		lblYourPastSchedule.setFont(new Font("Times New Roman", Font.BOLD, 20));
 		lblYourPastSchedule.setBounds(371, 28, 278, 60);
 		frame.getContentPane().add(lblYourPastSchedule);
-		
+
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(36, 99, 917, 404);
 		frame.getContentPane().add(scrollPane_1);
-		
-		DefaultTableModel model = new DefaultTableModel(){
+
+		DefaultTableModel model = new DefaultTableModel() {
 			@Override
 			public Class getColumnClass(int column) {
 				switch (column) {
@@ -96,61 +96,63 @@ public class ViewPastRequests {
 				}
 			}
 		};
-		
+
 		table_1 = new JTable(model);
-		scrollPane_1.setViewportView(table_1);	
+		scrollPane_1.setViewportView(table_1);
 		table_1.setAutoCreateRowSorter(true);
-		
+
 		// Add columns to model
 		model.addColumn("Student Request ID");
 		model.addColumn("Courses Requested");
-		
-		List<ScheduleRequest> pastRequests = DbActions.getScheduleRequests(Integer.parseInt(stdID), (-1));
-		
+
+		List<ScheduleRequest> pastRequests = DbActions.getScheduleRequests(
+				Integer.parseInt(stdID), (-1));
+
 		// Create a list of all courses in each Course Request ID
 		String strCourseRequests = null;
 		HashMap<Integer, Integer> requestedCourses = new HashMap<Integer, Integer>();
-		
-		for (ScheduleRequest schedReq : pastRequests){
-			
+
+		for (ScheduleRequest schedReq : pastRequests) {
+
 			strCourseRequests = null;
-			
+
 			requestedCourses = schedReq.getRequestedCourses();
-			
+
 			int counter = 0;
-			
-			for (Map.Entry<Integer, Integer> entry : requestedCourses.entrySet()){
-				
+
+			for (Map.Entry<Integer, Integer> entry : requestedCourses
+					.entrySet()) {
+
 				int key = entry.getKey();
-				
-				String courseName = DbActions.getCourseName(key);				
-				
-				if (counter > 0){
+
+				String courseName = DbActions.getCourseName(key);
+
+				if (counter > 0) {
 					strCourseRequests += "; " + courseName;
 				} else {
 					strCourseRequests = courseName;
-				}		
-				
+				}
+
 				counter++;
-			}	
-			
-			model.addRow(new Object[] { schedReq.getSRID(), strCourseRequests });                               
+			}
+
+			model.addRow(new Object[] { schedReq.getSRID(), strCourseRequests });
 
 		}
-		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table_1.getModel());
+		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(
+				table_1.getModel());
 		table_1.setRowSorter(sorter);
 		List<RowSorter.SortKey> sortKeys = new ArrayList<>();
 		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
 		sorter.setSortKeys(sortKeys);
-		
+
 		table_1.getColumnModel().getColumn(0).setMinWidth(125);
-		table_1.getColumnModel().getColumn(0).setMaxWidth(125);
-		
+		table_1.getColumnModel().getColumn(0).setMaxWidth(200);
+
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 		table_1.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
 
-		
 		JButton btnCloseButton = new JButton("Close");
 		btnCloseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

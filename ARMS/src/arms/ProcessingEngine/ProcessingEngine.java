@@ -105,6 +105,12 @@ public class ProcessingEngine {
     public static void prioritizeStudents(){
         Collections.sort(students); //Sorts descending based on rank - See impl. in Student.compareTo
     }
+    
+    public static void setUpdatedStudentList() {
+        students = DbActions.getStudents();
+        prioritizeStudents();
+    }
+    
     public static void updateScheduleRequest(ScheduleRequest newRequest){
         for (Iterator<ScheduleRequest> it = recentStudentRequests.listIterator(); it.hasNext();) {
             ScheduleRequest request = it.next();

@@ -54,7 +54,7 @@ public class ARMS_LogIn {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 630, 396);
+		frame.setBounds(100, 100, 658, 396);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
@@ -86,7 +86,8 @@ public class ARMS_LogIn {
 
 						// Open Student Frame
 						frame.dispose();
-						StudentFrame sf = new StudentFrame(false, textFieldUserName.getText());
+						StudentFrame sf = new StudentFrame(false,
+								textFieldUserName.getText());
 						sf.setVisible(true);
 
 					} else {
@@ -145,7 +146,7 @@ public class ARMS_LogIn {
 				}
 			}
 		});
-		btnLoginAdminButton.setBounds(331, 257, 230, 49);
+		btnLoginAdminButton.setBounds(331, 257, 268, 49);
 		frame.getContentPane().add(btnLoginAdminButton);
 
 		JLabel lblAcademicResourceManagement = new JLabel(

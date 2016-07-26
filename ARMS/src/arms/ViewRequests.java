@@ -24,6 +24,8 @@ import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -177,7 +179,7 @@ public class ViewRequests extends JFrame {
 				getScheduleTableEntries(requests);
 			}
 		});
-		btnLoadSchedules.setBounds(65, 132, 127, 23);
+		btnLoadSchedules.setBounds(65, 132, 201, 23);
 		contentPane.add(btnLoadSchedules);
 
 		JButton btnBack = new JButton("Back");
@@ -189,7 +191,7 @@ public class ViewRequests extends JFrame {
 				af.setVisible(true);
 			}
 		});
-		btnBack.setBounds(211, 132, 127, 23);
+		btnBack.setBounds(298, 131, 127, 23);
 		contentPane.add(btnBack);
 
 	}
@@ -214,13 +216,14 @@ public class ViewRequests extends JFrame {
 				case 4:
 					return Integer.class;
 				case 5:
-					return Date.class;
+					return String.class;
 				default:
 					return String.class;
 				}
 			}
 		};
 
+		DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
 		if (requests != null) {
 			for (ScheduleRequest schedule : requests) {
 				if (schedule != null) {
@@ -237,7 +240,7 @@ public class ViewRequests extends JFrame {
 								o[3] = instance.getClassSize();
 								o[4] = instance.getRemSeats();
 							}
-							o[5] = schedule.getSubmitTime();
+							o[5] = df.format(schedule.getSubmitTime());
 							model.addRow(o);
 						}
 					} else {
