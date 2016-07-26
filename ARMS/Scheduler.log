@@ -1068,3 +1068,6 @@ Thread count was 1 (of 1 available processors)
 
 Optimal solution found (tolerance 1.00e-04)
 Best objective -0.000000000000e+00, best bound -0.000000000000e+00, gap 0.0%
+
+Gurobi 6.5.0 (linux64) logging started Mon 25 Jul 2016 09:39:35 PM EDT
+

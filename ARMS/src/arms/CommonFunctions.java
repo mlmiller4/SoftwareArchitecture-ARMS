@@ -27,6 +27,7 @@ public class CommonFunctions {
 	 * @return Returns a String array with the course names
 	 */
 	public static String[] getCourseList() {
+		catalog = DbActions.getCatalog();
 		Set<String> courseSet = new HashSet<String>();
 		// catalog = dbactions.getCatalog();
 		// First selection should be "Select"
@@ -60,7 +61,7 @@ public class CommonFunctions {
 	 */
 	public static String[] getSemesters() {
 		Set<String> semesterSet = new HashSet<String>();
-
+		semesters = DbActions.getSemesters();
 		// First selection should be "Select"
 		semesterSet.add("-SELECT-");
 
@@ -93,7 +94,7 @@ public class CommonFunctions {
 		int courseId = 0;
 		List<String> prereqs = null;
 		int semesterId = 0;
-		
+		catalog = DbActions.getCatalog();
 		if ( catalog != null)
 		{
 			for (CourseInstance course : catalog) {
@@ -129,6 +130,7 @@ public class CommonFunctions {
 	 * @return
 	 */
 	public static CourseInstance getCourse(String courseId) {
+		catalog = DbActions.getCatalog();
 		if ( catalog != null)
 		{
 			for (CourseInstance course : catalog) {
@@ -151,6 +153,7 @@ public class CommonFunctions {
 		// hash set
 		// HashSet will contain non-duplicate course Ids
 		// We are trying to just capture the course list.
+		catalog = DbActions.getCatalog();
 		if ( catalog != null)
 		{
 			for (CourseInstance course : catalog) {
@@ -169,6 +172,7 @@ public class CommonFunctions {
 	 * @return Returns a String array with the student ids
 	 */
 	public static String[] getStudentList() {
+		students = DbActions.getStudents();
 		Set<String> studentSet = new HashSet<String>();
 		// catalog = dbactions.getCatalog();
 		// First selection should be "Select"
@@ -197,10 +201,8 @@ public class CommonFunctions {
 	 * @return Student object if it exists, null otherwise
 	 */
 	public static Student getStudentInstance(int studentId) {
-		// Iterate through catalog and store course ID and course names into
-		// hash set
-		// HashSet will contain non-duplicate course Ids
-		// We are trying to just capture the course list.
+
+		students = DbActions.getStudents(); 
 		if ( students != null)
 		{
 			for (Student student : students) {
@@ -218,10 +220,7 @@ public class CommonFunctions {
 	 * @return Student object if it exists, null otherwise
 	 */
 	public static Student getStudentInstance(String userName) {
-		// Iterate through catalog and store course ID and course names into
-		// hash set
-		// HashSet will contain non-duplicate course Ids
-		// We are trying to just capture the course list.
+		students = DbActions.getStudents(); 
 		if ( students != null)
 		{
 			for (Student student : students) {
