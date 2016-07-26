@@ -10,9 +10,12 @@ import java.awt.Color;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import javax.swing.JScrollPane;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
@@ -78,10 +81,33 @@ public class CourseCatalog {
 		scrollPane.setBounds(10, 104, 1350, 510);
 		frame.getContentPane().add(scrollPane);
 		
-		DefaultTableModel model = new DefaultTableModel();
+		DefaultTableModel model = new DefaultTableModel(){    
+			@Override
+            public Class getColumnClass(int column) {
+				switch (column) {
+                case 0:
+                    return Integer.class;
+                case 1:
+                	return Integer.class;
+                case 2:
+                    return String.class;
+                case 3:
+                	return String.class;
+                case 4:
+                	return Integer.class;
+                case 5:
+                	return Integer.class;
+                case 6:
+                	return String.class;
+                default:
+                    return String.class;
+        	}
+		}
+	};
 				
 		table = new JTable(model);
 		scrollPane.setViewportView(table);
+		table.setAutoCreateRowSorter(true);
 		
 		connection = sqliteConnection.dbConnector();
 		
@@ -124,7 +150,12 @@ public class CourseCatalog {
 			
 			model.addRow(new Object[] {currentCourse.getCourseId(), currentCourse.getId(), currentCourse.getCourseName(),
 					currentCourse.getSemester(), currentCourse.getClassSize(), currentCourse.getRemSeats(),
-					strPrereqs});			
+					strPrereqs});	
+			TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
+			table.setRowSorter(sorter);
+			List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+			sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+			sorter.setSortKeys(sortKeys);
 			
 		}
 		

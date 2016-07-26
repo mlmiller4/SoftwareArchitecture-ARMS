@@ -204,7 +204,19 @@ public class SummaryReport extends JFrame {
 		// headers for the table
 		Object[] columns = { "Course ID", "# Students" };
 		DefaultTableModel model = new DefaultTableModel(new Object[0][0],
-				columns);
+				columns) {
+			@Override
+			public Class getColumnClass(int column) {
+				switch (column) {
+				case 0:
+					return Integer.class;
+				case 1:
+					return Integer.class;
+				default:
+					return String.class;
+				}
+			}
+		};
 
 		Map<Integer, Integer> sortedMap = new TreeMap<Integer, Integer>(
 				report.getCourseDemand());
@@ -215,6 +227,12 @@ public class SummaryReport extends JFrame {
 			model.addRow(o);
 		}
 		table.setModel(model);
+		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(
+				table.getModel());
+		table.setRowSorter(sorter);
+		List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+		sorter.setSortKeys(sortKeys);
 	}
 
 	private void getStudentDemandTable(SystemReport report) {
@@ -222,7 +240,23 @@ public class SummaryReport extends JFrame {
 		Object[] columns = { "StudentID", "# Next Semester",
 				"# Future Semesters", "Unavailable" };
 		DefaultTableModel model = new DefaultTableModel(new Object[0][0],
-				columns);
+				columns) {
+			@Override
+			public Class getColumnClass(int column) {
+				switch (column) {
+				case 0:
+					return Integer.class;
+				case 1:
+					return Integer.class;
+				case 2:
+					return Integer.class;
+				case 3:
+					return Integer.class;
+				default:
+					return String.class;
+				}
+			}
+		};
 
 		for (HashMap.Entry<Integer, ArrayList<Integer>> entry : report
 				.getRequestResultsInfo().entrySet()) {
@@ -234,13 +268,31 @@ public class SummaryReport extends JFrame {
 			model.addRow(o);
 		}
 		table_1.setModel(model);
+		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(
+				table_1.getModel());
+		table_1.setRowSorter(sorter);
+		List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+		sorter.setSortKeys(sortKeys);
 	}
 
 	private void getConfigTable(SystemReport report) {
 		// headers for the table
 		Object[] columns = { "Parameter", "Value" };
 		DefaultTableModel model = new DefaultTableModel(new Object[0][0],
-				columns);
+				columns) {
+			@Override
+			public Class getColumnClass(int column) {
+				switch (column) {
+				case 0:
+					return String.class;
+				case 1:
+					return Float.class;
+				default:
+					return String.class;
+				}
+			}
+		};
 		Map<String, Float> sortedMap = new TreeMap<String, Float>(
 				report.getConfigParameters());
 		// for (HashMap.Entry<String, Float> entry :
@@ -253,5 +305,11 @@ public class SummaryReport extends JFrame {
 			model.addRow(o);
 		}
 		table_2.setModel(model);
+		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(
+				table_2.getModel());
+		table_2.setRowSorter(sorter);
+		List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+		sorter.setSortKeys(sortKeys);
 	}
 }
