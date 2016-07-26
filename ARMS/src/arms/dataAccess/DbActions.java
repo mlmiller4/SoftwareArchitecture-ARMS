@@ -718,13 +718,13 @@ public class DbActions {
 		
 		for (CourseInstance instance : offerings)
 		{
-			 connection = arms.dataAccess.DbConnection.dbConnector();
+			connection = arms.dataAccess.DbConnection.dbConnector();
 			try 
 			{
 				String update = "update CourseOfferings set RemSeats = ? where Id = ?"; 
 				 pst = connection.prepareStatement(update);
-				pst.setInt(1, instance.getId());
-				pst.setInt(2, instance.getRemSeats());
+				pst.setInt(1, instance.getRemSeats());
+				pst.setInt(2, instance.getId());
 				pst.executeUpdate();
 			}  
 			catch (Exception e)

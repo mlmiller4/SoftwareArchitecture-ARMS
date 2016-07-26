@@ -14,6 +14,7 @@ import java.awt.Font;
 import java.awt.Color;
 
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
@@ -25,6 +26,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.sql.*;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -223,7 +225,7 @@ public class ViewRequests extends JFrame {
 			}
 		};
 
-		DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+		DateFormat df = new SimpleDateFormat("MMM dd HH:mm:ss z yyyy");
 		if (requests != null) {
 			for (ScheduleRequest schedule : requests) {
 				if (schedule != null) {
@@ -240,7 +242,9 @@ public class ViewRequests extends JFrame {
 								o[3] = instance.getClassSize();
 								o[4] = instance.getRemSeats();
 							}
+
 							o[5] = df.format(schedule.getSubmitTime());
+
 							model.addRow(o);
 						}
 					} else {
@@ -258,5 +262,12 @@ public class ViewRequests extends JFrame {
 		List<RowSorter.SortKey> sortKeys = new ArrayList<>();
 		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
 		sorter.setSortKeys(sortKeys);
+		// Adjust column widths for formatting
+		table.getColumnModel().getColumn(0).setMaxWidth(100);
+		table.getColumnModel().getColumn(1).setMaxWidth(100);
+		table.getColumnModel().getColumn(2).setMaxWidth(100);
+		table.getColumnModel().getColumn(3).setMaxWidth(150);
+		table.getColumnModel().getColumn(4).setMaxWidth(100);
+		table.getColumnModel().getColumn(5).setMaxWidth(200);
 	}
 }

@@ -69,18 +69,18 @@ public class ViewPastRequests {
 	 */
 	private void initialize(String stdID) {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 997, 593);
+		frame.setBounds(100, 100, 1151, 694);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
 		JLabel lblYourPastSchedule = new JLabel("Your Past Schedule Requests");
 		lblYourPastSchedule.setHorizontalAlignment(SwingConstants.CENTER);
 		lblYourPastSchedule.setFont(new Font("Times New Roman", Font.BOLD, 20));
-		lblYourPastSchedule.setBounds(371, 28, 278, 60);
+		lblYourPastSchedule.setBounds(371, 28, 416, 60);
 		frame.getContentPane().add(lblYourPastSchedule);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(36, 99, 917, 404);
+		scrollPane_1.setBounds(36, 99, 1070, 519);
 		frame.getContentPane().add(scrollPane_1);
 
 		DefaultTableModel model = new DefaultTableModel() {
@@ -105,8 +105,8 @@ public class ViewPastRequests {
 		model.addColumn("Student Request ID");
 		model.addColumn("Courses Requested");
 
-		List<ScheduleRequest> pastRequests = DbActions.getScheduleRequests(
-				Integer.parseInt(stdID), (-1));
+		List<ScheduleRequest> pastRequests = DbActions
+				.getStudentScheduleRequests(Integer.parseInt(stdID));
 
 		// Create a list of all courses in each Course Request ID
 		String strCourseRequests = null;
@@ -146,7 +146,7 @@ public class ViewPastRequests {
 		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
 		sorter.setSortKeys(sortKeys);
 
-		table_1.getColumnModel().getColumn(0).setMinWidth(125);
+		table_1.getColumnModel().getColumn(0).setMinWidth(150);
 		table_1.getColumnModel().getColumn(0).setMaxWidth(200);
 
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -159,7 +159,7 @@ public class ViewPastRequests {
 				frame.dispose();
 			}
 		});
-		btnCloseButton.setBounds(864, 514, 89, 23);
+		btnCloseButton.setBounds(904, 630, 89, 23);
 		frame.getContentPane().add(btnCloseButton);
 	}
 }
