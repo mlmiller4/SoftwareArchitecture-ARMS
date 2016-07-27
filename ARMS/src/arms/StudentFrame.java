@@ -273,6 +273,17 @@ public class StudentFrame extends JFrame {
 
 					API myAPI = new API();
 					// ---------------------------------------------------------------
+					// Check if we're in shadow mode and enable it in the API
+					// ---------------------------------------------------------------
+					if (shadowMode)
+					{
+						myAPI.activateShadowMode();
+					} else
+					{
+						myAPI.deactivateDemoMode();
+					}
+					
+					// ---------------------------------------------------------------
 					// Added so that student list is updated before running
 					// engine
 					// ---------------------------------------------------------------
@@ -284,7 +295,6 @@ public class StudentFrame extends JFrame {
 					// + courses);
 
 					CourseOffering.NewScreen(studentID);
-
 				} else {
 					JOptionPane
 							.showMessageDialog(null,

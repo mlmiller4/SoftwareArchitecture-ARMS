@@ -17,10 +17,10 @@ public class API {
     public static List<ScheduleRequest> getRecentScheduleRequestsFromMem(){
         return ProcessingEngine.getAllRecentScheduleRequests();
     }
-    public void activateShadowMode(){
+    public static void activateShadowMode(){
         ProcessingEngine.activateShadowMode();
     }
-    public void deactivateDemoMode(){
+    public static void deactivateDemoMode(){
         ProcessingEngine.deactivateShadowMode();
     }
     public List<ScheduleRequest> getRecentScheduleRequestsFromDb(){

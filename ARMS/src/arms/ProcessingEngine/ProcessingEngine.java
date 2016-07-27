@@ -133,7 +133,10 @@ public class ProcessingEngine {
             for(Integer offeringId : request.getRequestedCourses().values()){
                 if(offeringId == null)continue;
                 CourseInstance offering = offeringsMap.get(offeringId);
-                offering.setRemSeats(offering.getRemSeats()-1);
+                if (offering.getRemSeats()-1 >= 0)
+                {
+                	offering.setRemSeats(offering.getRemSeats()-1);
+                }
             }
         }
         if(!shadowMode){
